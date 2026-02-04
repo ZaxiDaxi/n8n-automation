@@ -1,0 +1,1826 @@
+{
+  "name": "Fetch Old Email V1",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "limit": 20,
+        "filters": {
+          "readStatus": "unread"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -4640,
+        464
+      ],
+      "id": "47401f23-c4d2-425c-9caa-68c0df71ae0e",
+      "name": "List Unread (batch)",
+      "webhookId": "265fdc82-453c-4b75-ba94-6b17e0dffdbc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-1003772493573",
+        "text": "={{\n(() => {\n  const nodeJson = (name) => {\n    try {\n      return ($node?.[name]?.json) || {};\n    } catch (e) {\n      return {};\n    }\n  };\n\n  const firstLine = (s) => String(s ?? '').split(/\\r?\\n/)[0];\n\n  const escapeHtml = (s) =>\n    String(s ?? '')\n      .replace(/&/g, '&amp;')\n      .replace(/</g, '&lt;')\n      .replace(/>/g, '&gt;');\n\n  // ---------- CATEGORY ----------\n  const cls = nodeJson('Classifier Agent');\n  const rawCat =\n    $json.category ??\n    cls.category ??\n    cls.output ??\n    'FYI';\n\n  const cleanedCat = firstLine(rawCat)\n    .replace(/\\*\\*/g, '')\n    .replace(/`/g, '')\n    .replace(/^category\\s*:\\s*/i, '')\n    .trim();\n\n  let norm = cleanedCat.toUpperCase().replace(/[\\s_]+/g, '_'); // ACTION_NEEDED\n  if (norm === 'ACTION') norm = 'ACTION_NEEDED';              // just in case\n  if (!['IGNORE', 'FYI', 'ACTION_NEEDED'].includes(norm)) norm = 'FYI';\n\n  const displayCat = norm.replace(/_/g, ' '); // ACTION NEEDED\n\n  // ---------- FROM / SUBJECT ----------\n  const listUnread = nodeJson('List Unread (batch)');\n\n  const fromRaw =\n    listUnread.From ??\n    listUnread.from ??\n    $json.from ??\n    $json.From ??\n    'Unknown';\n\n  // remove angle brackets that break Telegram when parse mode is not truly none\n  const from = String(fromRaw).replace(/[<>]/g, '');\n\n  const subject =\n    listUnread.Subject ??\n    listUnread.subject ??\n    $json.subject ??\n    $json.Subject ??\n    'No subject';\n\n  // ---------- SUMMARY ----------\n  const sum = nodeJson('Summarization Agent');\n  const summary =\n    sum.output ??\n    sum.summary ??\n    $json.summary ??\n    '';\n\n  // ---------- BODY (LATEST ONLY) ----------\n  const getMsg = nodeJson('Get a message');\n  const rawBody =\n    getMsg.textPlain ??\n    getMsg.textAsPlain ??\n    getMsg.text ??\n    $json.email_text ??\n    '';\n\n  const decodeEntities = (s) =>\n    String(s ?? '')\n      .replace(/&lt;/g, '<')\n      .replace(/&gt;/g, '>')\n      .replace(/&amp;/g, '&')\n      .replace(/&quot;/g, '\"')\n      .replace(/&#39;/g, \"'\");\n\n  const stripQuoted = (s) => {\n    let text = decodeEntities(String(s || '')).trim();\n\n    // Fix \"exceptionOn Mon, ...\" -> add newline before \"On Mon,\"\n    text = text.replace(\n      /([^\\r\\n])On\\s(?=(Mon|Tue|Wed|Thu|Fri|Sat|Sun),)/g,\n      '$1\\nOn '\n    );\n\n    const cutPatterns = [\n      /(?:^|\\r?\\n)\\s*On\\s.+?wrote:\\s*/is,                 // Gmail quote marker\n      /(?:^|\\r?\\n)\\s*-----Original Message-----\\s*/is,    // Outlook\n      /(?:^|\\r?\\n)\\s*From:\\s.+\\r?\\n\\s*Sent:\\s/is,         // Outlook header\n      /(?:^|\\r?\\n)\\s*-{2,}\\s*Forwarded message\\s*-{2,}\\s*/is\n    ];\n\n    let out = text;\n    for (const re of cutPatterns) {\n      const idx = out.search(re);\n      if (idx !== -1) {\n        out = out.slice(0, idx).trim();\n        break;\n      }\n    }\n\n    // Remove quoted lines starting with \">\"\n    out = out\n      .split(/\\r?\\n/)\n      .filter(line => !/^\\s*>/.test(line))\n      .join('\\n')\n      .trim();\n\n    return out;\n  };\n\n  const latestMessageOnly = stripQuoted(rawBody);\n\n  // ---------- BUILD MESSAGE ----------\n  let msg =\n`Category: ${displayCat}\nFrom: ${from}\nSubject: ${subject}\n\nSummary: ${summary}\n\nMessage:\n${latestMessageOnly}`;\n\n  if (norm === 'ACTION_NEEDED') {\n    const draft = nodeJson('Drafting Email Agent').output ?? '';\n    if (String(draft).trim()) {\n      msg += `\n\nDraft email:\n${draft}`;\n    }\n  }\n\n  // Telegram hard limit is 4096 chars. Keep buffer.\n  const safe = escapeHtml(msg).slice(0, 3900);\n\n  return safe;\n})()\n}}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✅ Approve",
+                    "additionalFields": {
+                      "callback_data": "={{ 'reply:' + $json.message.threadId}}"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✏️ Edit",
+                    "additionalFields": {
+                      "callback_data": "={{ 'edit:' + $json.message.threadId}}"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🧾 History",
+                    "additionalFields": {
+                      "callback_data": "={{ 'history:' + $json.message.threadId }}"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🎨 Style",
+                    "additionalFields": {
+                      "callback_data": "style_menu"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -176,
+        672
+      ],
+      "id": "b15f54c2-6ac1-4d59-92cc-460e38d26a0d",
+      "name": "Send a text message",
+      "webhookId": "1c83c47a-9975-461a-8e87-3225c7dad512",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1EB-MUC7mL69LVyrxYFvoBwZz83wqUqr29sn9_isOsd0",
+          "mode": "list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "email_drafts"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "gmail_message_id": "={{ $('Create Gmail Draft').item.json.message.id }}",
+            "thread_id": "={{ $('Create Gmail Draft').item.json.message.threadId }}",
+            "from": "={{ $('Get a message').first().json.headers.from }}",
+            "subject": "=",
+            "draft_body": "={{ $('Drafting Email Agent').item.json.output }}",
+            "telegram_chat_id": "={{ $json.result.chat.id }}",
+            "telegram_msg_id": "={{ $json.result.message_id }}",
+            "status": "={{\"waiting_approve\"}}",
+            "telegram_message_ids": "={{ $json.result.message_id }}",
+            "categoy": "={{ $('Classifier Agent').first().json.output }}",
+            "gmail_draft_id": "={{ $('Create Gmail Draft').item.json.id || '' }}",
+            "gmail_draft_message_id": "={{ $('Create Gmail Draft').item.json.message?.id || '' }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "gmail_message_id",
+              "displayName": "gmail_message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "thread_id",
+              "displayName": "thread_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "draft_body",
+              "displayName": "draft_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "telegram_chat_id",
+              "displayName": "telegram_chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "telegram_msg_id",
+              "displayName": "telegram_msg_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "telegram_message_ids",
+              "displayName": "telegram_message_ids",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "categoy",
+              "displayName": "categoy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "old_email",
+              "displayName": "old_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "gmail_draft_id",
+              "displayName": "gmail_draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "gmail_draft_message_id",
+              "displayName": "gmail_draft_message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        48,
+        672
+      ],
+      "id": "2645762b-3d51-4a08-a31a-ae7b8a458cf6",
+      "name": "Insert row",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XoJf393CafMdwwSm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json.id }}",
+        "simple": false,
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -4192,
+        192
+      ],
+      "id": "173edfa1-004b-444b-b42e-c564edb34a6b",
+      "name": "Get a message",
+      "webhookId": "eca09e9d-50e3-44d7-bd87-9f376e4fb08b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=This is the email content: {{ $('Email Context').item.json.email_text }}\n\nThe Attachment (if there is one): {{ $('Email Context').item.json.attachment_summary }}",
+        "options": {
+          "systemMessage": "You are an email classification assistant for automation workflows.\n\nAbsolute override — task platforms:\n\nAny email originating from task or project management systems\n(Asana, Jira, Trello, ClickUp, Linear, GitHub notifications),\nincluding but not limited to:\n- overdue task digests\n- deletion or undo notifications\n- restore links or time windows\n- “respond now” or “action required” wording\n- status updates, comments, mentions, assignments\n\nACTION NEEDED is ONLY for messages that require the user to reply BY EMAIL to a human sender (not no-reply).\nEverything else is FYI (unless spam = IGNORE).\n\nThis includes security/account emails like:\n- change your password\n- secure your account\n- suspicious sign-in\n- password reset\n- MFA/OTP codes\nThese are FYI because they do not require an email reply.\n\n\nMUST ALWAYS be classified as FYI.\n\nThis is true even if:\n- tasks are overdue\n- a project/template was deleted\n- there is a limited undo period\n- the language sounds urgent\n\nEXCEPTION:\nOnly classify as ACTION NEEDED if the email explicitly requires\na reply BY EMAIL to a human sender (not no-reply),\nor indicates external security, payment, or account compromise.\n\nClassify the message into exactly one label:\nIGNORE\nFYI\nACTION NEEDED\n\nMeanings:\n\nIGNORE: spam, promos, newsletters, cold outreach, social noise, low-value.\n\nFYI: useful info or notifications that do not require replying by email (status updates, automated notifications, meeting invites/updates, task updates).\n\nACTION NEEDED: requires a direct email reply/confirmation/approval, or time-sensitive risk (OTP, security, payment failed, invoice due/overdue, account access issues, urgent scheduling that requires confirmation).\n\nCritical instruction:\n\nWhen classifying, IGNORE any text that is part of automation output such as “Category: …”, “Summary: …”, and especially “Draft email: …”. Do NOT let “Draft email” influence classification.\n\nPriority rules (apply in this order):\n\nAsana/task-platform override (almost always FYI)\n\nIf the sender is from Asana (asana.com, no-reply@asana.com\n) OR the email content is an automated task/comment/mention/attachment notification from task platforms (Asana, Jira, Trello, ClickUp, Linear, GitHub notifications):\n-> Output FYI\n\nEven if it says “assigned you a task”, “mentioned you”, “left a comment”, “please review”, “answer questions”, “view task”, “attachment added”.\n\nEXCEPT output ACTION NEEDED only if the email explicitly requires an email reply to a person (not in-app), OR includes a hard deadline with consequence, OR indicates security/payment/account risk.\n\nCalendar invite/meeting override (FYI by default)\n\nIf the email is a calendar invitation, update, or reminder (Google Calendar / ICS style content, “Invitation from Google Calendar”, “This event has been updated”, meeting links, phone PINs):\n-> Output FYI\n\nEXCEPT output ACTION NEEDED only if it explicitly asks you to RSVP/confirm by a specific deadline, or says attendance is required, or there is a strong consequence for not responding.\n\nNo-reply informational rule\n\nIf the sender is a no-reply address AND the message is informational/notification:\n-> Output FYI\n\nEXCEPT ACTION NEEDED only for OTP/security/payment failure/invoice due/account lock or other urgent risk.\n\nAction-needed rule (use only when clearly true)\nOutput ACTION NEEDED only if at least one is true:\n\nThe email explicitly asks you to reply by email or confirm/approve via email\n\nA client/customer is waiting on your email response\n\nThere is a deadline you must meet and the action is required now\n\nSecurity/authentication risk (OTP, suspicious login, password reset, MFA, account lock)\n\nFinancial risk (payment failed, invoice due/overdue, service suspension)\n\nA scheduling request that requires confirmation (not optional) or a decision\n\nFYI default\n\nIf it is not spam and does not meet ACTION NEEDED conditions:\n-> Output FYI\n\nIgnore rule\n\nOutput IGNORE if spam/promotional/newsletter/cold outreach/low-value noise.\n\nOutput rules (must follow exactly):\n\nOutput must be EXACTLY one of these three strings:\nIGNORE\nFYI\nACTION NEEDED\n\nDo not add any other words.\n\nDo not use any formatting characters.\n\nDo not add punctuation.\n\nDo not add newlines or extra spaces.\n\nIf unsure between FYI and ACTION NEEDED, choose FYI."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -2512,
+        128
+      ],
+      "id": "c9a8756e-81b9-45b8-9a52-de68861ca5a0",
+      "name": "Classifier Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Here's the email content:\n{{ $('Email Context').item.json.email_text }}\nAttachment summary:\n{{ $('Email Context').item.json.attachment_summary || '' }}\n",
+        "options": {
+          "systemMessage": "You are an email summarization assistant for automation workflows.\n\nThe user message will usually contain:\n\nHere's the email content: <email body>\nAttachment summary: <optional attachment summary>\n\nRules to choose what to summarize:\n1) Extract EMAIL_BODY = the text after \"Here's the email content:\" (trim whitespace).\n2) Extract ATTACHMENTS = the text after \"Attachment summary:\" (trim whitespace).\n3) If EMAIL_BODY has any non-whitespace characters, you MUST summarize EMAIL_BODY (even if ATTACHMENTS is empty).\n4) If EMAIL_BODY is empty but ATTACHMENTS is not, summarize ATTACHMENTS.\n5) If both are empty, respond exactly: No email content provided.\n\nOutput rules:\n- Return only the summary text (no labels, prefixes, bullets, headings).\n- 1–2 lines total.\n- Include: purpose, required action, deadlines, key IDs, important amounts, and latest status if it’s a thread.\n- Do not invent details.\n\nPrivacy/redaction:\n- API keys/tokens: first 4 chars + ****\n- Card numbers: last 4 only\n- Passwords/OTPs: ****\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -1856,
+        128
+      ],
+      "id": "a9152232-01b5-475c-9bc1-b7ff79c2e17a",
+      "name": "Summarization Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Writing preferences (follow strictly): {{ $json.prefs_text || '' }}\n\nHere's the Email Content:  {{\n  ($('Email Context').first().json.email_text || '')\n    .replace(/https?:\\/\\/\\S+/g, '')       // remove URLs\n    .replace(/\\[[^\\]]*\\]/g, '')           // remove [ ... ] blocks\n    .replace(/\\s+/g, ' ')\n    .trim()\n    .slice(0, 6000)\n}}\nHere's the Attachment (If there is one): {{ $('Email Context').first().json.attachment_summary }}",
+        "options": {
+          "systemMessage": "You are an email reply drafting assistant for automation workflows.\n\nInput format:\n\"Here's the email content: <full email text>\"\n\nYour job:\nWrite a ready-to-send reply email draft to the sender.\n\nCore rules:\n- Output only the email draft body (no labels, no analysis, no bullet headers like “Subject:” unless asked).\n- Keep it short and clear (3–10 sentences). Use paragraphs.\n- Use a professional, friendly tone. Match the sender’s tone (formal vs casual).\n- Directly address the sender’s request, questions, or next steps.\n- If the email asks for approval/confirmation, clearly state approval or confirmation.\n- If the email needs missing info from the user, insert placeholders like [NAME], [DATE], [AMOUNT], [LINK], [ATTACHMENT], [PHONE], and ask concise questions.\n- Never invent facts (dates, numbers, names, promises). If unsure, ask or use placeholders.\n- If the content is empty or not an email, respond exactly: \"No email content provided.\"\n\nPrivacy and safety:\n- Do not include secrets. If the email contains API keys/tokens, show only first 4 characters + \"****\".\n- If it contains card numbers, show only last 4 digits.\n- Mask passwords/OTPs as \"****\" even if present.\n- Do not click links or claim you verified anything externally.\n\nSpecial cases:\n- Scheduling: propose 2–3 time options and ask them to confirm; include meeting link placeholder if needed.\n- Support/ticket: acknowledge, restate issue, provide requested details (or placeholders), and ask for ETA if needed.\n- Billing/invoice: confirm payment plan/status (or ask), reference invoice/order IDs, and ask for receipt if relevant.\n- Promotional/cold outreach: politely decline or ask for more details depending on the email’s intent.\n\nOutput requirements:\n- Output ONLY the email body.\n- Start with a greeting.\n- End with a polite closing and a signature placeholder:\n  \"Best regards,\n  [Your Name]\"\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -752,
+        672
+      ],
+      "id": "6a88d9fe-343b-4844-929f-ebf952eb4cac",
+      "name": "Drafting Email Agent"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1EB-MUC7mL69LVyrxYFvoBwZz83wqUqr29sn9_isOsd0",
+          "mode": "list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 264648508,
+          "mode": "list",
+          "cachedResultName": "drafts"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "draft_id": "={{ $json.gmail_message_id }}",
+            "body": "={{ $json.draft_body }}",
+            "subject": "=",
+            "telegram_message_id": "={{ $json.telegram_msg_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "draft_id",
+              "displayName": "draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "telegram_message_id",
+              "displayName": "telegram_message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "revision",
+              "displayName": "revision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        272,
+        672
+      ],
+      "id": "24d46b57-f4c8-4fbb-a566-4a97081b32b6",
+      "name": "Insert row1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XoJf393CafMdwwSm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "=",
+        "message": "={{ $('Drafting Email Agent').item.json.output || '' }}",
+        "options": {
+          "threadId": "={{ $('Get a message').first().json.threadId }}",
+          "sendTo": "={{ $('Get a message').first().json.headers.from }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -400,
+        672
+      ],
+      "id": "6ae9bcbf-d0cf-421c-a986-fc726449b9a6",
+      "name": "Create Gmail Draft",
+      "webhookId": "ff94cdc3-6eaa-4d6a-ad34-b37f19444278",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "eedd3b5f-31da-43a5-9e9a-9cae8c3d5f0d",
+              "leftValue": "={{ Object.keys($binary || {}).length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "larger"
+              }
+            },
+            {
+              "id": "8d8324a2-e0fd-4b9e-9a7b-130242bd306d",
+              "leftValue": "={{ $json.hasPdf }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -3744,
+        192
+      ],
+      "id": "5ec5c9c1-c867-4f65-a84f-b6635851f896",
+      "name": "Has Attachments"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst maxFiles = 3;\nconst maxBytes = 15 * 1024 * 1024; // 15MB per file\n\nfor (let itemIndex = 0; itemIndex < items.length; itemIndex++) {\n  const item = items[itemIndex];\n  const bin = item.binary || {};\n  const keys = Object.keys(bin).filter(k => k.startsWith('attachment_'));\n\n  const content = [{\n    type: \"input_text\",\n    text: [\n      \"Summarize the email attachment(s) for the email summary.\",\n      \"Give a compact, factual summary (2–5 bullet points total).\",\n      \"Include key parties, dates, amounts, and required actions if present.\",\n      \"If the file is unreadable, say so.\"\n    ].join(\"\\n\")\n  }];\n\n  const picked = [];\n  const skipped = [];\n\n  for (const key of keys) {\n    const meta = bin[key] || {};\n    const mime = (meta.mimeType || \"\").toLowerCase();\n    const filename = meta.fileName || key;\n\n    // ✅ get real bytes even in filesystem-v2 mode\n    const buffer = await this.helpers.getBinaryDataBuffer(itemIndex, key);\n\n    if (!buffer || !buffer.length) {\n      skipped.push(`${filename} (no data)`);\n      continue;\n    }\n\n    if (buffer.length > maxBytes) {\n      skipped.push(`${filename} (too large ${buffer.length} bytes)`);\n      continue;\n    }\n\n    const b64 = buffer.toString(\"base64\");\n\n    // PDF\n    if (mime === \"application/pdf\" || filename.toLowerCase().endsWith(\".pdf\")) {\n      const pdfMime = mime || \"application/pdf\";\n      content.push({\n        type: \"input_file\",\n        filename,\n        file_data: `data:${pdfMime};base64,${b64}`,\n      });\n      picked.push(filename);\n\n    // IMAGE\n    } else if (mime.startsWith(\"image/\")) {\n      content.push({\n        type: \"input_image\",\n        image_url: `data:${mime};base64,${b64}`,\n      });\n      picked.push(filename);\n\n    } else {\n      skipped.push(`${filename} (unsupported ${mime || \"type\"})`);\n    }\n\n    if (picked.length >= maxFiles) break;\n  }\n\n  item.json.openai_body = {\n    model: \"gpt-4o-mini\",\n    input: [{ role: \"user\", content }],\n  };\n\n  item.json._attachment_files_used = picked;\n  item.json._attachment_files_skipped = skipped;\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3520,
+        80
+      ],
+      "id": "4a4510d6-4636-4203-a64a-e3beba50dd53",
+      "name": "Build OpenAI Attachment Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfunction tryExtractOutputText(resp) {\n  if (typeof resp?.output_text === \"string\" && resp.output_text.trim()) return resp.output_text.trim();\n\n  // Fallback: walk output array\n  const out = resp?.output;\n  if (Array.isArray(out)) {\n    const chunks = [];\n    for (const o of out) {\n      // common shapes: {type:\"message\", content:[{type:\"output_text\", text:\"...\"}]}\n      if (o?.type === \"message\" && Array.isArray(o.content)) {\n        for (const c of o.content) {\n          if (c?.type === \"output_text\" && typeof c.text === \"string\") chunks.push(c.text);\n        }\n      }\n    }\n    const joined = chunks.join(\"\\n\").trim();\n    if (joined) return joined;\n  }\n  return \"\";\n}\n\nfor (const item of items) {\n  const summary = tryExtractOutputText(item.json);\n\n  // Keep only the attachment summary in json for easy merging\n  item.json = {\n    attachment_summary: summary,\n  };\n}\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3072,
+        80
+      ],
+      "id": "62de99c8-9b51-4be3-9546-e3f748a1835a",
+      "name": "Extract Attachment Summary"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nfor (const item of items) {\n  item.json.attachment_summary = \"\";\n  item.json._attachment_files_used = [];\n  item.json._attachment_files_skipped = [];\n}\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3184,
+        464
+      ],
+      "id": "b3fb4d53-6594-4009-89c3-aa5c9761b3bd",
+      "name": "No Attachments"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.openai_body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -3296,
+        80
+      ],
+      "id": "fafc89a3-d2aa-4708-9bf2-482ede3c04ad",
+      "name": "OpenAI - Summarize Attachments",
+      "credentials": {
+        "openAiApi": {
+          "id": "58tGVV5vxWrUgphA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const hasPdf = items.some(item => {\n  const bin = item.binary || {};\n  return Object.entries(bin).some(([k, b]) => {\n    const name = String(b?.fileName || '').toLowerCase();\n    const mime = String(b?.mimeType || '').toLowerCase();\n    return k.startsWith('attachment_') && (mime === 'application/pdf' || name.endsWith('.pdf'));\n  });\n});\n\nconst binaryKeys = items.flatMap(item => Object.keys(item.binary || {}));\n\n// keep the original binary so later nodes still have the attachments\nreturn [{\n  json: { hasPdf: !!hasPdf, binaryKeys },\n  binary: items[0].binary,\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3968,
+        192
+      ],
+      "id": "1abe6e21-deee-4a75-ae33-62af4458e106",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// ---------- helpers ----------\nfunction decodeHtmlEntities(str = '') {\n  const map = {\n    '&nbsp;': ' ',\n    '&amp;': '&',\n    '&lt;': '<',\n    '&gt;': '>',\n    '&quot;': '\"',\n    '&#39;': \"'\",\n    '&apos;': \"'\",\n  };\n\n  str = str.replace(/&(nbsp|amp|lt|gt|quot|apos);|&#39;/g, (m) => map[m] ?? m);\n\n  str = str.replace(/&#(\\d+);/g, (_, d) => {\n    const code = Number(d);\n    return Number.isFinite(code) ? String.fromCharCode(code) : '';\n  });\n\n  str = str.replace(/&#x([0-9a-fA-F]+);/g, (_, h) => {\n    const code = parseInt(h, 16);\n    return Number.isFinite(code) ? String.fromCharCode(code) : '';\n  });\n\n  return str;\n}\n\nfunction htmlToText(html = '') {\n  let s = String(html);\n  s = s.replace(/<\\s*br\\s*\\/?>/gi, '\\n');\n  s = s.replace(/<\\/\\s*p\\s*>/gi, '\\n\\n');\n  s = s.replace(/<\\/\\s*div\\s*>/gi, '\\n');\n  s = s.replace(/<[^>]*>/g, '');\n  s = decodeHtmlEntities(s);\n  s = s.replace(/[\\u200B-\\u200D\\uFEFF]/g, '');\n  return s;\n}\n\n// ---------- pull msg from \"Get a message\" ----------\nlet msg = {};\ntry {\n  msg = $items('Get a message')?.[0]?.json ?? {};\n} catch {\n  msg = {};\n}\n\n// ---------- attachment summary (optional) ----------\nlet attFromNode = null;\ntry {\n  attFromNode = $items('Extract Attachment Summary')?.[0]?.json?.attachment_summary ?? null;\n} catch {\n  attFromNode = null;\n}\n\n// ---------- pick raw email body ----------\nconst raw =\n  msg.textPlain ||\n  msg.text ||\n  msg.body ||\n  msg.snippet ||\n  msg.textHtml ||\n  msg.html ||\n  msg.textAsHtml ||\n  '';\n\n// convert to clean text\nconst asText = /<[^>]+>/.test(raw) ? htmlToText(raw) : decodeHtmlEntities(String(raw));\n\nconst email_text = String(asText)\n  .replace(/(?:https?:\\/\\/|www\\.)\\S+/g, '') // remove links\n  .replace(/\\[[^\\]]*\\]/g, '')\n  .replace(/\\s+\\n/g, '\\n')\n  .replace(/\\n{3,}/g, '\\n\\n')\n  .replace(/[ \\t]{2,}/g, ' ')\n  .trim()\n  .slice(0, 4000);\n\n// ---------- write output on every incoming item ----------\nfor (const item of items) {\n  item.json = {\n    ...item.json,\n    id: msg.id ?? item.json.id,\n    threadId: msg.threadId ?? item.json.threadId,\n    email_text,\n    attachment_summary: attFromNode ?? item.json.attachment_summary ?? '',\n  };\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2720,
+        128
+      ],
+      "id": "e4571a4a-6a39-4879-aff2-e103004c9439",
+      "name": "Email Context"
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Get a message').first().json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        576,
+        144
+      ],
+      "id": "0b371e73-274e-4248-8d97-0f5020a37012",
+      "name": "Mark as read",
+      "webhookId": "c01ea15c-8e00-48e6-ae5e-8b9ef56f4a68",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -4416,
+        464
+      ],
+      "id": "5ea27884-5b0d-4357-9a04-99a711811adc",
+      "name": "Split in Batches (1)"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -2512,
+        272
+      ],
+      "id": "4ee1557a-910e-4ac4-a4a5-4dbfa3b7917d",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "58tGVV5vxWrUgphA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "unit": "seconds"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        960,
+        160
+      ],
+      "id": "a09bc23e-0525-4a54-84f2-02b4a2234507",
+      "name": "Wait (1s throttle)",
+      "webhookId": "57a039f1-555a-438c-8a78-681c368f3691"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = String($json.output ?? '').trim();\nconst cleaned = raw.replace(/\\*/g, '').trim();\n\nlet label = cleaned.toUpperCase();\nif (label === 'ACTION') label = 'ACTION NEEDED';\n\nif (!['IGNORE', 'FYI', 'ACTION NEEDED'].includes(label)) {\n  throw new Error(`Bad label from model: ${raw}`);\n}\n\nreturn [{ json: { ...$json, label } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2144,
+        128
+      ],
+      "id": "820e87fa-5ebb-4546-aa0e-46e2956aa137",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {},
+      "id": "bbcac92b-7d3b-41b5-b5b4-c3438e75277b",
+      "name": "Manual Trigger (Menu)",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -5328,
+        1440
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "updates": [
+          "callback_query",
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "991b089e-3a0f-4240-9674-e8bb39316295",
+      "name": "Telegram Trigger (Menu Button)",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "position": [
+        -5312,
+        464
+      ],
+      "webhookId": "3e1062d1-ff87-408f-89b0-b378c1f76e32",
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "quiHcV1rHerfRUac",
+          "name": "Fetch Email Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5b64fbfe-b181-406f-841e-3124dd0ce7da",
+              "leftValue": "={{ $json.callback_query?.data || '' }}",
+              "rightValue": "fetch_unread",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "da9a0a30-96d6-48b2-94a7-04c3dd05ec64",
+      "name": "IF Fetch Unread Button",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        -5088,
+        464
+      ],
+      "typeVersion": 2.3
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $json.callback_query.id }}",
+        "additionalFields": {
+          "text": "Fetching unread emails…"
+        }
+      },
+      "id": "b6b887ea-3c64-400b-bc30-cf0ba12aded9",
+      "name": "Answer Callback Query (Fetch)",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        -4864,
+        464
+      ],
+      "webhookId": "6d293fec-46cd-42d8-92c9-5ea690c16bd8",
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "quiHcV1rHerfRUac",
+          "name": "Fetch Email Bot"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "b5a55785-6418-41f5-9d72-13866a816f66",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "position": [
+        -5328,
+        1008
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Classifier Agent').item.json.output }}",
+                    "rightValue": "IGNORE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "7501f5ca-13dc-44b5-b4f9-d3c3d56c60fb"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "IGNORE"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "69a8b696-68d2-48ec-aff7-0d99c7476982",
+                    "leftValue": "={{ $('Classifier Agent').item.json.output }}",
+                    "rightValue": "FYI",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "FYI"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "01d7f980-01b1-46a5-bd53-f7651672a068",
+                    "leftValue": "={{ $('Classifier Agent').item.json.output }}",
+                    "rightValue": "ACTION NEEDED",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "A_N"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1488,
+        112
+      ],
+      "id": "a419e368-1a6a-4d43-8e6d-f57cfc048c6c",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nreturn [\n  {\n    json: {\n      done: true,\n      processed: items.length,\n      finishedAt: new Date().toISOString(),\n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4160,
+        832
+      ],
+      "id": "b5f10b74-ff4c-4744-81e0-15ab7ffa39f9",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-haiku-4-5-20251001",
+          "mode": "list",
+          "cachedResultName": "Claude Haiku 4.5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -1856,
+        288
+      ],
+      "id": "2042c2d2-c6c0-4826-976c-6db824f381f7",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "1ZrMc80LZuNYTpxa",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-haiku-4-5-20251001",
+          "mode": "list",
+          "cachedResultName": "Claude Haiku 4.5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -688,
+        896
+      ],
+      "id": "290f1b59-7fc9-4be0-a378-66f2acb21dd0",
+      "name": "Anthropic Chat Model1",
+      "credentials": {
+        "anthropicApi": {
+          "id": "1ZrMc80LZuNYTpxa",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1EB-MUC7mL69LVyrxYFvoBwZz83wqUqr29sn9_isOsd0",
+          "mode": "list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1586452316,
+          "mode": "list",
+          "cachedResultName": "prefs"
+        },
+        "options": {}
+      },
+      "id": "3dbf28ea-f4b2-40f9-be54-748b880b3152",
+      "name": "Get Writing Prefs (chat)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1200,
+        672
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XoJf393CafMdwwSm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8547339878:AAHrRi1Vx0aWd547hel1VSZuS6Q3ooyQ_Y0/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "-1003772493573"
+            },
+            {
+              "name": "message_thread_id",
+              "value": "6"
+            },
+            {
+              "name": "text",
+              "value": "✅ Done fetching 20 unread emails"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -3952,
+        832
+      ],
+      "id": "fba267b0-3417-4764-bbf0-389a0f7e904d",
+      "name": "Fetch Telegram"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot8298402532:AAFCjmQZ9sQ88xArE_S16PiQtmQ1cabjWks/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "-1003772493573"
+            },
+            {
+              "name": "message_thread_id",
+              "value": "4"
+            },
+            {
+              "name": "text",
+              "value": "=From: {{ $('Get a message').item.json.from.value[0].address }}\n\n{{ $json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -336,
+        -320
+      ],
+      "id": "a2d7f425-7665-4f4e-9220-c4af39a9a05a",
+      "name": "Ignore Telegram"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot8298402532:AAFCjmQZ9sQ88xArE_S16PiQtmQ1cabjWks/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "-1003772493573"
+            },
+            {
+              "name": "message_thread_id",
+              "value": "2"
+            },
+            {
+              "name": "text",
+              "value": "=From: {{ $('Get a message').item.json.from.value[0].address }}\n\n{{ $json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -352,
+        192
+      ],
+      "id": "360129a0-7384-4081-868c-94ad5637f6d3",
+      "name": "FYI Telegram"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot8526061026:AAGl8wxM1P4mh4CBLSLiZeeE9sbcfxQuyRY/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "-1003772493573"
+            },
+            {
+              "name": "message_thread_id",
+              "value": "20"
+            },
+            {
+              "name": "text",
+              "value": "⚠️ Sorry — the email assistant hit an error and couldn’t send this email to Telegram. Please contact the product seller to fix it."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -5104,
+        1008
+      ],
+      "id": "f25df238-7b47-47bc-b696-2af465781691",
+      "name": "Failed Telegram"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot8547339878:AAHrRi1Vx0aWd547hel1VSZuS6Q3ooyQ_Y0/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "-1003772493573"
+            },
+            {
+              "name": "message_thread_id",
+              "value": "6"
+            },
+            {
+              "name": "reply_markup",
+              "value": "={{ JSON.stringify({\n  inline_keyboard: [[\n    { text: \"📥 Fetch 20 unread emails\", callback_data: \"fetch_unread:20\" }\n  ]]\n}) }}\n"
+            },
+            {
+              "name": "text",
+              "value": "📬 Fetch your last 20 unread Gmail emails"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -5104,
+        1440
+      ],
+      "id": "370efda9-5372-4952-b96b-e6980c174a9b",
+      "name": "Sending Button to Fetch History Topic"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json || {});\nlet latest = '';\nfor (let i = rows.length - 1; i >= 0; i--) {\n  const r = rows[i];\n  if (typeof r.prefs_text === 'string') {\n    latest = r.prefs_text;\n    break;\n  }\n}\nreturn [{ json: { prefs_text: latest || '' } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -976,
+        672
+      ],
+      "id": "e9d25bc1-45ea-49b0-995b-ea90159765c0",
+      "name": "Get Writing Prefs (chat) - Pick Latest"
+    },
+    {
+      "parameters": {
+        "content": "## FETCH UNREAD BUTTON ROUTER\n- TRIGGER = TELEGRAM MENU CALLBACK\n- IF CALLBACK_DATA STARTS WITH fetch_unread\n- TRUE -> ACK TELEGRAM: \"Fetching unread emails…\"\n- FALSE -> DO NOTHING (IGNORE OTHER BUTTONS)\n",
+        "height": 352,
+        "width": 448,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5376,
+        288
+      ],
+      "typeVersion": 1,
+      "id": "addd0314-6d1a-47f7-87ff-fd0b37447c4a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## FETCH UNREAD + BATCH LOOP\n- LIST UNREAD EMAILS (LIMIT = 20)\n- SPLIT INTO BATCHES\n- LOOP PATH -> PROCESS 1 EMAIL AT A TIME\n- DONE PATH -> SEND \"DONE FETCHING\" MESSAGE\n",
+        "height": 352,
+        "width": 672,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -4912,
+        304
+      ],
+      "typeVersion": 1,
+      "id": "fc07ec8e-ca53-4010-9750-cf03253198ae",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "BATCH ROUTER (LOOP / DONE)\n- LOOP OUTPUT -> GET 1 MESSAGE DETAILS\n- DONE OUTPUT -> BUILD FINAL STATUS\n- DONE -> SEND TELEGRAM: \"✅ Done fetching 20 unread emails\"\n",
+        "height": 304,
+        "width": 416,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -4208,
+        688
+      ],
+      "typeVersion": 1,
+      "id": "f460e912-4f4d-4010-a28e-1efb3def9e67",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## GET EMAIL + CHECK ATTACHMENTS\n- GET FULL MESSAGE (SIMPLE = FALSE)\n- KEEP BODY + HEADERS + BINARY ATTACHMENTS\n- CHECK: HAS PDF OR ANY ATTACHMENT_* BINARY\n- TRUE -> SUMMARIZE ATTACHMENTS VIA OPENAI\n- FALSE -> SKIP ATTACHMENT SUMMARY\n",
+        "height": 336,
+        "width": 592,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -4208,
+        16
+      ],
+      "typeVersion": 1,
+      "id": "c43cbbef-308c-41a1-9727-3530231a953e",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## ATTACHMENTS: SUMMARIZE\n- BUILD OPENAI REQUEST FROM UP TO 3 FILES\n- LIMIT = 15MB PER FILE\n- SEND TO OPENAI RESPONSE API\n- EXTRACT attachment_summary TEXT ONLY\n",
+        "height": 320,
+        "width": 624,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3568,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "7f8d13b3-f087-4566-8bb5-a1b3e286d7ee",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## ATTACHMENTS: NONE\n- CONTINUE TO EMAIL CONTEXT\n",
+        "height": 240,
+        "width": 304,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3264,
+        352
+      ],
+      "typeVersion": 1,
+      "id": "39d45493-5988-405c-9c94-f701d4bb3801",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "EMAIL CONTEXT + CLASSIFY\n- CLEAN EMAIL BODY (PLAIN TEXT)\n- REMOVE LINKS + EXTRA WHITESPACE\n- ADD attachment_summary (IF ANY)\n- CLASSIFIER OUTPUT = IGNORE / FYI / ACTION NEEDED\n- VALIDATE LABEL IN CODE NODE\n",
+        "height": 464,
+        "width": 800,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2752,
+        -48
+      ],
+      "typeVersion": 1,
+      "id": "ddf7ccdb-9064-45af-9de5-8873ca005187",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "SUMMARY + ROUTE BY CATEGORY\n- SUMMARIZE EMAIL (1–2 LINES)\n- SWITCH ON CLASSIFIER OUTPUT\n- IGNORE -> SEND TO IGNORE TOPIC\n- FYI -> SEND TO FYI TOPIC\n- ACTION NEEDED -> DRAFT REPLY + APPROVAL FLOW\n",
+        "height": 480,
+        "width": 592,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1904,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "e3aa5224-3434-4748-93e5-c688256eb832",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "IGNORE BRANCH\n- SEND SHORT OUTPUT TO TELEGRAM (IGNORE TOPIC)\n",
+        "height": 288,
+        "width": 288,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -416,
+        -432
+      ],
+      "typeVersion": 1,
+      "id": "8a27bd7b-9359-4866-b9a7-77940a7e0484",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "FYI BRANCH\n- SEND SUMMARY TO TELEGRAM (FYI TOPIC)\n\n",
+        "height": 272,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -416,
+        96
+      ],
+      "typeVersion": 1,
+      "id": "9fdbb54d-7e57-4c32-816e-22692185e863",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "ACTION NEEDED BRANCH\n- LOAD LATEST WRITING PREFS \n- DRAFT REPLY EMAIL \n- CREATE GMAIL DRAFT \n- SEND TELEGRAM MESSAGE WITH:\n  CATEGORY + FROM + SUBJECT + SUMMARY + MESSAGE + DRAFT\n",
+        "height": 512,
+        "width": 1648,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1248,
+        512
+      ],
+      "typeVersion": 1,
+      "id": "e9a1207b-db32-4936-b94a-dde6351c9e6b",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "content": "LOG + CLEANUP\n- MARK EMAIL AS READ\n- WAIT 1s (THROTTLE)\n- LOOP BACK TO NEXT EMAIL IN BATCH\n",
+        "height": 288,
+        "width": 560,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        544,
+        16
+      ],
+      "typeVersion": 1,
+      "id": "d304e71b-257b-47c8-8e06-495ba59acdd9",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "content": "## ERROR HANDLER\n- TRIGGER ON WORKFLOW ERROR\n- SEND ALERT TO TELEGRAM (FAILED TOPIC)\n",
+        "height": 272,
+        "width": 432,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5360,
+        896
+      ],
+      "typeVersion": 1,
+      "id": "62997f03-e13f-40e3-975b-9699120c609e",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "content": "## Fetch History Button\n- SEND \"FETCH HISTORY\" BUTTON TO TELEGRAM\n- USE THIS AFTER DEPLOY\n",
+        "height": 320,
+        "width": 448,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -5376,
+        1312
+      ],
+      "typeVersion": 1,
+      "id": "655d2526-77b7-43ff-8db2-5f59f5a992bd",
+      "name": "Sticky Note13"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a message": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classifier Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarization Agent": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drafting Email Agent": {
+      "main": [
+        [
+          {
+            "node": "Create Gmail Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row": {
+      "main": [
+        [
+          {
+            "node": "Insert row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Gmail Draft": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Attachments": {
+      "main": [
+        [
+          {
+            "node": "Build OpenAI Attachment Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Attachments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build OpenAI Attachment Request": {
+      "main": [
+        [
+          {
+            "node": "OpenAI - Summarize Attachments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Attachment Summary": {
+      "main": [
+        [
+          {
+            "node": "Email Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Attachments": {
+      "main": [
+        [
+          {
+            "node": "Email Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI - Summarize Attachments": {
+      "main": [
+        [
+          {
+            "node": "Extract Attachment Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Has Attachments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Context": {
+      "main": [
+        [
+          {
+            "node": "Classifier Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row1": {
+      "main": [
+        [
+          {
+            "node": "Mark as read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Unread (batch)": {
+      "main": [
+        [
+          {
+            "node": "Split in Batches (1)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split in Batches (1)": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark as read": {
+      "main": [
+        [
+          {
+            "node": "Wait (1s throttle)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Classifier Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait (1s throttle)": {
+      "main": [
+        [
+          {
+            "node": "Split in Batches (1)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Summarization Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger (Menu)": {
+      "main": [
+        [
+          {
+            "node": "Sending Button to Fetch History Topic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger (Menu Button)": {
+      "main": [
+        [
+          {
+            "node": "IF Fetch Unread Button",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Fetch Unread Button": {
+      "main": [
+        [
+          {
+            "node": "Answer Callback Query (Fetch)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer Callback Query (Fetch)": {
+      "main": [
+        [
+          {
+            "node": "List Unread (batch)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Failed Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Ignore Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FYI Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Writing Prefs (chat)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Fetch Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summarization Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Drafting Email Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Writing Prefs (chat)": {
+      "main": [
+        [
+          {
+            "node": "Get Writing Prefs (chat) - Pick Latest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ignore Telegram": {
+      "main": [
+        [
+          {
+            "node": "Mark as read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FYI Telegram": {
+      "main": [
+        [
+          {
+            "node": "Mark as read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Writing Prefs (chat) - Pick Latest": {
+      "main": [
+        [
+          {
+            "node": "Drafting Email Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "889e33f4-ae7a-418e-85bd-b9b89ae2191a",
+  "meta": {
+    "instanceId": "c2319bcf64035e12fa4b23aa88003edd572c9ac2ee40ffdd07560e871f1375d3"
+  },
+  "id": "bOPwNaEH9cX5HbZN",
+  "tags": []
+}

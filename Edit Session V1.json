@@ -1,0 +1,342 @@
+{
+  "name": "Edit Session V1",
+  "nodes": [
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        }
+      },
+      "id": "4aa5479f-b868-42b5-b4ed-f0a74bc43039",
+      "name": "Cron (every 1 min)",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1EB-MUC7mL69LVyrxYFvoBwZz83wqUqr29sn9_isOsd0",
+          "mode": "list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 473762709,
+          "mode": "list",
+          "cachedResultName": "edit_sessions"
+        },
+        "options": {}
+      },
+      "id": "53266185-637e-4700-ae35-6dbb4727002a",
+      "name": "Get Waiting Edit Sessions",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        48,
+        0
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XoJf393CafMdwwSm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Keep only waiting_edit sessions where expires_at is in the past\nconst now = Date.now();\nif (($json.mode || '') !== 'waiting_edit') return [];\nconst exp = Date.parse($json.expires_at || '');\nif (!exp || now < exp) return []; // not expired or missing\nreturn [{ json: { ...$json, now_iso: new Date().toISOString() } }];"
+      },
+      "id": "ad5914e1-21ec-48a2-9853-d67c7f908a10",
+      "name": "Filter Expired",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node[\"Filter Expired\"].json.chat_id }}",
+        "text": "⏱️ Your 5-minute edit session has ended.\nEdit mode closed.\nNew emails are coming in again.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "f1705fc6-0071-445d-a856-7cacc1962919",
+      "name": "Send Done (Timeout)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        0
+      ],
+      "webhookId": "a941da07-93c8-43af-82df-a99c9ffcb0b8",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1EB-MUC7mL69LVyrxYFvoBwZz83wqUqr29sn9_isOsd0",
+          "mode": "list",
+          "cachedResultName": 473762709
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 473762709,
+          "mode": "list",
+          "cachedResultName": "edit_sessions"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chat_id": "={{ $json.chat_id }}",
+            "user_id": "={{ $json.user_id }}",
+            "mode": "Consumed",
+            "expires_at": "={{ $json.now_iso }}"
+          },
+          "matchingColumns": [
+            "chat_id",
+            "user_id"
+          ],
+          "schema": [
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pending_draft_id",
+              "displayName": "pending_draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "mode",
+              "displayName": "mode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "field",
+              "displayName": "field",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "expires_at",
+              "displayName": "expires_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pending_transcript",
+              "displayName": "pending_transcript",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confirm_msg_id",
+              "displayName": "confirm_msg_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "voice_file_id",
+              "displayName": "voice_file_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pending_questions",
+              "displayName": "pending_questions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pending_answers",
+              "displayName": "pending_answers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "50aace33-7c6b-494f-83b5-0a563d17f229",
+      "name": "Consume Session (Timeout)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        928,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XoJf393CafMdwwSm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## EDIT SESSION TIMEOUT CHECK\n- TRIGGER = EVERY 1 MIN\n- LOAD = edit_sessions SHEET\n- GET ROWS = WAITING EDIT SESSIONS\n- PASS DATA TO FILTER STEP\n",
+        "height": 368,
+        "width": 384
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -208,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "c3d91a51-a538-47fe-838f-37f4cc4f6dca",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## FILTER EXPIRED SESSIONS\n- KEEP ONLY mode = waiting_edit\n- CHECK = expires_at <= NOW\n- DROP = NOT EXPIRED / MISSING expires_at\n- ADD = now_iso (CURRENT TIME)\n",
+        "height": 352,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        -208
+      ],
+      "typeVersion": 1,
+      "id": "d7b60503-553c-4e16-94b9-019841ca4c2a",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## CLOSE SESSION + MESSAGE USER\n- UPDATE SHEET: mode = Consumed\n- SET = expires_at = now_iso\n- MATCH = chat_id + user_id\n- SEND TELEGRAM: EDIT SESSION ENDED\n- RESULT = NEW EMAILS RESUME\n",
+        "height": 384,
+        "width": 416
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        896,
+        -208
+      ],
+      "typeVersion": 1,
+      "id": "d37ba626-9c9d-419e-bb6d-c90bfd465314",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Cron (every 1 min)": {
+      "main": [
+        [
+          {
+            "node": "Get Waiting Edit Sessions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Waiting Edit Sessions": {
+      "main": [
+        [
+          {
+            "node": "Filter Expired",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Expired": {
+      "main": [
+        [
+          {
+            "node": "Consume Session (Timeout)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consume Session (Timeout)": {
+      "main": [
+        [
+          {
+            "node": "Send Done (Timeout)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8c093ce6-2007-4af4-b9ab-712c14b6c480",
+  "meta": {
+    "instanceId": "c2319bcf64035e12fa4b23aa88003edd572c9ac2ee40ffdd07560e871f1375d3"
+  },
+  "id": "CRdaRdc328qww4T6",
+  "tags": []
+}
