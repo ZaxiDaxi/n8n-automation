@@ -1,0 +1,2389 @@
+{
+  "name": "Email Final Fix v + Style Button Test",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -448,
+        80
+      ],
+      "id": "950facda-21e4-4be7-a5ca-f96328d156b9",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "p7tivZsMaHTep84i",
+          "mode": "list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "gmail_message_id": "={{ $('Gmail Trigger').first().json.id }}",
+            "thread_id": "={{ $('Gmail Trigger').first().json.threadId }}",
+            "from": "={{ $('Gmail Trigger').first().json.From }}",
+            "subject": "={{ $('Gmail Trigger').first().json.Subject }}",
+            "draft_body": "={{ $('Code in JavaScript3').first().json.draft_body }}",
+            "telegram_chat_id": "={{ $json.result.chat.id }}",
+            "telegram_msg_id": "={{ $json.result.message_id }}",
+            "status": "={{ (($('Code in JavaScript1').first()?.json?.needs_clarification === true) || ($json.needs_clarification === true)) ? 'waiting_user_input' : 'waiting_approve' }}",
+            "telegram_message_ids": "={{ $json.result.message_id }}",
+            "categoy": "={{ $('Classifier Agent').first().json.output }}",
+            "gmail_draft_id": "=",
+            "gmail_draft_message_id": "=",
+            "old_email": "={{ JSON.stringify({ questions: $('Code in JavaScript1').first()?.json?.questions || [], reason: $('Code in JavaScript1').first()?.json?.reason || '', needs_clarification: $('Code in JavaScript1').first()?.json?.needs_clarification || false }) }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "gmail_message_id",
+              "displayName": "gmail_message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "thread_id",
+              "displayName": "thread_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "draft_body",
+              "displayName": "draft_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telegram_chat_id",
+              "displayName": "telegram_chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telegram_msg_id",
+              "displayName": "telegram_msg_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telegram_message_ids",
+              "displayName": "telegram_message_ids",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "categoy",
+              "displayName": "categoy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "old_email",
+              "displayName": "old_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gmail_draft_id",
+              "displayName": "gmail_draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gmail_draft_message_id",
+              "displayName": "gmail_draft_message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        5888,
+        624
+      ],
+      "id": "c9a3bedd-8605-4546-b57d-4c55c6130743",
+      "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $('Gmail Trigger').first().json.id }}",
+        "simple": false,
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        192
+      ],
+      "id": "acddfd5f-78ad-482a-b02a-6db60794e9b8",
+      "name": "Get a message",
+      "webhookId": "1a85efe2-76cd-4a9e-93ad-7c3703beae73",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=This is the email content: {{ $json.email_text }}\n\nThe Attachment (if there is one): {{ $json.attachment_summary }}",
+        "options": {
+          "systemMessage": "You are an email classification assistant for automation workflows. Classify each input message into exactly one of three categories:\n\n* IGNORE\n* FYI\n* ACTION NEEDED\n\n## Definitions\n\n### IGNORE\n\nLow-value messages that don’t need attention.\nIncludes: obvious spam/scams/phishing, random bulk junk, generic promos/newsletters, cold outreach, social notifications, “no-reply” marketing, vague blasts, anything you wouldn’t open twice.\n\n### FYI\n\nInformational messages that are useful to know but don’t require you to do anything right now.\nIncludes: receipts (paid), shipping updates that don’t need a response, delivery confirmations, account notices that are not urgent, meeting info already confirmed, general updates/status reports.\n\n### ACTION NEEDED\n\nMessages that require you to take an action, reply, approve/confirm something, or handle a time-sensitive issue.\nIncludes: OTPs and security alerts, payment failures, invoices due, signature/contract requests, meeting scheduling requests, support tickets needing verification, urgent account warnings, deadlines, travel changes, requests from a person asking you to do something.\n\n## Decision Rules\n\n* If the message requires a reply, confirmation, approval, or a task from you → **ACTION NEEDED**.\n* If it’s transactional/time-sensitive (OTP, security alert, payment failed, invoice due, account lock, deadline) → **ACTION NEEDED**.\n* If it’s a completed transaction or a non-urgent update (receipt paid, delivered, info-only status) → **FYI**.\n* If it’s promotional, lead-gen, newsletter, cold outreach, social notification, or clear junk → **IGNORE**.\n* If unsure between FYI and ACTION NEEDED:\n\n  * choose **ACTION NEEDED** only if there is a clear request, deadline, risk, or required confirmation\n  * otherwise choose **FYI**\n\n## Output Format\n\n* Respond with a single uppercase label: **IGNORE**, **FYI**, or **ACTION NEEDED**.\n* Do not include explanations unless explicitly requested.\n\n## Examples\n\n1. Message: “Bro, landing at 7 pm Friday. Can you pick me up?”\n   Response: ACTION NEEDED\n\n2. Message: “Your order #584921 has been delivered.”\n   Response: FYI\n\n3. Message: “Final reminder: Your domain expires Sep 10. Renew to avoid downtime.”\n   Response: ACTION NEEDED\n\n4. Message: “Only today: 30% off. Use code LEARN30.”\n   Response: IGNORE\n\n5. Message: “We help teams cut CI costs by 40%. Open to a call?”\n   Response: IGNORE\n\n6. Message: “Security alert: New login from Mumbai. If this wasn’t you, secure account.”\n   Response: ACTION NEEDED\n\n7. Message: “Congratulations! You’ve won a MacBook. Claim now: …”\n   Response: IGNORE\n\n8. Message: “Mom: Don’t forget to call Nana tonight.”\n   Response: ACTION NEEDED\n\n9. Message: “Invoice INV-2025-117 is due Aug 31. Pay via portal.”\n   Response: ACTION NEEDED\n\n10. Message: “Hey, loved your YouTube. Want to grab coffee sometime?”\n    Response: ACTION NEEDED\n\n11. Message: “Join our free webinar. Save your seat.”\n    Response: IGNORE\n\n12. Message: “Password reset code: 938211. Valid 10 minutes.”\n    Response: ACTION NEEDED\n\n13. Message: “RE: Interview schedule — can you do Tuesday 3:30?”\n    Response: ACTION NEEDED\n\n14. Message: “New feature. Upgrade now and get 2 months free.”\n    Response: IGNORE\n\n15. Message: “Payment failed. Service will pause on Aug 25 unless updated.”\n    Response: ACTION NEEDED\n\n16. Message: “Your flight departs 06:40. Web check-in is open.”\n    Response: FYI\n\n17. Message: “Win 5 ETH by joining our airdrop. No KYC needed!”\n    Response: IGNORE\n\n18. Message: “Yo! Gym at 6 am?”\n    Response: ACTION NEEDED\n\n19. Message: “Contract for signature. Please sign by Friday.”\n    Response: ACTION NEEDED\n\n20. Message: “You left items in your cart. Complete purchase.”\n    Response: IGNORE\n\n21. Message: “Delivery attempt failed. Reschedule here: …”\n    Response: ACTION NEEDED\n\n22. Message: “Bank statement for July is ready. Download from your account.”\n    Response: FYI\n\n23. Message: “Small meetup Sunday. Want to come?”\n    Response: ACTION NEEDED\n\n24. Message: “Newsletter: tips + case study + our tools.”\n    Response: IGNORE\n\n25. Message: “Support ticket update: issue fixed, please verify.”\n    Response: ACTION NEEDED\n\n26. Message: “We can help you monetize via affiliates.”\n    Response: IGNORE\n\n27. Message: “Account locked due to suspicious activity. Verify identity.”\n    Response: ACTION NEEDED\n\n28. Message: “Send 0.1 BTC, get 0.2 BTC back.”\n    Response: IGNORE\n\n29. Message: “Instagram: new connection request.”\n    Response: FYI\n\n30. Message: “Can you review my resume before Monday?”\n    Response: ACTION NEEDED\n\n31. Message: “Tax form available. Download before deadline.”\n    Response: ACTION NEEDED\n\n32. Message: “Limited time: upgrade and save 25%.”\n    Response: IGNORE\n\n33. Message: “Delivery scheduled 7:30–8:00 pm. Please be available.”\n    Response: ACTION NEEDED\n\n34. Message: “Refund processed. May take 3–5 days to reflect.”\n    Response: FYI\n\n35. Message: “Urgent: verify your account to avoid deactivation.”\n    Response: ACTION NEEDED\n\n36. Message: “Your talk proposal accepted. Share slides by Sept 3.”\n    Response: ACTION NEEDED\n\n37. Message: “Introducing new N8N AI nodes — get early access.”\n    Response: IGNORE\n\n38. Message: “Dad: Can you pay the electricity bill today?”\n    Response: ACTION NEEDED\n\n39. Message: “Receipt: Payment received. Transaction ID: …”\n    Response: FYI\n\n## Quick Checklist\n\n* Need to respond/do something? → ACTION NEEDED\n* Useful info, no action now? → FYI\n* Promo/junk/scam/noise? → IGNORE\n\nRespond with only one label."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        2912,
+        192
+      ],
+      "id": "692bccec-2e6d-4d93-aa80-9c69853a853c",
+      "name": "Classifier Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Here's the email content: {{ $('Email Context').first().json.email_text || '' }}\nAttachment summary: {{ $('Email Context').first().json.attachment_summary || '' }}",
+        "options": {
+          "systemMessage": "You are an email summarization assistant for automation workflows.\n\nThe user message will usually contain:\n\nHere's the email content: <email body>\nAttachment summary: <optional attachment summary>\n\nRules to choose what to summarize:\n1) Extract EMAIL_BODY = the text after \"Here's the email content:\" (trim whitespace).\n2) Extract ATTACHMENTS = the text after \"Attachment summary:\" (trim whitespace).\n3) If EMAIL_BODY has any non-whitespace characters, you MUST summarize EMAIL_BODY (even if ATTACHMENTS is empty).\n4) If EMAIL_BODY is empty but ATTACHMENTS is not, summarize ATTACHMENTS.\n5) If both are empty, respond exactly: No email content provided.\n\nOutput rules:\n- Return only the summary text (no labels, prefixes, bullets, headings).\n- 1–2 lines total.\n- Include: purpose, required action, deadlines, key IDs, important amounts, and latest status if it’s a thread.\n- Do not invent details.\n\nPrivacy/redaction:\n- API keys/tokens: first 4 chars + ****\n- Card numbers: last 4 only\n- Passwords/OTPs: ****\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        3488,
+        192
+      ],
+      "id": "8f7fd92f-8fa5-4778-a24c-4dd4b5842e06",
+      "name": "Summarization Agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Writing preferences (follow strictly): {{ $json.prefs_text || '' }}\n\nHere's the Email Content:  {{\n  ($('Email Context').first().json.email_text || '')\n    .replace(/https?:\\/\\/\\S+/g, '')       // remove URLs\n    .replace(/\\[[^\\]]*\\]/g, '')           // remove [ ... ] blocks\n    .replace(/\\s+/g, ' ')\n    .trim()\n    .slice(0, 6000)\n}}\nHere's the Attachment (If there is one): {{ $('Email Context').first().json.attachment_summary }}",
+        "options": {
+          "systemMessage": "You are an email reply drafting assistant for automation workflows.\n\nInput format:\n\"Here's the email content: <full email text>\"\n\nYour job:\nWrite a ready-to-send reply email draft to the sender.\n\nCore rules:\n- Output only the email draft body (no labels, no analysis, no bullet headers like “Subject:” unless asked).\n- Keep it short and clear (3–10 sentences). Use paragraphs.\n- Use a professional, friendly tone. Match the sender’s tone (formal vs casual).\n- Directly address the sender’s request, questions, or next steps.\n- If the email asks for approval/confirmation, clearly state approval or confirmation.\n- If the email needs missing info from the user, insert placeholders like [NAME], [DATE], [AMOUNT], [LINK], [ATTACHMENT], [PHONE], and ask concise questions.\n- Never invent facts (dates, numbers, names, promises). If unsure, ask or use placeholders.\n- If the content is empty or not an email, respond exactly: \"No email content provided.\"\n\nPrivacy and safety:\n- Do not include secrets. If the email contains API keys/tokens, show only first 4 characters + \"****\".\n- If it contains card numbers, show only last 4 digits.\n- Mask passwords/OTPs as \"****\" even if present.\n- Do not click links or claim you verified anything externally.\n\nSpecial cases:\n- Scheduling: propose 2–3 time options and ask them to confirm; include meeting link placeholder if needed.\n- Support/ticket: acknowledge, restate issue, provide requested details (or placeholders), and ask for ETA if needed.\n- Billing/invoice: confirm payment plan/status (or ask), reference invoice/order IDs, and ask for receipt if relevant.\n- Promotional/cold outreach: politely decline or ask for more details depending on the email’s intent.\n\nOutput requirements:\n- Output ONLY the email body.\n- Start with a greeting.\n- End with a polite closing and a signature placeholder:\n  \"Best regards,\n  Zax\"\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        5088,
+        112
+      ],
+      "id": "ba795562-851b-43ec-9e67-82d3cf66226f",
+      "name": "Drafting Email Agent"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d74d43fa-4565-445e-b4e9-b898ed513b6c",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "IGNORE",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3264,
+        192
+      ],
+      "id": "f04560fa-9973-4930-89f7-1258b4a12068",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "px6maEvxTSmogsal",
+          "mode": "list",
+          "cachedResultName": "drafts",
+          "cachedResultUrl": "/projects/g57vV100JYUsLLiY/datatables/px6maEvxTSmogsal"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "draft_id": "={{ $json.gmail_message_id }}",
+            "body": "={{ $json.draft_body }}",
+            "subject": "={{ $json.subject }}",
+            "telegram_message_id": "={{ $json.telegram_msg_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "draft_id",
+              "displayName": "draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telegram_message_id",
+              "displayName": "telegram_message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "revision",
+              "displayName": "revision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        6112,
+        624
+      ],
+      "id": "28daf372-3eec-4103-898a-e22f46e32cb4",
+      "name": "Insert row1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        3488,
+        416
+      ],
+      "id": "e582b514-d862-4c11-a4ee-e41695c94a67",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "58tGVV5vxWrUgphA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ (() => { \n  const s = $('Gmail Trigger').first().json.Subject || $json.subject || ''; \n  return (/^\\s*re:/i.test(s) ? s : 'Re: ' + s); \n})() }}",
+        "message": "={{ $('Drafting Email Agent').first().json.output || $('Drafting Email Agent (Needs Input)').first().json.output || '' }}",
+        "options": {
+          "threadId": "={{ $('Gmail Trigger').first().json.threadId || '' }}",
+          "sendTo": "={{ (( $('Gmail Trigger').first().json.From || '' ).match(/<([^>]+)>/)?.[1] || $('Gmail Trigger').first().json.From || '').trim() }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        5440,
+        224
+      ],
+      "id": "66f1f997-8012-4c59-b9df-7c5dd51e4355",
+      "name": "Create Gmail Draft",
+      "webhookId": "e6069958-abe8-440c-9fea-03a471f76895",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "eedd3b5f-31da-43a5-9e9a-9cae8c3d5f0d",
+              "leftValue": "={{ Object.keys($binary || {}).length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "larger"
+              }
+            },
+            {
+              "id": "8d8324a2-e0fd-4b9e-9a7b-130242bd306d",
+              "leftValue": "={{ $json.hasPdf }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        896,
+        192
+      ],
+      "id": "3be79238-3b12-49e4-a921-21d1e8965e37",
+      "name": "Has Attachments"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst maxFiles = 3;\nconst maxBytes = 15 * 1024 * 1024; // 15MB per file\n\nfor (let itemIndex = 0; itemIndex < items.length; itemIndex++) {\n  const item = items[itemIndex];\n  const bin = item.binary || {};\n  const keys = Object.keys(bin).filter(k => k.startsWith('attachment_'));\n\n  const content = [{\n    type: \"input_text\",\n    text: [\n      \"Summarize the email attachment(s) for the email summary.\",\n      \"Give a compact, factual summary (2–5 bullet points total).\",\n      \"Include key parties, dates, amounts, and required actions if present.\",\n      \"If the file is unreadable, say so.\"\n    ].join(\"\\n\")\n  }];\n\n  const picked = [];\n  const skipped = [];\n\n  for (const key of keys) {\n    const meta = bin[key] || {};\n    const mime = (meta.mimeType || \"\").toLowerCase();\n    const filename = meta.fileName || key;\n\n    // ✅ get real bytes even in filesystem-v2 mode\n    const buffer = await this.helpers.getBinaryDataBuffer(itemIndex, key);\n\n    if (!buffer || !buffer.length) {\n      skipped.push(`${filename} (no data)`);\n      continue;\n    }\n\n    if (buffer.length > maxBytes) {\n      skipped.push(`${filename} (too large ${buffer.length} bytes)`);\n      continue;\n    }\n\n    const b64 = buffer.toString(\"base64\");\n\n    // PDF\n    if (mime === \"application/pdf\" || filename.toLowerCase().endsWith(\".pdf\")) {\n      const pdfMime = mime || \"application/pdf\";\n      content.push({\n        type: \"input_file\",\n        filename,\n        file_data: `data:${pdfMime};base64,${b64}`,\n      });\n      picked.push(filename);\n\n    // IMAGE\n    } else if (mime.startsWith(\"image/\")) {\n      content.push({\n        type: \"input_image\",\n        image_url: `data:${mime};base64,${b64}`,\n      });\n      picked.push(filename);\n\n    } else {\n      skipped.push(`${filename} (unsupported ${mime || \"type\"})`);\n    }\n\n    if (picked.length >= maxFiles) break;\n  }\n\n  item.json.openai_body = {\n    model: \"gpt-4o-mini\",\n    input: [{ role: \"user\", content }],\n  };\n\n  item.json._attachment_files_used = picked;\n  item.json._attachment_files_skipped = skipped;\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        144
+      ],
+      "id": "500c3e65-e94a-4c2d-89be-a1dbdf504546",
+      "name": "Build OpenAI Attachment Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfunction tryExtractOutputText(resp) {\n  if (typeof resp?.output_text === \"string\" && resp.output_text.trim()) return resp.output_text.trim();\n\n  // Fallback: walk output array\n  const out = resp?.output;\n  if (Array.isArray(out)) {\n    const chunks = [];\n    for (const o of out) {\n      // common shapes: {type:\"message\", content:[{type:\"output_text\", text:\"...\"}]}\n      if (o?.type === \"message\" && Array.isArray(o.content)) {\n        for (const c of o.content) {\n          if (c?.type === \"output_text\" && typeof c.text === \"string\") chunks.push(c.text);\n        }\n      }\n    }\n    const joined = chunks.join(\"\\n\").trim();\n    if (joined) return joined;\n  }\n  return \"\";\n}\n\nfor (const item of items) {\n  const summary = tryExtractOutputText(item.json);\n\n  // Keep only the attachment summary in json for easy merging\n  item.json = {\n    attachment_summary: summary,\n  };\n}\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        144
+      ],
+      "id": "13bd841a-fb3b-46dc-811d-b13a40117223",
+      "name": "Extract Attachment Summary"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nfor (const item of items) {\n  item.json.attachment_summary = \"\";\n  item.json._attachment_files_used = [];\n  item.json._attachment_files_skipped = [];\n}\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        336
+      ],
+      "id": "57f3c658-9ab0-49c4-80ef-0414517e38b6",
+      "name": "No Attachments"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.openai_body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1344,
+        144
+      ],
+      "id": "e583f056-ac11-40cc-bf76-0b2dde92c3dc",
+      "name": "OpenAI - Summarize Attachments",
+      "credentials": {
+        "openAiApi": {
+          "id": "58tGVV5vxWrUgphA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const hasPdf = items.some(item => {\n  const bin = item.binary || {};\n  return Object.entries(bin).some(([k, b]) => {\n    const name = String(b?.fileName || '').toLowerCase();\n    const mime = String(b?.mimeType || '').toLowerCase();\n    return k.startsWith('attachment_') && (mime === 'application/pdf' || name.endsWith('.pdf'));\n  });\n});\n\nconst binaryKeys = items.flatMap(item => Object.keys(item.binary || {}));\n\n// keep the original binary so later nodes still have the attachments\nreturn [{\n  json: { hasPdf: !!hasPdf, binaryKeys },\n  binary: items[0].binary,\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        192
+      ],
+      "id": "e4e3dfc7-cd59-4176-94da-7f22c88fd8c5",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst threadCtx = ($json.thread_context_text || '').toString();\n\nconst msg = $('Get a message').first()?.json || {};\nconst fallbackRaw =\n  msg.text ||\n  msg.snippet ||\n  msg.html ||\n  msg.textAsHtml ||\n  '';\n\nfunction safeNodeSummary(nodeName) {\n  try {\n    const arr = $items(nodeName);\n    return arr?.[0]?.json?.attachment_summary ?? '';\n  } catch (e) {\n    return '';\n  }\n}\n\nconst attachment_summary =\n  safeNodeSummary('Extract Attachment Summary') ||\n  safeNodeSummary('No Attachments') ||\n  '';\n\nconst rawEmail = threadCtx || fallbackRaw;\n\nlet email_text = String(rawEmail)\n  .replace(/https?:\\/\\/\\S+/g, '')\n  .replace(/\\[[^\\]]*\\]/g, '')\n  .replace(/\\r\\n/g, '\\n')\n  .replace(/[ \\t]+\\n/g, '\\n')\n  .replace(/\\n{3,}/g, '\\n\\n')\n  .trim()\n  .slice(0, 6000);\n\nfor (const item of items) {\n  if (msg.id) item.json.id = msg.id;\n  if (msg.threadId) item.json.threadId = msg.threadId;\n\n  item.json.email_text = email_text;\n  item.json.attachment_summary = attachment_summary;\n}\n\nreturn items;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2688,
+        192
+      ],
+      "id": "f0376f63-268c-4bc4-86d4-bca5903d7e9e",
+      "name": "Email Context"
+    },
+    {
+      "parameters": {},
+      "id": "16374b91-db07-4138-b71b-ebec8bb6d3fe",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "position": [
+        3760,
+        880
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot8526061026:AAGl8wxM1P4mh4CBLSLiZeeE9sbcfxQuyRY/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "-1003772493573"
+            },
+            {
+              "name": "message_thread_id",
+              "value": "20"
+            },
+            {
+              "name": "text",
+              "value": "⚠️ Sorry — the email assistant hit an error and couldn’t send this email to Telegram. Please contact the product seller to fix it."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        3984,
+        880
+      ],
+      "id": "531fe8d8-4792-49ae-b6a6-6afad6326abc",
+      "name": "HTTP Request - Error Notice"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        2992,
+        416
+      ],
+      "id": "510be942-8839-47d4-a055-56fa08bf80f2",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "58tGVV5vxWrUgphA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "get",
+        "threadId": "={{ $('Gmail Trigger').first().json.threadId || $('Get a message').first().json.threadId || '' }}",
+        "simple": false,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1792,
+        192
+      ],
+      "id": "8cbf5062-20f7-4f93-bf36-a51ddb0b2e34",
+      "name": "Get Thread (Context)",
+      "webhookId": "ee6b6fa8-394f-4ba1-98e4-eef283791262",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pick the last N message IDs from the Gmail thread (for context building)\n// Output: multiple items like { messageId: '.', internalDate: '...' }\n\nconst N = 12; // increase if needed\n\nconst thread = $json || {};\nconst messages = Array.isArray(thread.messages) ? thread.messages : [];\n\nconst sorted = messages\n  .slice()\n  .sort((a, b) => Number(a.internalDate || 0) - Number(b.internalDate || 0));\n\nconst last = sorted.slice(-N);\n\nreturn last.map(m => ({\n  json: {\n    messageId: m.id,\n    internalDate: m.internalDate,\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2016,
+        192
+      ],
+      "id": "1aed8e82-64a5-4f8c-9c43-b075f120f971",
+      "name": "Pick Last N Msg IDs (Context)"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json.messageId }}",
+        "simple": false,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2240,
+        192
+      ],
+      "id": "a5d7e378-faa5-4397-bc93-05b2dae3f13c",
+      "name": "Get Message (Context)",
+      "webhookId": "abc74cbd-8510-4188-8c51-e885214abf2c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build a compact thread context:\n// Current email + previous 3 emails from the same sender (within the SAME thread).\n//\n// Output: single item { thread_context_text, thread_context_count, sender_email }\n\nconst items = $input.all();\n\nfunction extractEmail(s = '') {\n  const m = String(s).match(/<([^>]+)>/);\n  if (m && m[1]) return m[1].trim().toLowerCase();\n  const m2 = String(s).match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}/i);\n  return (m2 ? m2[0] : '').trim().toLowerCase();\n}\n\nfunction decodeEntities(s = '') {\n  return String(s)\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/&amp;/g, '&')\n    .replace(/&quot;/g, '\"')\n    .replace(/&#39;/g, \"'\");\n}\n\nfunction stripQuoted(s) {\n  let text = decodeEntities(String(s || '')).trim();\n\n  // Fix for cases like \"exceptionOn Mon, ...\"\n  text = text.replace(/([^\\n])On\\s(?=(Mon|Tue|Wed|Thu|Fri|Sat|Sun),)/g, '$1\\nOn ');\n\n  const cutPatterns = [\n    /(?:^|\\r?\\n)\\s*On\\s.+?wrote:\\s*/is,\n    /(?:^|\\r?\\n)\\s*-----Original Message-----\\s*/is,\n    /(?:^|\\r?\\n)\\s*From:\\s.+\\r?\\n\\s*Sent:\\s/is,\n    /(?:^|\\r?\\n)\\s*-{2,}\\s*Forwarded message\\s*-{2,}\\s*/is\n  ];\n\n  let out = text;\n  for (const re of cutPatterns) {\n    const idx = out.search(re);\n    if (idx !== -1) {\n      out = out.slice(0, idx).trim();\n      break;\n    }\n  }\n\n  // Remove quoted lines starting with \">\"\n  out = out\n    .split(/\\r?\\n/)\n    .filter(line => !/^\\s*>/.test(line))\n    .join('\\n')\n    .trim();\n\n  return out;\n}\n\nfunction getHeader(m, key) {\n  const h = m.headers || {};\n  return (h[key] || h[key.toLowerCase()] || '').toString().trim();\n}\n\nfunction getBody(m) {\n  return m.textPlain || m.textAsPlain || m.text || m.snippet || '';\n}\n\nconst senderHeader = $('Gmail Trigger').first()?.json?.From || '';\nconst senderEmail = extractEmail(senderHeader);\n\n// normalize + sort by internalDate\nconst msgs = items\n  .map(it => ({\n    ...it.json,\n    _internalDate: Number(it.json.internalDate || it.json.internalDateMs || 0),\n    _fromEmail: extractEmail(getHeader(it.json, 'From')),\n  }))\n  .sort((a, b) => (a._internalDate - b._internalDate));\n\n// keep only messages from the same sender (best-effort)\nconst fromSameSender = senderEmail\n  ? msgs.filter(m => m._fromEmail && m._fromEmail === senderEmail)\n  : msgs;\n\nconst selected = fromSameSender.slice(-4); // current + previous 3 (oldest -> newest)\n\nconst parts = selected.map((m, i) => {\n  const dateHeader = getHeader(m, 'Date');\n  const subj = getHeader(m, 'Subject');\n  const when = dateHeader || (m._internalDate ? new Date(m._internalDate).toISOString() : '');\n  const body = stripQuoted(getBody(m));\n\n  return [\n    `Email ${i + 1}/${selected.length}`,\n    when ? `Date: ${when}` : '',\n    subj ? `Subject: ${subj}` : '',\n    'Message:',\n    body || '(empty)',\n  ].filter(Boolean).join('\\n');\n});\n\nconst thread_context_text = parts.join('\\n\\n---\\n\\n').trim();\n\nreturn [{\n  json: {\n    sender_email: senderEmail || '',\n    thread_context_count: selected.length,\n    thread_context_text,\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2464,
+        192
+      ],
+      "id": "1ca38579-3bfc-4dc6-8f5f-5d8aca7347d6",
+      "name": "Build Sender Thread Context"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Email summary: {{ $('Summarization Agent').first().json.output || '' }}\n\nEmail content:\n{{ $('Email Context').first().json.email_text || '' }}",
+        "options": {
+          "systemMessage": "You are a clarification planner for an email automation assistant.\n\nGoal:\nBefore drafting a reply email, decide if you must ask the USER for missing information.\nDo NOT guess the user's availability, preferences, or timezone.\n\nHard rules (needs_clarification = true):\nA) Scheduling / meeting / call / interview / demo / appointment:\n   - If the email proposes or schedules a time AND the user's availability is not explicitly confirmed in the email thread, you MUST ask.\n   - If the email says “please confirm / let me know / can you join / are you available”, you MUST ask.\n\nB) Decision required:\n   - If the email requires the user to accept/decline/confirm/approve/reject and the decision is unknown, you MUST ask.\n\nC) Missing key details:\n   - If missing details would force guessing (amounts, dates, names, links), you MUST ask.\n\nWhen needs_clarification = false:\n- Only when the email contains everything needed AND the user's decision/availability is already explicit.\n\nScheduling question rules:\n- Ask only what is missing (1–3 questions).\n- If the email already includes an exact proposed time/date, do NOT ask for day/date again.\n- Always ask for timezone if not clearly stated as the user's timezone.\n\nOutput (STRICT JSON ONLY):\n{\n  \"needs_clarification\": true|false,\n  \"reason\": \"short reason\",\n  \"questions\": [\"question 1\", \"question 2\", ...]\n}\nNo extra text outside JSON.\n\nExample:\nEmail: \"Can we meet tomorrow at 3:30pm for 20 minutes to discuss the demo? Please confirm.\"\nOutput:\n{\"needs_clarification\":true,\"reason\":\"Scheduling request requires user's availability/timezone.\",\"questions\":[\"Are you available tomorrow at 3:30pm for 20 minutes? If not, what time works for you?\",\"What is your timezone?\"]}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        4064,
+        416
+      ],
+      "id": "c84310ee-d811-4804-a3e5-3ac9b11a44e1",
+      "name": "Clarification Agent"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "10a2b935-586c-4e67-a320-3e3c545f4973",
+              "leftValue": "={{ $json.needs_clarification }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        4640,
+        416
+      ],
+      "id": "a638af49-2aec-4122-9b13-4a239f12092d",
+      "name": "Needs Clarification?"
+    },
+    {
+      "parameters": {
+        "chatId": "=-1003642417272",
+        "text": "={{ $json.telegram_text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -224,
+        944
+      ],
+      "id": "530e9752-ce0b-4108-af85-f52e6b792780",
+      "name": "Send Clarification Questions",
+      "webhookId": "2bd16cd3-5b64-49ce-9d47-a08fbde0b804",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "p7tivZsMaHTep84i",
+          "mode": "list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "gmail_message_id": "={{ $('Gmail Trigger').first().json.id }}",
+            "thread_id": "={{ $('Gmail Trigger').first().json.threadId }}",
+            "from": "={{ $('Gmail Trigger').first().json.From }}",
+            "subject": "={{ $('Gmail Trigger').first().json.Subject }}",
+            "draft_body": "={{ '' }}",
+            "telegram_chat_id": "={{ $json.result.chat.id }}",
+            "telegram_msg_id": "={{ $json.result.message_id }}",
+            "status": "={{ 'waiting_user_input' }}",
+            "telegram_message_ids": "={{ $json.result.message_id }}",
+            "categoy": "={{ $('Classifier Agent').first().json.output }}",
+            "old_email": "={{ JSON.stringify({questions: $('Clarification Agent').first().json.questions || [], reason: $('Clarification Agent').first().json.reason || '', created_at: new Date().toISOString()}) }}",
+            "gmail_draft_id": "={{ '' }}",
+            "gmail_draft_message_id": "={{ '' }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "gmail_message_id",
+              "displayName": "gmail_message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "thread_id",
+              "displayName": "thread_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "draft_body",
+              "displayName": "draft_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telegram_chat_id",
+              "displayName": "telegram_chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telegram_msg_id",
+              "displayName": "telegram_msg_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telegram_message_ids",
+              "displayName": "telegram_message_ids",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "categoy",
+              "displayName": "categoy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "old_email",
+              "displayName": "old_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gmail_draft_id",
+              "displayName": "gmail_draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gmail_draft_message_id",
+              "displayName": "gmail_draft_message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        0,
+        944
+      ],
+      "id": "3ea39d1e-7a38-435b-bf25-63860d58f032",
+      "name": "Insert row - waiting_input"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = typeof $json.output === 'string'\n  ? JSON.parse($json.output)\n  : ($json.output ?? {});\n\nreturn [\n  {\n    json: {\n      ...$json,\n      ...data,\n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4416,
+        416
+      ],
+      "id": "b7c1114e-e8af-4238-83d6-49429979e317",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "jsCode": "function escapeHtml(s = '') {\n  return String(s)\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;');\n}\n\nconst category = ($('Classifier Agent').first().json.output || 'FYI');\nconst from = ($('Email Context').first().json.sender_email || $('Gmail Trigger').first().json.From || 'Unknown');\nconst subject = ($('Gmail Trigger').first().json.Subject || 'No subject');\n\nconst summary = ($('Summarization Agent').first().json.output || '').trim();\n\nconst reason = ($json.reason || '').trim();\nconst questions = Array.isArray($json.questions) ? $json.questions : [];\n\nlet qText = '';\nif (questions.length) {\n  qText = questions.map((q, i) => `${i + 1}) ${q}`).join('\\n');\n} else {\n  qText = '1) Please share the missing detail(s) needed to draft the reply.';\n}\n\nconst msg =\n`Category: ${escapeHtml(category)}\nFrom: ${escapeHtml(from)}\nSubject: ${escapeHtml(subject)}\n\nSummary: ${escapeHtml(summary)}\n\n${reason ? `Why i need to ask:\\n${escapeHtml(reason)}\\n\\n` : ''}Clarification question(s):\n${escapeHtml(qText)}\n\nReply to THIS message with your answer(s). You can reply in one message, numbered like:\n1) ...\n2) ...\n`;\n\nreturn [{ json: { telegram_text: msg, questions, reason } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        944
+      ],
+      "id": "01fdf8f1-ffbb-4207-ab59-a24abbc0b489",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Writing preferences (follow strictly): {{ $json.prefs_text || '' }}\n\nHere's the Email Content:  {{\n  ($('Email Context').first().json.email_text || '')\n    .replace(/https?:\\/\\/\\S+/g, '')       // remove URLs\n    .replace(/\\[[^\\]]*\\]/g, '')           // remove [ ... ] blocks\n    .replace(/\\s+/g, ' ')\n    .trim()\n    .slice(0, 6000)\n}}\nHere's the Attachment (If there is one): {{ $('Email Context').first().json.attachment_summary }}\n\nMissing information was detected for this email.\nReason: {{ $json.reason || $('Code in JavaScript1').first()?.json?.reason || '' }}\nClarification questions (for reference): {{ JSON.stringify($json.questions || $('Code in JavaScript1').first()?.json?.questions || []) }}\n\nWrite the reply email now, but DO NOT ask questions.\nUse placeholders exactly like these when info is missing:\n[Your Availability]\n[Your Timezone]\n\nReturn ONLY the email body.",
+        "options": {
+          "systemMessage": "IMPORTANT BEHAVIOR:\n\nIf Needs clarification = true:\n- Do NOT ask the sender questions.\n- Do NOT say you \"need to confirm\" or \"need to check\" your availability.\n- Do NOT propose alternative time options.\n- Instead, respond as if you ARE available, but use placeholders for the missing user info.\n- For scheduling, you MUST include these placeholders exactly:\n  [Your Availability]\n  [Your Timezone]\n- Confirm the meeting using the proposed time if it exists, but keep the availability/timezone as placeholders.\n- Keep it very short (3–6 sentences).\nScheduling template when Needs clarification = true (follow this structure):\nHi <Name>,\nYes, I’m available at [Your Availability] ([Your Timezone]) for the meeting.\nPlease confirm the meeting details and share the meeting link if there is one.\nBest regards,\nZax\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        5088,
+        624
+      ],
+      "id": "24a3657f-bba4-44c5-ba34-2994d9a7f7e4",
+      "name": "Drafting Email Agent (Needs Input)"
+    },
+    {
+      "parameters": {
+        "jsCode": "function escapeHtml(s = '') {\n  return String(s)\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;');\n}\n\nconst category = ($('Classifier Agent').first().json.output || 'FYI');\nconst from = ($('Email Context').first().json.sender_email || $('Gmail Trigger').first().json.From || 'Unknown');\nconst subject = ($('Gmail Trigger').first().json.Subject || 'No subject');\n\nconst summary = ($('Summarization Agent').first().json.output || '').trim();\n\n// clarification result comes from current item ($json) in your flow\nconst needsClarification = !!$json.needs_clarification;\nconst reason = ($json.reason || '').trim();\nconst questions = Array.isArray($json.questions) ? $json.questions : [];\n\n// draft output from your drafting agent node\n// change node name if yours differs\nlet draftBody = '';\n\ntry {\n  draftBody = String($('Drafting Email Agent (Needs Input)').first().json.output || '').trim();\n} catch (e) {}\n\nif (!draftBody) {\n  try {\n    draftBody = String($('Drafting Email Agent').first().json.output || '').trim();\n  } catch (e) {}\n}\nlet qText = '';\nif (questions.length) {\n  qText = questions.map((q, i) => `${i + 1}) ${q}`).join('\\n');\n} else {\n  qText = '1) Please share the missing detail(s) needed to draft the reply.';\n}\n\n// Build Telegram text\nlet msg =\n`Category: ${escapeHtml(category)}\nFrom: ${escapeHtml(from)}\nSubject: ${escapeHtml(subject)}\n\nSummary: ${escapeHtml(summary)}\n`;\n\nif (draftBody) {\n  msg += `\n\nDraft:\n${escapeHtml(draftBody)}\n`;\n}\n\nif (needsClarification) {\n  msg += `\n\n---\nThis draft has placeholders.\nTap ✏️ Edit and send the missing info to fill them.\n`;\n} else if (reason || questions.length) {\n  // fallback: if for some reason you still want to show questions when not in placeholder mode\n  msg += `\n${reason ? `\\nWhy i need to ask:\\n${escapeHtml(reason)}\\n` : ''}\nClarification question(s):\n${escapeHtml(qText)}\n\nReply to THIS message with your answer(s). You can reply in one message, numbered like:\n1) ...\n2) ...\n`;\n}\n\nreturn [{\n  json: {\n    telegram_text: msg,\n    questions,\n    reason,\n    needs_clarification: needsClarification,\n    draft_body: draftBody\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5440,
+        624
+      ],
+      "id": "3179e510-52c3-43b2-8b86-e906c76ae9d7",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "p7tivZsMaHTep84i",
+          "mode": "list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "gmail_message_id": "={{ $('Gmail Trigger').first().json.id }}",
+            "thread_id": "={{ $('Gmail Trigger').first().json.threadId }}",
+            "from": "={{ $('Gmail Trigger').first().json.From }}",
+            "subject": "={{ $('Gmail Trigger').first().json.Subject }}",
+            "draft_body": "={{ $('Drafting Email Agent').first().json.output }}",
+            "telegram_chat_id": "={{ $json.result.chat.id }}",
+            "telegram_msg_id": "={{ $json.result.message_id }}",
+            "status": "={{\"waiting_approve\"}}",
+            "telegram_message_ids": "={{ $json.result.message_id }}",
+            "categoy": "={{ $('Classifier Agent').first().json.output }}",
+            "gmail_draft_id": "={{ $('Create Gmail Draft').first().json.id || '' }}",
+            "gmail_draft_message_id": "={{ $('Create Gmail Draft').first().json.message?.id || '' }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "gmail_message_id",
+              "displayName": "gmail_message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "thread_id",
+              "displayName": "thread_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "draft_body",
+              "displayName": "draft_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telegram_chat_id",
+              "displayName": "telegram_chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telegram_msg_id",
+              "displayName": "telegram_msg_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telegram_message_ids",
+              "displayName": "telegram_message_ids",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "categoy",
+              "displayName": "categoy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "old_email",
+              "displayName": "old_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gmail_draft_id",
+              "displayName": "gmail_draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gmail_draft_message_id",
+              "displayName": "gmail_draft_message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        5888,
+        224
+      ],
+      "id": "453d6771-628a-4a79-a169-e1935ad583ed",
+      "name": "Insert row2"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "px6maEvxTSmogsal",
+          "mode": "list",
+          "cachedResultName": "drafts",
+          "cachedResultUrl": "/projects/g57vV100JYUsLLiY/datatables/px6maEvxTSmogsal"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "draft_id": "={{ $json.gmail_message_id }}",
+            "body": "={{ $json.draft_body }}",
+            "subject": "={{ $json.subject }}",
+            "telegram_message_id": "={{ $json.telegram_msg_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "draft_id",
+              "displayName": "draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telegram_message_id",
+              "displayName": "telegram_message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "body",
+              "displayName": "body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "revision",
+              "displayName": "revision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        6112,
+        224
+      ],
+      "id": "f3f0e6c7-daf4-4673-a3d9-98b967257b64",
+      "name": "Insert row3"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "vyo0txtwp3Qx7qYo",
+          "mode": "list"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "mode",
+              "keyValue": "waiting_edit"
+            }
+          ]
+        }
+      },
+      "id": "0fe47f91-3d9d-450a-bb7e-ba9fbfe3e8c4",
+      "name": "Get Waiting Edit Sessions (Lock)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        80
+      ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const now = Date.now();\n\n// When Data Table finds rows, the items look like sessions (have mode/expires_at).\n// When it finds nothing (Always Output Data), the item is the Gmail trigger payload.\n// So we only treat items as sessions if mode === 'waiting_edit' and expires_at exists.\nconst items = $input.all().map(i => i.json);\n\nconst sessions = items.filter(r =>\n  r &&\n  r.mode === 'waiting_edit' &&\n  typeof r.expires_at === 'string' &&\n  r.expires_at.trim() !== ''\n);\n\nconst active = sessions.filter(r => {\n  const exp = Date.parse(r.expires_at);\n  return Number.isFinite(exp) && exp > now;\n});\n\nactive.sort((a, b) => Date.parse(a.expires_at) - Date.parse(b.expires_at));\n\nreturn [{\n  json: {\n    edit_locked: active.length > 0,\n    active_lock_count: active.length,\n    next_expire_at: active[0]?.expires_at || null,\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "08d8f9c4-76df-4910-a726-5b3271f71ead",
+      "name": "Compute Edit Lock"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "89a3e35c-8de5-4c91-b820-0dbac661f42b",
+              "leftValue": "={{ $json.edit_locked }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        0
+      ],
+      "id": "ce46cf0a-a6e8-4de1-9614-3cb959f8baa5",
+      "name": "Edit Locked?"
+    },
+    {
+      "parameters": {
+        "amount": 15,
+        "unit": "seconds"
+      },
+      "id": "20172a81-228e-46b7-8289-127a9c86e24a",
+      "name": "Wait (Lock Delay 15s)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        448,
+        0
+      ],
+      "webhookId": "f678e846-bb8c-4666-980a-41ee02920180"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        4064,
+        608
+      ],
+      "id": "590c3e23-5415-4e03-9435-d86eb613b04b",
+      "name": "OpenAI Chat Model4",
+      "credentials": {
+        "openAiApi": {
+          "id": "58tGVV5vxWrUgphA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COALESCE(\n  (SELECT prefs_text\n   FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n   WHERE scope='user' AND chat_id=$1::text AND user_id=$2::text\n   ORDER BY updated_at DESC\n   LIMIT 1),\n  (SELECT prefs_text\n   FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n   WHERE scope='chat' AND chat_id=$1::text AND COALESCE(user_id,'')=''\n   ORDER BY updated_at DESC\n   LIMIT 1),\n  ''::text\n) AS prefs_text;\n",
+        "options": {
+          "queryReplacement": "-1003642417272,6528871327"
+        }
+      },
+      "id": "0dbbb0b3-293a-407f-98a3-f7c5fe0051cc",
+      "name": "Get Writing Prefs (chat)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4864,
+        224
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COALESCE(\n  (SELECT prefs_text\n   FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n   WHERE scope='user' AND chat_id=$1::text AND user_id=$2::text\n   ORDER BY updated_at DESC\n   LIMIT 1),\n  (SELECT prefs_text\n   FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n   WHERE scope='chat' AND chat_id=$1::text AND COALESCE(user_id,'')=''\n   ORDER BY updated_at DESC\n   LIMIT 1),\n  ''::text\n) AS prefs_text;\n",
+        "options": {
+          "queryReplacement": "-1003642417272,6528871327"
+        }
+      },
+      "id": "e26353d2-8d20-4f54-bf89-387f8c4bd2eb",
+      "name": "Get Writing Prefs (chat) - Needs Input",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4864,
+        624
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Classifier Agent').item.json.output }}",
+                    "rightValue": "IGNORE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "7501f5ca-13dc-44b5-b4f9-d3c3d56c60fb"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "IGNORE"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "69a8b696-68d2-48ec-aff7-0d99c7476982",
+                    "leftValue": "={{ $('Classifier Agent').item.json.output }}",
+                    "rightValue": "FYI",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "FYI"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "01d7f980-01b1-46a5-bd53-f7651672a068",
+                    "leftValue": "={{ $('Classifier Agent').item.json.output }}",
+                    "rightValue": "ACTION NEEDED",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "A_N"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        3840,
+        192
+      ],
+      "id": "699f0c51-d8ca-4c29-b622-12cbaf8b983b",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-haiku-4-5-20251001",
+          "mode": "list",
+          "cachedResultName": "Claude Haiku 4.5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        5088,
+        352
+      ],
+      "id": "0c3fe57e-069c-41dc-b5c8-21fdf07f4b37",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "1ZrMc80LZuNYTpxa",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-haiku-4-5-20251001",
+          "mode": "list",
+          "cachedResultName": "Claude Haiku 4.5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        5088,
+        848
+      ],
+      "id": "50181fdf-f5ca-4a8a-a149-27a80bb52ced",
+      "name": "Anthropic Chat Model1",
+      "credentials": {
+        "anthropicApi": {
+          "id": "1ZrMc80LZuNYTpxa",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot8298402532:AAFCjmQZ9sQ88xArE_S16PiQtmQ1cabjWks/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "-1003772493573"
+            },
+            {
+              "name": "message_thread_id",
+              "value": "4"
+            },
+            {
+              "name": "text",
+              "value": "=From: {{ $('Get a message').item.json.from.value[0].address }}\n\n{{ $json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        4256,
+        -112
+      ],
+      "id": "fa4f424b-ff8c-4d9f-9cc9-bf331ffd81d4",
+      "name": "Ignore Telegram"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot8298402532:AAFCjmQZ9sQ88xArE_S16PiQtmQ1cabjWks/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "-1003772493573"
+            },
+            {
+              "name": "message_thread_id",
+              "value": "2"
+            },
+            {
+              "name": "text",
+              "value": "=From: {{ $('Get a message').item.json.from.value[0].address }}\n\n{{ $json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        4240,
+        192
+      ],
+      "id": "47f56987-7ecd-41cf-b69d-88c13a31527d",
+      "name": "FYI Telegram"
+    },
+    {
+      "parameters": {
+        "chatId": "-1003772493573",
+        "text": "={{\n(() => {\n  const rawCat =\n    $json.category ||\n    $('Classifier Agent').first().json.category ||\n    $('Classifier Agent').first().json.output ||\n    'FYI';\n\n  const norm = String(rawCat).toUpperCase().trim().replace(/[\\s_]+/g, '_');\n  const displayCat = norm.replace(/_/g, ' ');\n\n  const from = $('Gmail Trigger').first().json.From || $json.from || 'Unknown';\n  const subject = $('Gmail Trigger').first().json.Subject || $json.subject || 'No subject';\n\n  const summary =\n    $('Summarization Agent').first()?.json?.output ||\n    $('Summarization Agent').first()?.json?.summary ||\n    '';\n\n  const getMsg = $('Get a message').first()?.json || {};\n  const rawBody =\n    getMsg.textPlain ||\n    getMsg.textAsPlain ||\n    getMsg.text ||\n    '';\n\n  const decodeEntities = (s) =>\n    String(s)\n      .replace(/&lt;/g, '<')\n      .replace(/&gt;/g, '>')\n      .replace(/&amp;/g, '&')\n      .replace(/&quot;/g, '\"')\n      .replace(/&#39;/g, \"'\");\n\n  const stripQuoted = (s) => {\n    let text = decodeEntities(String(s || '')).trim();\n\n    // Fix for cases like \"exceptionOn Mon, ...\"\n    text = text.replace(\n      /([^\\n])On\\s(?=(Mon|Tue|Wed|Thu|Fri|Sat|Sun),)/g,\n      '$1\\nOn '\n    );\n\n    const cutPatterns = [\n      /(?:^|\\r?\\n)\\s*On\\s.+?wrote:\\s*/is,               // Gmail quote marker\n      /(?:^|\\r?\\n)\\s*-----Original Message-----\\s*/is,  // Outlook\n      /(?:^|\\r?\\n)\\s*From:\\s.+\\r?\\n\\s*Sent:\\s/is,       // Outlook header\n      /(?:^|\\r?\\n)\\s*-{2,}\\s*Forwarded message\\s*-{2,}\\s*/is\n    ];\n\n    let out = text;\n    for (const re of cutPatterns) {\n      const idx = out.search(re);\n      if (idx !== -1) {\n        out = out.slice(0, idx).trim();\n        break;\n      }\n    }\n\n    // Remove quoted lines starting with \">\"\n    out = out\n      .split(/\\r?\\n/)\n      .filter(line => !/^\\s*>/.test(line))\n      .join('\\n')\n      .trim();\n\n    return out;\n  };\n\n  const latestMessageOnly = stripQuoted(rawBody);\n\n  let msg =\n`Category: ${displayCat}\nFrom: ${from}\nSubject: ${subject}\n\nSummary: ${summary}\n\nMessage:\n${latestMessageOnly}`;\n\n  if (norm === 'ACTION_NEEDED') {\n    msg +=\n`\n\nDraft email:\n${$('Drafting Email Agent').first()?.json?.output || $('Drafting Email Agent (Needs Input)').first()?.json?.output || ''}`;\n  }\n\n\n  // If clarification is needed, add edit instruction\n  try {\n    const needs = ($('Code in JavaScript1').first()?.json?.needs_clarification === true) || ($('Needs Clarification?').first()?.json?.needs_clarification === true) || ($json.needs_clarification === true);\n    if (needs) {\n      msg += `\\n\\n⚠️ Missing info detected. Draft has placeholders like [Your Availability] and [Your Timezone].\\nTap ✏️ Edit and type your availability + timezone (or any missing details).`;\n    }\n  } catch (e) {}\n  return msg;\n})()\n}}\n",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✅ Approve",
+                    "additionalFields": {
+                      "callback_data": "={{ 'reply:' + $('Gmail Trigger').first().json.id }}"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✏️ Edit",
+                    "additionalFields": {
+                      "callback_data": "={{ 'edit:' + $('Gmail Trigger').first().json.id }}"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🧾 History",
+                    "additionalFields": {
+                      "callback_data": "={{ 'history:' + $('Gmail Trigger').first().json.id }}"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🎨 Style",
+                    "additionalFields": {
+                      "callback_data": "style_menu"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        5664,
+        224
+      ],
+      "id": "cbe6a909-a3b0-4611-8948-578d4d02f5e4",
+      "name": "Sent Draft",
+      "webhookId": "f3ef5e9f-3b48-41c7-8ffa-f6c7ccf3346d",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-1003772493573",
+        "text": "={{ $json.telegram_text }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✅ Approve",
+                    "additionalFields": {
+                      "callback_data": "={{ 'reply:' + $('Gmail Trigger').first().json.id }}"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✏️ Edit",
+                    "additionalFields": {
+                      "callback_data": "={{ 'edit:' + $('Gmail Trigger').first().json.id }}"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🧾 History",
+                    "additionalFields": {
+                      "callback_data": "={{ 'history:' + $('Gmail Trigger').first().json.id }}"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🎨 Style",
+                    "additionalFields": {
+                      "callback_data": "style_menu"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        5664,
+        624
+      ],
+      "id": "afb8d161-4dc0-41a8-aa42-76c96fe69f68",
+      "name": "Send Draft (with classification)",
+      "webhookId": "271025dc-7252-4b5c-81bd-3f03f8e84eb6",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Waiting Edit Sessions (Lock)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a message": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classifier Agent": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarization Agent": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drafting Email Agent": {
+      "main": [
+        [
+          {
+            "node": "Create Gmail Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Summarization Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row": {
+      "main": [
+        [
+          {
+            "node": "Insert row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summarization Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Gmail Draft": {
+      "main": [
+        [
+          {
+            "node": "Sent Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Attachments": {
+      "main": [
+        [
+          {
+            "node": "Build OpenAI Attachment Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Attachments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build OpenAI Attachment Request": {
+      "main": [
+        [
+          {
+            "node": "OpenAI - Summarize Attachments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Attachment Summary": {
+      "main": [
+        [
+          {
+            "node": "Get Thread (Context)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Attachments": {
+      "main": [
+        [
+          {
+            "node": "Get Thread (Context)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI - Summarize Attachments": {
+      "main": [
+        [
+          {
+            "node": "Extract Attachment Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Has Attachments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Context": {
+      "main": [
+        [
+          {
+            "node": "Classifier Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Error Notice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Classifier Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Thread (Context)": {
+      "main": [
+        [
+          {
+            "node": "Pick Last N Msg IDs (Context)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Last N Msg IDs (Context)": {
+      "main": [
+        [
+          {
+            "node": "Get Message (Context)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Message (Context)": {
+      "main": [
+        [
+          {
+            "node": "Build Sender Thread Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Sender Thread Context": {
+      "main": [
+        [
+          {
+            "node": "Email Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clarification Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs Clarification?": {
+      "main": [
+        [
+          {
+            "node": "Get Writing Prefs (chat) - Needs Input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Writing Prefs (chat)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Clarification Questions": {
+      "main": [
+        [
+          {
+            "node": "Insert row - waiting_input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Needs Clarification?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Send Clarification Questions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drafting Email Agent (Needs Input)": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Send Draft (with classification)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row2": {
+      "main": [
+        [
+          {
+            "node": "Insert row3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Waiting Edit Sessions (Lock)": {
+      "main": [
+        [
+          {
+            "node": "Compute Edit Lock",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compute Edit Lock": {
+      "main": [
+        [
+          {
+            "node": "Edit Locked?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Locked?": {
+      "main": [
+        [
+          {
+            "node": "Wait (Lock Delay 15s)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait (Lock Delay 15s)": {
+      "main": [
+        [
+          {
+            "node": "Get Waiting Edit Sessions (Lock)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Clarification Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Writing Prefs (chat)": {
+      "main": [
+        [
+          {
+            "node": "Drafting Email Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Writing Prefs (chat) - Needs Input": {
+      "main": [
+        [
+          {
+            "node": "Drafting Email Agent (Needs Input)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Ignore Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "FYI Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Clarification Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Drafting Email Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Drafting Email Agent (Needs Input)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sent Draft": {
+      "main": [
+        [
+          {
+            "node": "Insert row2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Draft (with classification)": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "55bb0f8c-bb76-4793-bee4-5fd04f2b2b16",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c2319bcf64035e12fa4b23aa88003edd572c9ac2ee40ffdd07560e871f1375d3"
+  },
+  "id": "Z92B39qVLKgNGAEN",
+  "tags": []
+}

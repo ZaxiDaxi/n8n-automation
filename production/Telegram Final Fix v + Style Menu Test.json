@@ -1,0 +1,5573 @@
+{
+  "name": "Telegram Final Fix v + Style Menu Test",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message",
+          "callback_query"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -4256,
+        1632
+      ],
+      "id": "1bfd99e9-ef8d-4ea2-b208-296b2b942d35",
+      "name": "Telegram Trigger",
+      "webhookId": "4e91d08c-6d4d-4b52-ba66-8282ab4b372a",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "edff1973-e4e8-4740-a933-22ddafc2ff54",
+              "leftValue": "={{ $json.message?.voice?.file_id || '' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -4032,
+        1632
+      ],
+      "id": "011ea6b3-4699-4273-b265-0528346b0e62",
+      "name": "Has Voice? (file_id)"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger').first().json.message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -3808,
+        1568
+      ],
+      "id": "cb92af54-42d1-4873-87d5-6d74eb464758",
+      "name": "Get a file",
+      "webhookId": "af433d15-1210-4430-b456-bb0702654487",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/file/bot{{$env.TELEGRAM_BOT_TOKEN}}/{{$json.result.file_path}}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -3584,
+        1568
+      ],
+      "id": "9f5b4683-2790-4588-9819-5311098c8f7d",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/files/voice.ogg",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -3360,
+        1568
+      ],
+      "id": "ba3efc5b-c504-4984-9b8b-5451045f824b",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "command": "=docker exec -i n8n-n8n1-1 sh -lc \"ffmpeg -y -hide_banner -loglevel error -i /files/voice.ogg -ac 1 -ar 16000 -c:a pcm_s16le /files/voice.wav\"\n"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        -3136,
+        1568
+      ],
+      "id": "127680c1-d2f5-4077-bcb3-e7304d2aac3e",
+      "name": "Execute a command",
+      "credentials": {
+        "sshPassword": {
+          "id": "kYeNSNAxG8kXe2aK",
+          "name": "SSH Password account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fileSelector": "/files/voice.wav",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -2912,
+        1568
+      ],
+      "id": "e2a494c8-9c37-453b-be33-0b7cff4e2e89",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true&punctuate=true",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Token ' + $env.DEEPGRAM_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "audio/wav"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -2688,
+        1568
+      ],
+      "id": "1ab121cd-6703-4a10-ad71-d627fdb8f3b4",
+      "name": "Deepgram Transcribe"
+    },
+    {
+      "parameters": {
+        "command": "docker exec -i n8n-n8n1-1 sh -lc \"rm -f /files/voice.ogg /files/voice.wav\""
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        -2464,
+        1568
+      ],
+      "id": "29bc8a94-9444-48e0-85cb-db47ea03fbb3",
+      "name": "Cleanup voice files",
+      "credentials": {
+        "sshPassword": {
+          "id": "kYeNSNAxG8kXe2aK",
+          "name": "SSH Password account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse incoming Telegram update (button or message)\n// Voice transcript is read straight from the Deepgram node output\n\nlet trig = {};\ntry {\n  trig = $('Telegram Trigger').first().json ?? {};\n} catch (e) {\n  trig = $json ?? {};\n}\n\n// ---------- BUTTON CLICK ----------\nif (trig.callback_query) {\n  const cb = trig.callback_query;\n  const data = (cb.data || '').trim();\n  const [actionRaw, draftIdRaw] = data.split(':');\n\n  return [{\n    json: {\n      type: 'BUTTON',\n      action: (actionRaw || '').toUpperCase(),\n      draft_id: (draftIdRaw || '').trim(),\n      chat_id: cb.message?.chat?.id,\n      from_id: cb.from?.id,\n      telegram_msg_id: cb.message?.message_id,\n      callback_query_id: cb.id\n    }\n  }];\n}\n\n// ---------- MESSAGE ----------\nconst msg = trig.message || {};\nlet text = (msg.text || msg.caption || '').trim();\n\n// If it's a voice message, pull transcript directly from Deepgram node output\nif (!text && msg.voice?.file_id) {\n  try {\n    // IMPORTANT: change 'Deepgram' to your exact Deepgram node name (case-sensitive)\n    const dg = $('Deepgram Transcribe').first().json ?? {};\n\n    // Standard Deepgram transcript path (as in your screenshot)\n    text = (dg?.results?.channels?.[0]?.alternatives?.[0]?.transcript || '').trim();\n\n    // Fallback: rebuild sentence from (punctuated_)word list if transcript is empty\n    if (!text) {\n      const words = dg?.results?.channels?.[0]?.alternatives?.[0]?.words || [];\n      text = words\n        .map(w => (w?.punctuated_word || w?.word || '').trim())\n        .filter(Boolean)\n        .join(' ')\n        .trim();\n    }\n  } catch (e) {\n    text = '';\n  }\n}\n\nreturn [{\n  json: {\n    type: 'MESSAGE',\n    chat_id: msg.chat?.id,\n    from_id: msg.from?.id,\n    message_id: msg.message_id,\n    replied_to_message_id: msg.reply_to_message?.message_id,\n    text,\n    has_voice: !!msg.voice?.file_id,\n    voice_file_id: msg.voice?.file_id || null\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2240,
+        1632
+      ],
+      "id": "0799c819-6d61-471a-85e8-c2e654b268f1",
+      "name": "Parse Input"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "BUTTON",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "f00886d1-fc52-4f5b-85d2-b20ecd611112"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "MESSAGE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "f594f5b0-9f43-4e63-a65c-bfa3ed200937"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -2016,
+        1632
+      ],
+      "id": "d03ddde3-6be0-46d6-b463-5ba073768d31",
+      "name": "Route by Type"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "vyo0txtwp3Qx7qYo",
+          "mode": "list"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "chat_id",
+              "keyValue": "={{ String($('Parse Input').first().json.chat_id ?? '') }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chat_id": "={{ String($('Parse Input').first().json.chat_id ?? '') }}",
+            "user_id": "={{ String($('Parse Input').first().json.from_id ?? '') }}",
+            "pending_draft_id": "={{ String($('Parse Input').first().json.draft_id ?? '') }}",
+            "mode": "waiting_edit",
+            "expires_at": "={{ new Date(Date.now() + 5*60*1000).toISOString() }}",
+            "field": "body"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pending_draft_id",
+              "displayName": "pending_draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mode",
+              "displayName": "mode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "field",
+              "displayName": "field",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "expires_at",
+              "displayName": "expires_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pending_transcript",
+              "displayName": "pending_transcript",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "confirm_msg_id",
+              "displayName": "confirm_msg_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "voice_file_id",
+              "displayName": "voice_file_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -1344,
+        192
+      ],
+      "id": "2d516a8f-c359-4206-9123-9bec91109361",
+      "name": "Create Edit Session"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Collapse to a single session row so downstream actions run once.\nconst rows = $input.all().map(i => i.json || {});\n\nif (!rows.length) {\n  return [{ json: {} }];\n}\n\nfunction toMs(v) {\n  const ms = Date.parse(v || '');\n  return Number.isFinite(ms) ? ms : NaN;\n}\n\nconst latest = rows\n  .slice()\n  .sort((a, b) => {\n    const au = toMs(a.updatedAt || a.updated_at);\n    const bu = toMs(b.updatedAt || b.updated_at);\n    const ac = toMs(a.createdAt || a.created_at);\n    const bc = toMs(b.createdAt || b.created_at);\n    const at = Number.isFinite(au) ? au : ac;\n    const bt = Number.isFinite(bu) ? bu : bc;\n    return bt - at;\n  })[0];\n\nreturn [{ json: latest }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1120,
+        192
+      ],
+      "id": "58afbc0c-4286-4473-b82b-076c0392f1c4",
+      "name": "Pick Latest Edit Session"
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Parse Input').first().json.callback_query_id }}",
+        "additionalFields": {
+          "text": "✏️ Edit mode started (5:00).\nNew emails are paused until the timer ends or you tap ✅ Approve.\n\nSend your edit instructions now (text or voice)."
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1568,
+        192
+      ],
+      "id": "32c91b8d-8ba4-417c-a5d4-4b4c1fd660da",
+      "name": "Answer Callback (Edit)",
+      "webhookId": "67523ff4-6503-486b-a277-d999a2dbceca",
+      "retryOnFail": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "vyo0txtwp3Qx7qYo",
+          "mode": "list",
+          "cachedResultName": "edit_sessions",
+          "cachedResultUrl": "/projects/g57vV100JYUsLLiY/datatables/vyo0txtwp3Qx7qYo"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "chat_id",
+              "keyValue": "={{ String($('Parse Input').first().json.chat_id ?? '') }}"
+            },
+            {
+              "keyName": "user_id",
+              "keyValue": "={{ String($('Parse Input').first().json.from_id ?? '') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        0,
+        3936
+      ],
+      "id": "53be630a-9416-465b-a8b1-3433b4bd7178",
+      "name": "Check Edit Session",
+      "settings": {
+        "alwaysOutputData": true
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.valid === true }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "id": "1c226fd0-ebe8-48c6-9d54-ced3096b0564"
+            },
+            {
+              "leftValue": "={{ (() => { const mode = ($json.mode || '').toLowerCase(); return mode === 'waiting_edit'; })() }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "id": "3dc1dd69-5c16-42c3-96cb-1ada4d1ea574"
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        3936
+      ],
+      "id": "9c184318-96c7-4b86-ab87-7ecb17967bd4",
+      "name": "Session Valid?"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build edit payload from session + incoming message\nconst session = $('Check Edit Session').first().json || {};\nconst incoming = $('Parse Input').first().json || {};\n\nconst instruction = (incoming.text || '').trim();\n\nreturn [{\n  json: {\n    draft_id: session.pending_draft_id,\n    edit_instruction: instruction,\n    chat_id: incoming.chat_id,\n    from_id: incoming.from_id,\n    // MESSAGE: message_id, BUTTON: telegram_msg_id\n    user_message_id: incoming.message_id || incoming.telegram_msg_id\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        3936
+      ],
+      "id": "84b46829-ad24-4660-a5ad-f91a2d8bff0b",
+      "name": "Prepare Edit Data"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Writing preferences (follow strictly): {{ $json.prefs_text || '' }}\n\nEdit instruction: {{ $('Prepare Edit Data').first().json.edit_instruction }}\n\nCurrent draft:\n{{ $json.draft_body }}",
+        "options": {
+          "systemMessage": "You are an email editing assistant. Apply the user's edit instruction to the current draft.\n\nCore rules:\n- Output ONLY the revised email body\n- Apply the requested changes precisely\n- Maintain professional tone\n- Keep the greeting and signature format\n- If instruction is unclear, make your best interpretation\n\nOutput the complete revised email body, ready to send."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1920,
+        3840
+      ],
+      "id": "a3e4ac07-2b51-4163-bd45-07d210df36bc",
+      "name": "Apply Edits (LLM)"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Execute a SQL query').first().json.telegram_chat_id }}",
+        "text": "={{ (() => {\n  const row = $('Execute a SQL query').first().json || {};\n\n  const rawCat = row.categoy || row.category || 'FYI';\n  const norm = String(rawCat).toUpperCase().trim().replace(/[\\s_]+/g, '_');\n  const displayCat = norm.replace(/_/g, ' ');\n\n  const from = row.from || 'Unknown';\n  const subject = row.subject || 'No subject';\n\n  let summary = '';\n  let message = '';\n  const old = row.old_email || '';\n\n  try {\n    const obj = JSON.parse(old);\n    summary = obj.summary || '';\n    message = obj.message || '';\n  } catch (e) {\n    message = old;\n  }\n\n  const redraft = $('Apply Edits (LLM)').first().json.output || '';\n\n  let out = `Category: ${displayCat}\\nFrom: ${from}\\nSubject: ${subject}\\n\\n`;\n  if (summary) out += `Summary: ${summary}\\n\\n`;\n  if (message) out += `Message:\\n${message}\\n\\n`;\n  out += `Redraft:\\n${redraft}`;\n\n  return out.trim();\n})() }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✅ Approve",
+                    "additionalFields": {
+                      "callback_data": "={{ 'approve:' + $('Execute a SQL query').first().json.gmail_message_id }}"
+                    }
+                  },
+                  {
+                    "text": "✏️ Edit",
+                    "additionalFields": {
+                      "callback_data": "={{ 'edit:' + $('Execute a SQL query').first().json.gmail_message_id }}"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🎨 Style",
+                    "additionalFields": {
+                      "callback_data": "style"
+                    }
+                  },
+                  {
+                    "text": "🧾 History",
+                    "additionalFields": {
+                      "callback_data": "={{ 'history:' + $('Execute a SQL query').first().json.gmail_message_id }}"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        4288,
+        3936
+      ],
+      "id": "fb85fa81-e642-4adc-b551-399df3916366",
+      "name": "Send Revised Draft",
+      "webhookId": "cb1b081a-1c4f-4bae-93a5-efeae97f3ced",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "p7tivZsMaHTep84i"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "gmail_message_id",
+              "keyValue": "={{ $('Execute a SQL query').first().json.gmail_message_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "draft_body": "={{ $('Apply Edits (LLM)').first().json.output }}",
+            "status": "revised",
+            "telegram_msg_id": "={{ $json.result.message_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "gmail_message_id",
+              "displayName": "gmail_message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "thread_id",
+              "displayName": "thread_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "draft_body",
+              "displayName": "draft_body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telegram_chat_id",
+              "displayName": "telegram_chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telegram_msg_id",
+              "displayName": "telegram_msg_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "telegram_message_ids",
+              "displayName": "telegram_message_ids",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "categoy",
+              "displayName": "categoy",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "old_email",
+              "displayName": "old_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gmail_draft_id",
+              "displayName": "gmail_draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "gmail_draft_message_id",
+              "displayName": "gmail_draft_message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        4736,
+        3936
+      ],
+      "id": "0f24da6b-ff7d-4bb8-af5e-f4b159646572",
+      "name": "Update Draft in DB"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "vyo0txtwp3Qx7qYo",
+          "mode": "list"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "chat_id",
+              "keyValue": "={{ String($('Check Edit Session').first().json.chat_id ?? $('Parse Input').first().json.chat_id ?? '') }}"
+            },
+            {
+              "keyName": "user_id",
+              "keyValue": "={{ String($('Check Edit Session').first().json.user_id ?? $('Parse Input').first().json.from_id ?? '') }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "mode": "Consumed",
+            "expires_at": "={{ new Date().toISOString() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pending_draft_id",
+              "displayName": "pending_draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mode",
+              "displayName": "mode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "field",
+              "displayName": "field",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "expires_at",
+              "displayName": "expires_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pending_transcript",
+              "displayName": "pending_transcript",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "confirm_msg_id",
+              "displayName": "confirm_msg_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "voice_file_id",
+              "displayName": "voice_file_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -4256,
+        4560
+      ],
+      "id": "a8d383f5-df58-4584-bde3-d724df670f47",
+      "name": "Consume Session"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pick the latest session row (there may be multiple) and compute a robust validity flag.\nconst all = $input.all().map(i => i.json || {});\n\nif (!all.length) {\n  return [{ json: { valid: false, reason: 'NO_SESSION' } }];\n}\n\nfunction toMs(v) {\n  const ms = Date.parse(v || '');\n  return Number.isFinite(ms) ? ms : NaN;\n}\n\n// Choose the newest row by updatedAt (fallback to createdAt)\nconst latest = all\n  .slice()\n  .sort((a, b) => {\n    const au = toMs(a.updatedAt || a.updated_at);\n    const bu = toMs(b.updatedAt || b.updated_at);\n    const ac = toMs(a.createdAt || a.created_at);\n    const bc = toMs(b.createdAt || b.created_at);\n    const at = Number.isFinite(au) ? au : ac;\n    const bt = Number.isFinite(bu) ? bu : bc;\n    return bt - at;\n  })[0];\n\nconst now = Date.now();\nconst updatedMs = toMs(latest.updatedAt || latest.updated_at);\nconst expiresMs = toMs(latest.expires_at);\n\n// Effective expiry rules:\n// - Prefer expires_at if it is valid AND not stale.\n// - If expires_at is missing/invalid OR earlier than updatedAt, derive expiry as updatedAt + 5 minutes.\nlet effectiveExpires = expiresMs;\nif (!Number.isFinite(effectiveExpires) || (Number.isFinite(updatedMs) && effectiveExpires < updatedMs)) {\n  if (Number.isFinite(updatedMs)) effectiveExpires = updatedMs + 5 * 60 * 1000;\n}\n\nconst valid = Number.isFinite(effectiveExpires) && now < effectiveExpires;\n\nreturn [{\n  json: {\n    ...latest,\n    now_ms: now,\n    updated_ms: updatedMs,\n    expires_ms: expiresMs,\n    effective_expires_ms: effectiveExpires,\n    valid,\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        3936
+      ],
+      "id": "449ec2d9-ec8f-46a8-bac5-58d0e07d3d92",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH mode AS (\n  SELECT COALESCE(\n    (SELECT prefs_text\n     FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n     WHERE scope='mode'\n       AND chat_id = $2::text\n       AND user_id = $3::text\n     ORDER BY updated_at DESC\n     LIMIT 1),\n    'user'::text\n  ) AS m\n)\nSELECT *,\n  COALESCE((\n    SELECT prefs_text\n    FROM public.\"data_table_user_A04B1GFsDKFbxNMU\", mode\n    WHERE chat_id = $2::text\n      AND (\n        (mode.m = 'user' AND scope='user' AND user_id = $3::text)\n        OR (scope='chat' AND user_id = ''::text)\n      )\n    ORDER BY CASE WHEN scope='user' THEN 1 ELSE 0 END DESC, updated_at DESC\n    LIMIT 1\n  ), ''::text) AS prefs_text\nFROM public.\"data_table_user_p7tivZsMaHTep84i\"\nWHERE gmail_draft_id = $1::text OR gmail_message_id = $1::text\nORDER BY id DESC\nLIMIT 1;\n",
+        "options": {
+          "queryReplacement": "={{ [\n  String($('Check Edit Session').first().json.pending_draft_id || ''),\n  String($('Prepare Edit Data').first().json.chat_id || $('Parse Input').first().json.chat_id || ''),\n  String($('Prepare Edit Data').first().json.from_id || $('Parse Input').first().json.from_id || '')\n] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1696,
+        3936
+      ],
+      "id": "56f44b33-c059-4467-8880-b3c8cf510704",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM public.\"data_table_user_p7tivZsMaHTep84i\"\nWHERE gmail_message_id = $1::text\nORDER BY id DESC\nLIMIT 1;\n",
+        "options": {
+          "queryReplacement": "={{ String($('Button Action (Core)').first().json.draft_id || '') }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1344,
+        0
+      ],
+      "id": "faf2cf03-70de-46c6-81cc-201aa9924493",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.\"data_table_user_p7tivZsMaHTep84i\"\nSET telegram_message_ids = CASE\n  WHEN telegram_message_ids IS NULL OR telegram_message_ids = '' THEN $1::text\n  ELSE telegram_message_ids || ',' || $1::text\nEND\nWHERE gmail_message_id = $2;\n",
+        "options": {
+          "queryReplacement": "={{ [String($json.user_message_id), String($json.draft_id)] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1472,
+        3936
+      ],
+      "id": "db63bf6b-f342-4a5f-bcf8-c239cf805cc2",
+      "name": "Append User Edit MsgId (body)",
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9dbe4c28-21a6-4e14-8468-641b34211199",
+              "leftValue": "={{ ( $('Execute a SQL query1').first().json.telegram_message_ids || '' ).trim() !== '' }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        0
+      ],
+      "id": "a35a5824-58a2-477e-8614-ce1f7d278102",
+      "name": "Has Stored Edit Msg IDs?"
+    },
+    {
+      "parameters": {
+        "jsCode": "const row = $('Execute a SQL query1').first().json;\nconst chatId = $('Parse Input').first().json.chat_id;\n\nconst listRaw = (row.telegram_message_ids || '').trim();\nconst extra = [\n  row.telegram_msg_id,\n  $('Parse Input').first().json.message_id, // clicked approve message id\n];\n\nconst parts = [];\nif (listRaw) parts.push(...listRaw.split(','));   // <- important\nfor (const e of extra) if (e != null && String(e).trim() !== '') parts.push(String(e));\n\nconst seen = new Set();\nreturn parts\n  .map(x => String(x).replace(/[^0-9]/g, ''))\n  .filter(x => x && !seen.has(x) && (seen.add(x), true))\n  .map(x => ({ json: { chat_id: chatId, message_id: Number(x) } }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "0f05bbc8-b040-44a6-be78-991d21a31dac",
+      "name": "Split Stored Edit Msg IDs"
+    },
+    {
+      "parameters": {
+        "operation": "deleteMessage",
+        "chatId": "={{ $json.chat_id }}",
+        "messageId": "={{ $json.message_id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        672,
+        0
+      ],
+      "id": "6726e0e3-4d96-45de-9cc6-0b4e7d1e1247",
+      "name": "Delete Stored User Edit Message",
+      "webhookId": "511c6183-6f6a-4d33-9013-5b8e20ddbf99",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.\"data_table_user_p7tivZsMaHTep84i\"\nSET telegram_message_ids = ''\nWHERE gmail_message_id = $1;\n",
+        "options": {
+          "queryReplacement": "={{ $('Execute a SQL query1').first().json.gmail_message_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1248,
+        0
+      ],
+      "id": "6fd9ca15-934a-4772-8d48-6747dcd0ea51",
+      "name": "Clear Stored Edit Msg IDs",
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Collapse to a single item so the next steps run once\nreturn [items[0] ?? { json: {} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        0
+      ],
+      "id": "c8f2ac4b-76f2-4d83-b9fb-03c2140428d7",
+      "name": "Collapse After Deletes"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.\"data_table_user_p7tivZsMaHTep84i\"\nSET telegram_message_ids = CASE\n  WHEN telegram_message_ids IS NULL OR telegram_message_ids = '' THEN $1::text\n  ELSE telegram_message_ids || ',' || $1::text\nEND\nWHERE gmail_message_id = $2;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Send Revised Draft').first().json.result.message_id), String($('Execute a SQL query').first().json.gmail_message_id)] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4960,
+        3936
+      ],
+      "id": "d2b1e2b9-d660-47be-9b4d-8f220fcd389c",
+      "name": "Append Bot Draft MsgId (body)",
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot8358946816:AAGuVUhSThTjhEr6CELOAh7QROA07twIJ8k/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "={{ $('Execute a SQL query1').first().json.telegram_chat_id }}"
+            },
+            {
+              "name": "message_thread_id",
+              "value": "={{ 292 }}"
+            },
+            {
+              "name": "text",
+              "value": "=✅ {{   'Sent email:' + ($('Execute a SQL query1').first().json.draft_subject || '') +  '\\n\\nBody:\\n' + ($('Execute a SQL query1').first().json.draft_body || '')}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7fa9f3ef-8441-4eb2-befe-4df90b1b8886",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "vyo0txtwp3Qx7qYo",
+          "mode": "list"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "chat_id",
+              "keyValue": "={{ String($('Parse Input').first().json.chat_id ?? '') }}"
+            },
+            {
+              "keyName": "user_id",
+              "keyValue": "={{ String($('Parse Input').first().json.from_id ?? '') }}"
+            },
+            {
+              "keyName": "mode",
+              "keyValue": "waiting_edit"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "mode": "Consumed",
+            "expires_at": "={{ new Date().toISOString() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pending_draft_id",
+              "displayName": "pending_draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mode",
+              "displayName": "mode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "field",
+              "displayName": "field",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "expires_at",
+              "displayName": "expires_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pending_transcript",
+              "displayName": "pending_transcript",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "confirm_msg_id",
+              "displayName": "confirm_msg_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "voice_file_id",
+              "displayName": "voice_file_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        0
+      ],
+      "id": "ae5db604-067c-4e34-ad33-8ce732b29520",
+      "name": "Consume Session (Reply)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Collapse to a single item so downstream actions run once.\nreturn [items[0] ?? { json: {} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -896,
+        0
+      ],
+      "id": "bde6a992-cac0-4a2b-b98f-aba94ae61aea",
+      "name": "Collapse After Consume (Reply)"
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "reply",
+        "threadId": "={{ $('Execute a SQL query1').first().json.thread_id }}",
+        "messageId": "={{ $('Execute a SQL query1').first().json.gmail_message_id }}",
+        "message": "={{ $('Execute a SQL query1').first().json.draft_body }}",
+        "options": {
+          "replyToSenderOnly": true
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -224,
+        0
+      ],
+      "id": "1e6a02f1-f069-4a49-9fac-bd9da77aedf3",
+      "name": "Reply Email",
+      "webhookId": "f9f8ed24-02dd-4a37-a340-e4735584c4ef",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Parse Input').first().json.callback_query_id }}",
+        "additionalFields": {
+          "text": "Loading history..."
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1568,
+        384
+      ],
+      "id": "9b2ec3e0-32bb-461c-bdda-015574633f0f",
+      "name": "Answer Callback (History)",
+      "webhookId": "1a866c67-cfa7-4d01-ac23-3eefef494b63",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM public.\"data_table_user_p7tivZsMaHTep84i\"\nWHERE gmail_message_id = $1\nORDER BY id DESC\nLIMIT 1;\n",
+        "options": {
+          "queryReplacement": "=={{$json.draft_id}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1568,
+        576
+      ],
+      "id": "187af4ee-99b9-4a14-b56a-ddca3ad1bc7d",
+      "name": "Load Session Row (History)",
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "get",
+        "threadId": "={{ $('Load Session Row (History)').first().json.thread_id }}",
+        "simple": false,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -1344,
+        576
+      ],
+      "id": "0f4ec70d-2e0f-47d7-989b-7204501b13c9",
+      "name": "Get Thread (History)",
+      "webhookId": "7e450acf-9477-48d8-85d4-5986f8297e87",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pick the last N message IDs from the Gmail thread\n// Output: multiple items like { messageId: '...' }\n\nconst N = 8; // set 3–10\n\nconst thread = $json || {};\nconst messages = Array.isArray(thread.messages) ? thread.messages : [];\n\nconst sorted = messages\n  .slice()\n  .sort((a, b) => Number(a.internalDate || 0) - Number(b.internalDate || 0));\n\nconst last = sorted.slice(-N);\n\nreturn last.map(m => ({\n  json: {\n    messageId: m.id,\n    internalDate: m.internalDate,\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1120,
+        576
+      ],
+      "id": "d561c12e-d3f2-44e0-9115-bf5226a2e0fe",
+      "name": "Pick Last N Msg IDs"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json.messageId }}",
+        "simple": false,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -896,
+        576
+      ],
+      "id": "0bf813a0-fcbb-451b-90aa-6a2ba2a8e9a9",
+      "name": "Get Message (History)",
+      "webhookId": "2a381d10-2345-4c40-888c-82d4059ff648",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const N = 5; // 3–10\n\nconst tg = $('Telegram Trigger').first().json;\nconst chat_id = tg.callback_query?.message?.chat?.id;\nconst message_thread_id = tg.callback_query?.message?.message_thread_id;\n\nconst all = $input.all().map(i => i.json);\nall.sort((a, b) => Number(a.internalDate || 0) - Number(b.internalDate || 0));\nconst last = all.slice(-N);\n\nfunction decodeEntities(s = \"\") {\n  return s\n    .replace(/&#39;/g, \"'\")\n    .replace(/&quot;/g, '\"')\n    .replace(/&amp;/g, \"&\")\n    .replace(/&lt;/g, \"<\")\n    .replace(/&gt;/g, \">\")\n    .replace(/&#(\\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)));\n}\n\n// remove leading \"From:\" / \"Subject:\" / \"Date:\" if Gmail header already has it\nfunction stripLabel(v = \"\", label = \"\") {\n  const re = new RegExp(\"^\\\\s*\" + label + \"\\\\s*:\\\\s*\", \"i\");\n  return String(v).replace(re, \"\").trim();\n}\n\nfunction getHeader(m, key) {\n  const h = m.headers || {};\n  return (h[key] || h[key.toLowerCase()] || \"\").toString().trim();\n}\n\nfunction shortenEmailAddress(from = \"\") {\n  // \"Name <email>\" -> \"Name\"\n  const m = from.match(/^(.+?)\\s*<.+>$/);\n  return (m ? m[1] : from).trim();\n}\n\nfunction cleanBody(s = \"\") {\n  s = decodeEntities(String(s));\n  s = s.replace(/\\r/g, \"\");\n\n  // cut off reply chains like: \"On ... wrote:\"\n  const cut = s.search(/\\nOn .+\\bwrote:\\s*$/im);\n  if (cut > 0) s = s.slice(0, cut);\n\n  // remove quoted lines starting with \">\"\n  s = s\n    .split(\"\\n\")\n    .filter(line => !/^\\s*>/.test(line))\n    .join(\"\\n\");\n\n  // compress extra blank lines\n  s = s.replace(/[ \\t]+\\n/g, \"\\n\");\n  s = s.replace(/\\n{3,}/g, \"\\n\\n\");\n  return s.trim();\n}\n\nfunction getBody(m) {\n  const body = m.textPlain || m.text || m.body || m.snippet || \"\";\n  return cleanBody(body);\n}\n\nfunction fmtDate(m) {\n  // prefer header date; fallback to internalDate\n  const d = stripLabel(getHeader(m, \"date\"), \"date\");\n  if (d) return d;\n  if (!m.internalDate) return \"\";\n  return new Date(Number(m.internalDate)).toLocaleString();\n}\n\nconst PER_EMAIL_LIMIT = 700; // keep each email short for telegram\n\nconst blocks = last.map((m, idx) => {\n  const fromRaw = stripLabel(getHeader(m, \"from\"), \"from\") || \"Unknown\";\n  const subjRaw = stripLabel(getHeader(m, \"subject\"), \"subject\") || \"(no subject)\";\n  const date = fmtDate(m);\n\n  const from = shortenEmailAddress(fromRaw);\n  const subj = subjRaw;\n\n  let body = getBody(m);\n  if (!body) body = \"(empty)\";\n\n  if (body.length > PER_EMAIL_LIMIT) body = body.slice(0, PER_EMAIL_LIMIT - 3) + \"...\";\n\n  return (\n    `(${idx + 1}/${last.length}) ${subj}\\n` +\n    `from: ${from}\\n` +\n    `date: ${date}\\n` +\n    `\\n${body}`\n  );\n});\n\nlet text = `🧾 thread history (last ${last.length})\\n\\n` + blocks.join(\"\\n\\n──────────────\\n\\n\");\n\n// hard limit buffer\nif (text.length > 3800) text = text.slice(0, 3797) + \"...\";\n\nreturn [\n  {\n    json: {\n      chat_id,\n      message_thread_id,\n      history_text: text,\n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -672,
+        576
+      ],
+      "id": "c78894d7-2964-4a44-9211-94e755d66704",
+      "name": "Format History"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot8298402532:AAFCjmQZ9sQ88xArE_S16PiQtmQ1cabjWks/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "={{ $json.chat_id }}"
+            },
+            {
+              "name": "message_thread_id",
+              "value": "=8"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.history_text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -448,
+        576
+      ],
+      "id": "f9ad5409-eb43-46af-a4a6-ad0960276f49",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Decide what to do next based on session mode + incoming update\nconst session = $json || {};\n\nreturn [{ json: { ...session, route: 'EDIT_NOW' } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        3936
+      ],
+      "id": "a63e24d9-62b6-4e53-a767-f15da532eefc",
+      "name": "Decide Next Step"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "EDIT_NOW",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "287b0a4f-7d25-48eb-9656-cce5ce8be08d"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        960,
+        3936
+      ],
+      "id": "57df8b90-2d75-41c8-a4d5-687b87fa19c0",
+      "name": "Route Next Step"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9dbe4c28-21a6-4e14-8468-641b34211199",
+              "leftValue": "={{ ( $('Execute a SQL query').first().json.telegram_message_ids || '' ).trim() !== '' }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2272,
+        3936
+      ],
+      "id": "51d55c5a-fa9c-430b-a470-1ab91dc80a53",
+      "name": "Has Stored Edit Msg IDs? (Edit)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const row = $('Execute a SQL query').first().json;\nconst chatId = row.telegram_chat_id || $('Prepare Edit Data').first().json.chat_id || $('Parse Input').first().json.chat_id;\n\nconst listRaw = (row.telegram_message_ids || '').trim();\nconst extra = [\n  row.telegram_msg_id,\n  $('Prepare Edit Data').first().json.user_message_id,\n  $('Parse Input').first().json.message_id, // user edit message id (if any)\n];\n\nconst parts = [];\nif (listRaw) parts.push(...listRaw.split(','));\nfor (const e of extra) if (e != null && String(e).trim() !== '') parts.push(String(e));\n\nconst seen = new Set();\nreturn parts\n  .map(x => String(x).replace(/[^0-9]/g, ''))\n  .filter(x => x && !seen.has(x) && (seen.add(x), true))\n  .map(x => ({ json: { chat_id: chatId, message_id: Number(x) } }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2496,
+        3872
+      ],
+      "id": "10532d92-425b-4d35-a5f7-1500ed6e32aa",
+      "name": "Split Stored Edit Msg IDs (Edit)"
+    },
+    {
+      "parameters": {
+        "operation": "deleteMessage",
+        "chatId": "={{ $json.chat_id }}",
+        "messageId": "={{ $json.message_id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2720,
+        3872
+      ],
+      "id": "802d7b62-d7fa-46c7-9199-4a433bf3dd3b",
+      "name": "Delete Stored Message (Edit)",
+      "webhookId": "90afb838-bbbc-4ebc-ab4a-1e25cd3a7f50",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Collapse to a single item so the next steps run once\nreturn [items[0] ?? { json: {} }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2944,
+        3872
+      ],
+      "id": "b7dbf4b1-3749-47e7-99f9-da7adce9a8e4",
+      "name": "Collapse After Deletes (Edit)"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.\"data_table_user_p7tivZsMaHTep84i\"\nSET telegram_message_ids = ''\nWHERE gmail_message_id = $1;\n",
+        "options": {
+          "queryReplacement": "={{ $('Execute a SQL query').first().json.gmail_message_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3168,
+        3872
+      ],
+      "id": "97422933-6a77-469f-9688-7f6a99e75b6d",
+      "name": "Clear Stored Edit Msg IDs (Edit)",
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "operation": "delete",
+        "messageId": "={{ $('Execute a SQL query').first().json.gmail_draft_id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        3616,
+        3872
+      ],
+      "id": "9acdfdd2-f096-4094-be6f-49dccb37c11e",
+      "name": "Delete Old Gmail Draft",
+      "webhookId": "70feb803-8457-4c8e-9060-d77b817b7faa",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ (() => { const s = $('Execute a SQL query').first().json.subject || ''; return (/^\\s*re:/i.test(s) ? s : 'Re: ' + s); })() }}",
+        "message": "={{ $('Apply Edits (LLM)').first().json.output || '' }}",
+        "options": {
+          "threadId": "={{ $('Execute a SQL query').first().json.thread_id }}",
+          "sendTo": "={{ ($('Execute a SQL query').first().json.from || '').match(/<([^>]+)>/)?.[1] || ($('Execute a SQL query').first().json.from || '').trim() }}\n"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        3840,
+        3936
+      ],
+      "id": "f04ba8e5-0486-4ca0-8077-2ecb97b06cbd",
+      "name": "Create Gmail Draft",
+      "webhookId": "1ca20a00-52db-45a1-9986-5c45fa806b61",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.\"data_table_user_p7tivZsMaHTep84i\"\nSET gmail_draft_id = $1,\n    gmail_draft_message_id = $2\nWHERE gmail_message_id = $3;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Create Gmail Draft').first().json.id), String($('Create Gmail Draft').first().json.message?.id || ''), String($('Execute a SQL query').first().json.gmail_message_id)] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4064,
+        3936
+      ],
+      "id": "5cef39eb-42b2-4360-9a2f-e7574ed95a1d",
+      "name": "Store Gmail Draft IDs",
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c9474b33-48a1-463d-aced-63e0e83428cc",
+              "leftValue": "={{ $('Execute a SQL query').first().json.gmail_draft_id || '' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        3392,
+        3936
+      ],
+      "id": "161c6b51-12dc-4e5e-a994-aec905984c30",
+      "name": "Has Gmail Draft ID? (Edit)"
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "operation": "delete",
+        "messageId": "={{ $('Execute a SQL query1').first().json.gmail_draft_id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -448,
+        0
+      ],
+      "id": "25066f9e-35a9-46ef-bb6b-f3b627e3a5d5",
+      "name": "Delete Old Gmail Draft1",
+      "webhookId": "83d03647-e222-4f99-bc9f-485a5cdd7934",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {},
+      "id": "d412422d-dacf-4efc-a685-474417d37242",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "position": [
+        -4256,
+        4784
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.telegram.org/bot8526061026:AAGl8wxM1P4mh4CBLSLiZeeE9sbcfxQuyRY/sendMessage",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": " -1003772493573"
+            },
+            {
+              "name": "message_thread_id",
+              "value": "20"
+            },
+            {
+              "name": "text",
+              "value": "⚠️ Sorry — the email assistant hit an error and couldn’t send this email to Telegram. Please contact the product seller to fix it."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -4032,
+        4784
+      ],
+      "id": "56b44d74-31ac-49b6-b0f4-69eacf97ea07",
+      "name": "HTTP Request - Error Notice"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "941c33e3-3391-4344-9e1d-249841ed0458",
+              "leftValue": "={{ $json.replied_to_message_id || '' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "909fc437-aeb1-499d-9f7f-35df59f41846",
+              "leftValue": "={{ $json.text || '' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -896,
+        4128
+      ],
+      "id": "1dc2c636-be3c-44e9-88c0-a853bd1e6b02",
+      "name": "Has Reply To? (Clarification)"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COALESCE(\n  (SELECT row_to_json(r) FROM (\n     WITH mode AS (\n       SELECT COALESCE(\n         (SELECT prefs_text\n          FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n          WHERE scope='mode'\n            AND chat_id = $1::text\n            AND user_id = $3::text\n          ORDER BY updated_at DESC\n          LIMIT 1),\n         'user'::text\n       ) AS m\n     )\n     SELECT *,\n       COALESCE((\n         SELECT prefs_text\n         FROM public.\"data_table_user_A04B1GFsDKFbxNMU\", mode\n         WHERE chat_id = $1::text\n           AND (\n             (mode.m = 'user' AND scope='user' AND user_id = $3::text)\n             OR (scope='chat' AND user_id = ''::text)\n           )\n         ORDER BY CASE WHEN scope='user' THEN 1 ELSE 0 END DESC, updated_at DESC\n         LIMIT 1\n       ), ''::text) AS prefs_text\n     FROM public.\"data_table_user_p7tivZsMaHTep84i\"\n     WHERE telegram_chat_id = $1\n       AND status = 'waiting_user_input'\n       AND telegram_msg_id::text = $2::text\n     ORDER BY id DESC\n     LIMIT 1\n  ) r),\n  '{}'::json\n) AS row;\n",
+        "options": {
+          "queryReplacement": "={{ [String($json.chat_id), String($json.replied_to_message_id), String($json.from_id)] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -672,
+        4192
+      ],
+      "id": "a67c6a10-af9e-40b0-b604-e918c16ac810",
+      "name": "Find Waiting Clarification Row",
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const row = $json.row || {};\nconst found = !!(row.gmail_message_id || row.thread_id);\nreturn [{ json: { found, row } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        4192
+      ],
+      "id": "d5c85e6e-0af2-490d-bafa-46655e09e504",
+      "name": "Unwrap Waiting Clarification Row"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2862bc7a-bbee-4202-bb7f-c6b724f2d452",
+              "leftValue": "={{ $json.found }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -224,
+        4192
+      ],
+      "id": "338a75a4-780c-419c-aaab-0e8dbf9b85c0",
+      "name": "Is Waiting Clarification Reply?"
+    },
+    {
+      "parameters": {
+        "jsCode": "const row = $json.row || {};\nconst pi = $('Parse Input').first().json || {};\nlet old = {};\ntry { old = JSON.parse(row.old_email || '{}'); } catch (e) { old = {}; }\nconst questions = Array.isArray(old.questions) ? old.questions : [];\nconst reason = (old.reason || '').toString();\nreturn [{ json: {\n  ...row,\n  telegram_chat_id: row.telegram_chat_id ?? pi.chat_id,\n  user_answers_text: (pi.text || '').toString(),\n  user_reply_message_id: pi.message_id,\n  replied_to_message_id: pi.replied_to_message_id,\n  clarification_questions: questions,\n  clarification_reason: reason\n} }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        4240
+      ],
+      "id": "7250d797-da32-41ac-97ec-fc22536db85e",
+      "name": "Prepare Clarification Payload"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.\"data_table_user_p7tivZsMaHTep84i\"\nSET telegram_message_ids = CASE\n  WHEN telegram_message_ids IS NULL OR telegram_message_ids = '' THEN $1::text\n  ELSE telegram_message_ids || ',' || $1::text\nEND\nWHERE gmail_message_id = $2;\n",
+        "options": {
+          "queryReplacement": "={{ [String($json.user_reply_message_id), String($json.gmail_message_id)] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        224,
+        4240
+      ],
+      "id": "d74d430d-71da-4199-899a-e7ca097e4770",
+      "name": "Append User Clarification Reply MsgId",
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json.gmail_message_id }}",
+        "simple": false,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        4240
+      ],
+      "id": "9d677cce-1997-467f-b905-e9f2494647a7",
+      "name": "Get Gmail Message (Clarification)",
+      "webhookId": "95c24386-4289-4a40-b87d-df2cc4213f69",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const row = $('Prepare Clarification Payload').first().json || {};\nconst msg = $json || {};\n\nfunction decodeB64Url(data = '') {\n  const s = String(data).replace(/-/g, '+').replace(/_/g, '/');\n  const pad = s.length % 4 ? '='.repeat(4 - (s.length % 4)) : '';\n  return Buffer.from(s + pad, 'base64').toString('utf8');\n}\n\nfunction walkParts(part, out) {\n  if (!part) return;\n  const mime = part.mimeType || part.mime_type || '';\n  if (part.body && part.body.data && (mime === 'text/plain' || mime === 'text/html')) {\n    out.push({ mime, text: decodeB64Url(part.body.data) });\n  }\n  const parts = part.parts || [];\n  for (const p of parts) walkParts(p, out);\n}\n\nfunction stripHtml(html = '') {\n  return String(html)\n    .replace(/<style[\\s\\S]*?<\\/style>/gi, '')\n    .replace(/<script[\\s\\S]*?<\\/script>/gi, '')\n    .replace(/<\\/p>/gi, '\\n')\n    .replace(/<br\\s*\\/?>/gi, '\\n')\n    .replace(/<[^>]+>/g, ' ')\n    .replace(/\\s+\\n/g, '\\n')\n    .replace(/\\n{3,}/g, '\\n\\n')\n    .trim();\n}\n\nconst parts = [];\nif (msg.payload) walkParts(msg.payload, parts);\n\nlet plain = parts.find(p => p.mime === 'text/plain')?.text || '';\nlet html = parts.find(p => p.mime === 'text/html')?.text || '';\n\nlet email_text = (plain || stripHtml(html) || msg.snippet || msg.text || '').toString();\nemail_text = email_text.replace(/\\r\\n/g, '\\n').trim().slice(0, 8000);\n\nreturn [{\n  json: {\n    ...row,\n    email_text\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        4240
+      ],
+      "id": "3c9551f3-c2bd-4c54-b6e1-a9e48316b37f",
+      "name": "Extract Email Text (Clarification)"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Writing preferences (follow strictly): {{ $json.prefs_text || '' }}\n\nEmail subject: {{ $json.subject || '' }}\nFrom: {{ $json.from || '' }}\n\nEmail content:\n{{ $json.email_text || '' }}\n\nClarification questions:\n{{ ($json.clarification_questions || []).map((q,i)=>`${i+1}) ${q}`).join('\\n') }}\n\nUser answers:\n{{ $json.user_answers_text || '' }}\n\nWrite the reply email now. Output ONLY the email body. Do not add any labels.",
+        "options": {
+          "systemMessage": "You are an email drafting assistant.\n\nRules:\n- Use the user's answers to resolve missing details.\n- Keep it clear and professional.\n- Output ONLY the email body (no subject line, no labels).\n- If the user answers are incomplete, make reasonable assumptions only when safe; otherwise keep the draft short and ask for the minimum remaining detail in the email body."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        896,
+        4240
+      ],
+      "id": "dbfdd189-e39c-4a8d-aa42-c4ab02e6de19",
+      "name": "Draft Reply (Clarification)"
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ (() => { const s = $json.subject || ''; return (/^\\s*re:/i.test(s) ? s : 'Re: ' + s); })() }}",
+        "message": "={{ $('Draft Reply (Clarification)').first().json.output || '' }}",
+        "options": {
+          "threadId": "={{ $json.thread_id }}",
+          "sendTo": "={{ ($json.from || '').match(/<([^>]+)>/)?.[1] || ($json.from || '').trim() }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        4240
+      ],
+      "id": "9743a456-3f5f-42f9-802d-1931e7901ff4",
+      "name": "Create Gmail Draft (Clarification)",
+      "webhookId": "44fb8a35-8791-419e-8e80-c7ac4c9d1a07",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "N8qlQv0i6oZyrA4p",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.\"data_table_user_p7tivZsMaHTep84i\"\nSET draft_body = $1,\n    status = 'waiting_approve'\nWHERE gmail_message_id = $2;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Draft Reply (Clarification)').first().json.output || ''), String($json.gmail_message_id)] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1472,
+        4240
+      ],
+      "id": "33968b20-99d4-4d8d-b973-0a070482f739",
+      "name": "Update Draft Body + Status (Clarification)",
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.\"data_table_user_p7tivZsMaHTep84i\"\nSET gmail_draft_id = $1,\n    gmail_draft_message_id = $2\nWHERE gmail_message_id = $3;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Create Gmail Draft (Clarification)').first().json.id), String($('Create Gmail Draft (Clarification)').first().json.message?.id || ''), String($json.gmail_message_id)] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1696,
+        4240
+      ],
+      "id": "ab3be64d-5d1e-4684-b073-ce50d9891dbd",
+      "name": "Store Gmail Draft IDs (Clarification)",
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.telegram_chat_id }}",
+        "text": "={{ (() => {\n  const row = $json || {};\n  const rawCat = row.categoy || row.category || 'FYI';\n  const norm = String(rawCat).toUpperCase().trim().replace(/[\\s_]+/g, '_');\n  const displayCat = norm.replace(/_/g, ' ');\n  const from = row.from || 'Unknown';\n  const subject = row.subject || 'No subject';\n  const draft = row.draft_body || '';\n  return `Category: ${displayCat}\\nFrom: ${from}\\nSubject: ${subject}\\n\\nDraft email:\\n${draft}`;\n})() }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✅ Approve",
+                    "additionalFields": {
+                      "callback_data": "={{ 'approve:' + $json.gmail_message_id }}"
+                    }
+                  },
+                  {
+                    "text": "✏️ Edit",
+                    "additionalFields": {
+                      "callback_data": "={{ 'edit:' + $json.gmail_message_id }}"
+                    }
+                  },
+                  {
+                    "text": "🧾 History",
+                    "additionalFields": {
+                      "callback_data": "={{ 'history:' + $json.gmail_message_id }}"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🎨 Style",
+                    "additionalFields": {
+                      "callback_data": "style"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1984,
+        4240
+      ],
+      "id": "58184db3-5b90-44e6-b3ae-128518b7899d",
+      "name": "Send Draft (Clarification)",
+      "webhookId": "3a167a78-a4a6-4ac8-9502-7a9e3e27b2cb",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.\"data_table_user_p7tivZsMaHTep84i\"\nSET telegram_message_ids = CASE\n  WHEN telegram_message_ids IS NULL OR telegram_message_ids = '' THEN $1::text\n  ELSE telegram_message_ids || ',' || $1::text\nEND\nWHERE gmail_message_id = $2;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Send Draft (Clarification)').first().json.result.message_id), String($json.gmail_message_id)] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2272,
+        4240
+      ],
+      "id": "e5c91b01-f5da-4a20-849b-c9b15a2dbfc9",
+      "name": "Append Bot Draft MsgId (Clarification)",
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse Input').first().json.chat_id }}",
+        "text": "✅ Done.\nEdit mode closed.\nNew emails are coming in again.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -4032,
+        4560
+      ],
+      "id": "6a7f55ed-663e-40a5-a1af-4615a0c100f0",
+      "name": "Send Done (Edit Closed)",
+      "webhookId": "3ac20642-1081-422a-939f-08249f7526db",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse Input').first().json.chat_id }}",
+        "text": "✅ Done.\nEdit mode closed.\nNew emails are coming in again.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        0
+      ],
+      "id": "621c2d69-ee0d-4cd2-a087-7dc6277ca453",
+      "name": "Send Done (Approve)",
+      "webhookId": "85771f58-07ab-4166-92b2-b1dc3bfccc0b",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse Input').first().json.chat_id }}",
+        "text": "✏️ Edit mode started (5:00).\nNew emails are paused until the timer ends or you tap ✅ Approve.\n\nSend your edit instructions now (text or voice).",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "b54ded06-847a-4178-8427-632406ad7ca4",
+      "name": "Send Edit Mode Started Msg",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        192
+      ],
+      "webhookId": "3b38530e-1bcd-4c67-b273-81dd1e596561",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "vyo0txtwp3Qx7qYo",
+          "mode": "list"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "chat_id",
+              "keyValue": "={{ String($('Parse Input').first().json.chat_id ?? '') }}"
+            },
+            {
+              "keyName": "user_id",
+              "keyValue": "={{ String($('Parse Input').first().json.from_id ?? '') }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "mode": "waiting_edit",
+            "pending_draft_id": "={{ (() => { try { return String($('Create Gmail Draft').first().json.id); } catch (e) { try { return String($('Check Edit Session').first().json.pending_draft_id || ''); } catch (e2) { return ''; } } })() }}",
+            "field": "body",
+            "expires_at": "={{ new Date(Date.now() + 5*60*1000).toISOString() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pending_draft_id",
+              "displayName": "pending_draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mode",
+              "displayName": "mode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "field",
+              "displayName": "field",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "expires_at",
+              "displayName": "expires_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pending_transcript",
+              "displayName": "pending_transcript",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "confirm_msg_id",
+              "displayName": "confirm_msg_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "voice_file_id",
+              "displayName": "voice_file_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "0ea4814a-68b2-47ed-bf04-bc6d0488f67a",
+      "name": "Extend Edit Session",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        5184,
+        3936
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Parse Input').first().json.callback_query_id }}",
+        "additionalFields": {
+          "text": "✅ Approved. Sending now..."
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1568,
+        0
+      ],
+      "id": "ebba7ac0-6d7e-4432-9a53-67f023aff383",
+      "name": "Answer Callback (Approve)",
+      "webhookId": "96196023-4590-428c-bc0a-179d918a9b5e",
+      "retryOnFail": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "vyo0txtwp3Qx7qYo",
+          "mode": "list"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "chat_id",
+              "keyValue": "={{ String($('Parse Input').first().json.chat_id ?? '') }}"
+            },
+            {
+              "keyName": "user_id",
+              "keyValue": "={{ String($('Parse Input').first().json.from_id ?? '') }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "confirm_msg_id": "={{ String($json.result.message_id) }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pending_draft_id",
+              "displayName": "pending_draft_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mode",
+              "displayName": "mode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "field",
+              "displayName": "field",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "expires_at",
+              "displayName": "expires_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "pending_transcript",
+              "displayName": "pending_transcript",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "confirm_msg_id",
+              "displayName": "confirm_msg_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "voice_file_id",
+              "displayName": "voice_file_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        192
+      ],
+      "id": "6bfee3a9-2fa4-4b0e-9c1c-0c841105e526",
+      "name": "Store Edit Mode MsgId",
+      "settings": {
+        "alwaysOutputData": true
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.\"data_table_user_p7tivZsMaHTep84i\"\nSET telegram_message_ids = CASE\n  WHEN telegram_message_ids IS NULL OR telegram_message_ids = '' THEN $1::text\n  ELSE telegram_message_ids || ',' || $1::text\nEND\nWHERE gmail_message_id = $2;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Send Edit Mode Started Msg').first().json.result.message_id), String($('Parse Input').first().json.draft_id)] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -448,
+        192
+      ],
+      "id": "730b2951-ec49-4d43-9dda-051664ea400b",
+      "name": "Append Bot MsgId (Edit Mode Started)",
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Split Stored Edit Msg IDs (Edit)').first().json.chat_id }}",
+        "text": "✏️ Edit mode started (5:00).\nNew emails are paused until the timer ends or you tap ✅ Approve.\n\nSend your edit instructions now (text or voice).",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "8087c0f7-015a-48b9-826b-eb53a58699e7",
+      "name": "Send Edit Mode Started Msg1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        4512,
+        3936
+      ],
+      "webhookId": "ab0fa26b-4f4d-4030-bbab-af4b9f996ec3",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse /style commands from Telegram text messages\nconst base = $json || {};\nconst raw = String(base.text || '').trim();\nconst lower = raw.toLowerCase();\n\nif (!lower.startsWith('/style')) {\n  return [{ json: { ...base, is_style_cmd: false } }];\n}\n\nconst rest = raw.slice(6).trim(); // after \"/style\"\nif (!rest) {\n  return [{ json: { ...base, is_style_cmd: true, style_action: 'SHOW', style_arg: '' } }];\n}\n\nconst firstSpace = rest.indexOf(' ');\nconst cmd = (firstSpace === -1 ? rest : rest.slice(0, firstSpace)).trim().toLowerCase();\nconst arg = (firstSpace === -1 ? '' : rest.slice(firstSpace + 1)).trim();\n\nfunction help(reason) {\n  return [{ json: { ...base, is_style_cmd: true, style_action: 'HELP', help_reason: reason || '', style_arg: '' } }];\n}\n\nif (cmd === 'show') {\n  return [{ json: { ...base, is_style_cmd: true, style_action: 'SHOW', style_arg: '' } }];\n}\nif (cmd === 'set') {\n  if (!arg) return help('Missing text for /style set');\n  return [{ json: { ...base, is_style_cmd: true, style_action: 'SET', style_arg: arg } }];\n}\nif (cmd === 'add') {\n  if (!arg) return help('Missing text for /style add');\n  return [{ json: { ...base, is_style_cmd: true, style_action: 'ADD', style_arg: arg } }];\n}\nif (cmd === 'reset') {\n  return [{ json: { ...base, is_style_cmd: true, style_action: 'RESET', style_arg: '' } }];\n}\nif (cmd === 'mode') {\n  const v = arg.toLowerCase();\n  if (v === 'chat') return [{ json: { ...base, is_style_cmd: true, style_action: 'MODE', mode_value: 'chat' } }];\n  if (v === 'me' || v === 'user') return [{ json: { ...base, is_style_cmd: true, style_action: 'MODE', mode_value: 'user' } }];\n  return help('Use: /style mode chat OR /style mode me');\n}\n\nreturn help('Unknown /style command');"
+      },
+      "id": "d832ac88-264a-4b51-9019-2ef762e42368",
+      "name": "Parse /style Command",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1344,
+        3728
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "8b024d1d-2af2-4cbb-80a6-295e4860b9c2",
+              "leftValue": "={{ $json.is_style_cmd === true }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b7fe7086-2fd7-4051-9d45-07030ce955fd",
+      "name": "Is /style command?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1120,
+        3728
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.style_action }}",
+                    "rightValue": "SHOW",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "549686e1-a6d1-4bf0-9c23-58dac40663b1"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.style_action }}",
+                    "rightValue": "SET",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "47b7cb90-1888-44a4-a2a5-0cba3953fa35"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.style_action }}",
+                    "rightValue": "ADD",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "2af9fb69-6d0e-47ba-b16f-9c6928a94b13"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.style_action }}",
+                    "rightValue": "RESET",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "cd52370f-4a83-47bc-a719-ab6322187a3d"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.style_action }}",
+                    "rightValue": "MODE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "150f2af9-1e8c-4d8e-8ed5-86000c0af31c"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.style_action }}",
+                    "rightValue": "HELP",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "7627bdfd-eaec-4a07-b557-4336d5ba2a2b"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0db85a99-acc4-4839-a4ca-aac0c415b5a7",
+      "name": "Style Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -896,
+        3200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  $1::text AS chat_id,\n  $2::text AS user_id,\n  COALESCE(\n    (SELECT prefs_text\n     FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n     WHERE scope='mode' AND chat_id=$1::text AND user_id=$2::text\n     ORDER BY updated_at DESC\n     LIMIT 1),\n    'user'::text\n  ) AS mode,\n  COALESCE(\n    (SELECT prefs_text\n     FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n     WHERE scope='user' AND chat_id=$1::text AND user_id=$2::text\n     ORDER BY updated_at DESC\n     LIMIT 1),\n    ''::text\n  ) AS user_prefs,\n  COALESCE(\n    (SELECT prefs_text\n     FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n     WHERE scope='chat' AND chat_id=$1::text AND user_id=''::text\n     ORDER BY updated_at DESC\n     LIMIT 1),\n    ''::text\n  ) AS chat_prefs;\n",
+        "options": {
+          "queryReplacement": "={{ [String($json.chat_id), String($json.from_id)] }}"
+        }
+      },
+      "id": "2333958c-220a-4a66-a8d7-526ceed8ce90",
+      "name": "Style - Show (SQL)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -672,
+        2784
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const mode = String($json.mode || 'user').toLowerCase();\nconst userPrefs = String($json.user_prefs || '').trim();\nconst chatPrefs = String($json.chat_prefs || '').trim();\n\nconst modeLabel = (mode === 'chat') ? 'chat' : 'me';\n\nlet out = `Your Style:\\n\\n`;\nout += `Chat style:\\n${userPrefs ? userPrefs : '(empty)'}\\n\\n`;\n\nreturn [{ json: { ...$json, reply_text: out } }];"
+      },
+      "id": "cb2eef5d-7475-439c-8455-65dbba4931f6",
+      "name": "Format Style Show",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        2784
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $json.reply_text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "65f586c0-a7e9-4fd9-a682-0ceb8a611064",
+      "name": "Send Style (Show)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -224,
+        2784
+      ],
+      "webhookId": "2b13258a-e38d-489e-8f61-36b78af1a47b",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH mode AS (\n  SELECT COALESCE(\n    (SELECT prefs_text\n     FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n     WHERE scope='mode' AND chat_id=$1::text AND user_id=$2::text\n     ORDER BY updated_at DESC\n     LIMIT 1),\n    'user'::text\n  ) AS m\n),\ntarget AS (\n  SELECT\n    CASE WHEN mode.m='chat' THEN 'chat' ELSE 'user' END AS scope,\n    CASE WHEN mode.m='chat' THEN ''::text ELSE $2::text END AS target_user_id\n  FROM mode\n)\nINSERT INTO public.\"data_table_user_A04B1GFsDKFbxNMU\"(scope, chat_id, user_id, prefs_text, updated_at)\nSELECT (SELECT scope FROM target), $1::text, (SELECT target_user_id FROM target), $3::text, now()\nRETURNING chat_id, user_id, scope, prefs_text;\n",
+        "options": {
+          "queryReplacement": "={{ [String($json.chat_id), String($json.from_id), String($json.style_arg)] }}"
+        }
+      },
+      "id": "91b349c0-5384-46af-9616-69577f81c188",
+      "name": "Style - Set (SQL)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -672,
+        3360
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ 'Saved. I\\'ll use this for future drafts.' }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "574b70a7-ba95-483d-897e-ecb8a90ba0aa",
+      "name": "Send Style (Saved)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -448,
+        3360
+      ],
+      "webhookId": "b35ab7c4-a0f3-417c-847f-77ac9ecef98f",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH mode AS (\n  SELECT COALESCE(\n    (SELECT prefs_text\n     FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n     WHERE scope='mode' AND chat_id=$1::text AND user_id=$2::text\n     ORDER BY updated_at DESC\n     LIMIT 1),\n    'user'::text\n  ) AS m\n),\ntarget AS (\n  SELECT\n    CASE WHEN mode.m='chat' THEN 'chat' ELSE 'user' END AS scope,\n    CASE WHEN mode.m='chat' THEN ''::text ELSE $2::text END AS target_user_id\n  FROM mode\n),\ncurrent AS (\n  SELECT prefs_text\n  FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n  WHERE scope = (SELECT scope FROM target)\n    AND chat_id = $1::text\n    AND user_id = (SELECT target_user_id FROM target)\n  ORDER BY updated_at DESC\n  LIMIT 1\n),\nfinal AS (\n  SELECT\n    (SELECT scope FROM target) AS scope,\n    $1::text AS chat_id,\n    (SELECT target_user_id FROM target) AS user_id,\n    CASE\n      WHEN COALESCE((SELECT prefs_text FROM current), '') <> ''\n        THEN (SELECT prefs_text FROM current) || E'\\n' || $3::text\n      ELSE $3::text\n    END AS prefs_text\n)\nINSERT INTO public.\"data_table_user_A04B1GFsDKFbxNMU\"(scope, chat_id, user_id, prefs_text, updated_at)\nSELECT scope, chat_id, user_id, prefs_text, now()\nFROM final\nRETURNING chat_id, user_id, scope, prefs_text;\n",
+        "options": {
+          "queryReplacement": "={{ [String($json.chat_id), String($json.from_id), String($json.style_arg)] }}"
+        }
+      },
+      "id": "74aba707-dabd-48bf-b141-344f879f5be2",
+      "name": "Style - Add (SQL)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -672,
+        3552
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ 'Added. I\\'ll use this for future drafts.' }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "91bf7e98-e9b5-4df0-bbda-090221346c40",
+      "name": "Send Style (Added)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -448,
+        3552
+      ],
+      "webhookId": "cb73d33e-3899-4cf6-84ad-1278f1d299ea",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH cleared AS (\n  INSERT INTO public.\"data_table_user_A04B1GFsDKFbxNMU\"\n    (scope, chat_id, user_id, prefs_text, updated_at)\n  VALUES\n    ('user', $1::text, $2::text, ''::text, now()),\n    ('chat', $1::text, ''::text, ''::text, now())\n  ON CONFLICT (scope, chat_id, user_id)\n  DO UPDATE SET prefs_text = EXCLUDED.prefs_text,\n                updated_at = now()\n  RETURNING scope, chat_id, user_id, prefs_text\n)\nSELECT * FROM cleared;\n",
+        "options": {
+          "queryReplacement": "={{ [String($json.chat_id), String($json.from_id)] }}"
+        }
+      },
+      "id": "3dca4d0c-7201-4d00-883c-65a53cfd42b0",
+      "name": "Style - Reset (SQL)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -672,
+        3168
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ 'Reset. Style is now empty.' }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "d60ac87a-0827-4b46-84f8-60f68a250525",
+      "name": "Send Style (Reset)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -448,
+        3168
+      ],
+      "webhookId": "a20daeb3-a4a5-4401-a269-e34c3ed4567b",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH upserted AS (\n  INSERT INTO public.\"data_table_user_A04B1GFsDKFbxNMU\"(scope, chat_id, user_id, prefs_text, updated_at)\n  VALUES ('mode', $1::text, $2::text, $3::text, now())\n  ON CONFLICT (scope, chat_id, user_id)\n  DO UPDATE SET prefs_text=EXCLUDED.prefs_text, updated_at=now()\n  RETURNING chat_id, user_id, prefs_text\n)\nSELECT * FROM upserted;\n",
+        "options": {
+          "queryReplacement": "={{ [String($json.chat_id), String($json.from_id), String($json.mode_value)] }}"
+        }
+      },
+      "id": "558609bb-724f-4a55-a8f9-d7993769b74d",
+      "name": "Style - Mode (SQL)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -672,
+        2976
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ 'Mode set to ' + ($json.mode_value === 'chat' ? 'chat' : 'me') + '.' }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "894de128-8a32-421f-b374-67ac8c3aa5d1",
+      "name": "Send Style (Mode)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -448,
+        2976
+      ],
+      "webhookId": "90046c25-e235-451a-a65d-6d5fe5751858",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "=/style show\n/style set <text>\n/style add <text>\n/style reset\n/style mode chat\n/style mode me",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "cdfaccbe-039b-4921-9383-9bcba6f41ce6",
+      "name": "Send Style (Help)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -672,
+        3744
+      ],
+      "webhookId": "6de80fb9-3970-4ce0-aa2e-cbbdad6b9176",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Parse Input').first().json.callback_query_id }}",
+        "additionalFields": {
+          "text": "🎨 Style menu"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1568,
+        768
+      ],
+      "id": "6d669273-9dd3-4889-9ee0-0bd39adf3eaa",
+      "name": "Answer Callback (Style Menu)",
+      "webhookId": "95e5e084-baec-4644-a79a-e2695b64d068",
+      "retryOnFail": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse Input').first().json.chat_id }}",
+        "text": "Style preferences menu:",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "📌 Show",
+                    "additionalFields": {
+                      "callback_data": "style_show"
+                    }
+                  },
+                  {
+                    "text": "✍️ Set",
+                    "additionalFields": {
+                      "callback_data": "style_set"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "➕ Add",
+                    "additionalFields": {
+                      "callback_data": "style_add"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "✅ Done",
+                    "additionalFields": {
+                      "callback_data": "style_done"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "a1121ea3-96f9-4612-a1bc-9ff4b386ca7a",
+      "name": "Send Style Menu",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1120,
+        960
+      ],
+      "webhookId": "e7e421ec-42de-4ab7-a303-7df158554ffb",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Parse Input').first().json.callback_query_id }}",
+        "additionalFields": {
+          "text": "📌 showing style"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1568,
+        1344
+      ],
+      "id": "66cccc1b-34ae-4bf5-a51c-4ff0a7ad7a71",
+      "name": "Answer Callback (Style Show)",
+      "webhookId": "10619d3d-cdc1-43b7-ad50-f37a4c1c0d9a",
+      "retryOnFail": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Parse Input').first().json.callback_query_id }}",
+        "additionalFields": {
+          "text": "✍️ set style"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1568,
+        1536
+      ],
+      "id": "b97cc3d4-a1e5-482e-8537-e00461640c93",
+      "name": "Answer Callback (Style Set)",
+      "webhookId": "5b65efb5-292a-4767-97fd-054717fbd6b6",
+      "retryOnFail": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Parse Input').first().json.callback_query_id }}",
+        "additionalFields": {
+          "text": "➕ add style"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1568,
+        2112
+      ],
+      "id": "9ac0d136-773f-4300-8f92-0b3a39a18b68",
+      "name": "Answer Callback (Style Add)",
+      "webhookId": "28719edf-b003-452c-b73f-6d1fae9b2fc0",
+      "retryOnFail": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "callback",
+        "queryId": "={{ $('Parse Input').first().json.callback_query_id }}",
+        "additionalFields": {
+          "text": "✅ Done. Cleaning up style messages…"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1568,
+        2496
+      ],
+      "id": "d6bd8038-fad5-464a-892f-74a8b7be72fa",
+      "name": "Answer Callback (Style Done)",
+      "webhookId": "2040ec37-737b-4d94-9649-99b350f109d9",
+      "retryOnFail": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.\"data_table_user_TPnrxKGxzjJTIpMb\"\n  (chat_id, user_id, action, scope, expires_at)\nVALUES\n  ($1::text, $2::text, 'SET', 'user', now() + interval '10 minutes')\nON CONFLICT (chat_id, user_id)\nDO UPDATE SET\n  action     = EXCLUDED.action,\n  scope      = EXCLUDED.scope,\n  expires_at = EXCLUDED.expires_at\nRETURNING chat_id, user_id, action, scope, expires_at;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id)] }}"
+        }
+      },
+      "id": "619bbcc6-0a71-4e50-b992-ac4881ab1433",
+      "name": "Style Pending - Upsert (SET)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1568,
+        1728
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.\"data_table_user_TPnrxKGxzjJTIpMb\"\n  (chat_id, user_id, action, scope, expires_at)\nVALUES\n  ($1::text, $2::text, 'ADD', 'user', now() + interval '10 minutes')\nON CONFLICT (chat_id, user_id)\nDO UPDATE SET\n  action     = EXCLUDED.action,\n  scope      = EXCLUDED.scope,\n  expires_at = EXCLUDED.expires_at\nRETURNING chat_id, user_id, action, scope, expires_at;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id)] }}"
+        }
+      },
+      "id": "7ba6a704-49cb-4311-8beb-248a25e5b202",
+      "name": "Style Pending - Upsert (ADD)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1568,
+        2304
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse Input').first().json.chat_id }}",
+        "text": "Send your style text now. (expires in 10 minutes)",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "b6e6dd13-48c8-4dfd-81cc-215985987692",
+      "name": "Send Style Prompt (Set)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1344,
+        1728
+      ],
+      "webhookId": "446333f9-1852-4a7e-a82a-899caba5951c",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse Input').first().json.chat_id }}",
+        "text": "Send extra style rules now. (expires in 10 minutes)",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "7c6164e1-9a81-4ca7-81ba-fdb6bd351dee",
+      "name": "Send Style Prompt (Add)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1344,
+        2304
+      ],
+      "webhookId": "09755098-1ffb-4973-8679-d03a43d1ffde",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM public.\"data_table_user_TPnrxKGxzjJTIpMb\"\nWHERE chat_id = $1::text\n  AND user_id = $2::text;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id)] }}"
+        }
+      },
+      "id": "6509648e-c7ba-46d7-86c2-3e3602d755ea",
+      "name": "Style Pending - Clear (button)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -672,
+        1824
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH active AS (\n  SELECT scope, action, expires_at\n  FROM public.\"data_table_user_TPnrxKGxzjJTIpMb\"\n  WHERE chat_id = $1::text\n    AND user_id = $2::text\n    AND expires_at > now()\n  ORDER BY expires_at DESC\n  LIMIT 1\n)\nSELECT\n  EXISTS(SELECT 1 FROM active) AS has_pending,\n  (SELECT action FROM active) AS action,\n  (SELECT scope  FROM active) AS scope;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id)] }}"
+        }
+      },
+      "id": "ff448a3f-5555-45fc-a6fa-5cf861e17f2c",
+      "name": "Check Style Pending",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1792,
+        3440
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1c28fb61-6e27-40b4-a837-4c777858f61b",
+              "leftValue": "={{ $json.action || '' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1568,
+        3440
+      ],
+      "id": "e3180726-314b-468b-904f-abc9a12186ac",
+      "name": "Is Style Pending?"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH target AS (\n  SELECT\n    $1::text AS scope,\n    $2::text AS chat_id,\n    CASE WHEN $1::text = 'chat' THEN ''::text ELSE $3::text END AS user_id,\n    COALESCE($4::text, ''::text) AS new_text,\n    COALESCE($5::text, ''::text) AS action\n)\nINSERT INTO public.\"data_table_user_A04B1GFsDKFbxNMU\"\n  (scope, chat_id, user_id, prefs_text, updated_at)\nSELECT\n  scope,\n  chat_id,\n  user_id,\n  new_text,\n  now()::text\nFROM target\nON CONFLICT (scope, chat_id, user_id)\nDO UPDATE SET\n  prefs_text =\n    CASE\n      WHEN EXCLUDED.prefs_text IS NULL THEN COALESCE(public.\"data_table_user_A04B1GFsDKFbxNMU\".prefs_text, '')\n\n      WHEN (SELECT action FROM target) = 'ADD'\n           AND COALESCE(public.\"data_table_user_A04B1GFsDKFbxNMU\".prefs_text, '') <> ''\n           AND EXCLUDED.prefs_text <> ''\n        THEN public.\"data_table_user_A04B1GFsDKFbxNMU\".prefs_text || E'\\n' || EXCLUDED.prefs_text\n\n      WHEN (SELECT action FROM target) = 'ADD'\n        THEN EXCLUDED.prefs_text\n\n      ELSE\n        EXCLUDED.prefs_text\n    END,\n  updated_at = now()::text\nRETURNING scope, chat_id, user_id, prefs_text, updated_at;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Check Style Pending').first().json.scope), String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id), String($('Parse Input').first().json.text || ''), String($('Check Style Pending').first().json.action)] }}"
+        }
+      },
+      "id": "bec22cde-0454-4a35-9f84-89531f78a945",
+      "name": "Apply Style Pending",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1120,
+        2592
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM public.\"data_table_user_TPnrxKGxzjJTIpMb\"\nWHERE chat_id = $1::text\n  AND user_id = $2::text;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id)] }}"
+        }
+      },
+      "id": "5a66dbd1-aef1-451d-b577-b68cba71f981",
+      "name": "Style Pending - Clear (message)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -896,
+        2592
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse Input').first().json.chat_id }}",
+        "text": "saved. i’ll use this for future drafts.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "27c463ea-0adb-497f-8e3b-63b42af21a66",
+      "name": "Send Style (Saved via pending)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -672,
+        2592
+      ],
+      "webhookId": "c39b5dac-ca24-4743-a173-30bb29b9dbe0",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE IF NOT EXISTS public.\"data_table_user_b26gmdnb6Vi6s2dS\" (\n  chat_id TEXT NOT NULL,\n  user_id TEXT NOT NULL,\n  message_ids TEXT NOT NULL DEFAULT '',\n  expires_at TIMESTAMPTZ NOT NULL DEFAULT (now() + interval '10 minutes'),\n  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),\n  PRIMARY KEY (chat_id, user_id)\n);\n",
+        "options": {}
+      },
+      "id": "054f901b-4ce8-4097-9c09-de44b55bf4e4",
+      "name": "Style Session - Init Table (Menu)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1568,
+        960
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.\"data_table_user_b26gmdnb6Vi6s2dS\"(chat_id, user_id, message_ids, expires_at, updated_at)\nVALUES ($1::text, $2::text, ''::text, now() + interval '10 minutes', now())\nON CONFLICT (chat_id, user_id)\nDO UPDATE SET message_ids=''::text, expires_at=EXCLUDED.expires_at, updated_at=now()\nRETURNING chat_id, user_id, message_ids, expires_at;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id)] }}"
+        }
+      },
+      "id": "e831b5e9-ac72-4abb-a4f1-c161306a3581",
+      "name": "Style Session - Start (Menu)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1344,
+        960
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.\"data_table_user_b26gmdnb6Vi6s2dS\"(chat_id, user_id, message_ids, expires_at, updated_at)\nVALUES ($1::text, $2::text, $3::text, now() + interval '10 minutes', now())\nON CONFLICT (chat_id, user_id)\nDO UPDATE SET\n  message_ids = CASE\n    WHEN public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids IS NULL OR public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids = '' THEN EXCLUDED.message_ids\n    ELSE public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids || ',' || EXCLUDED.message_ids\n  END,\n  expires_at = EXCLUDED.expires_at,\n  updated_at = now()\nRETURNING chat_id, user_id, message_ids, expires_at;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id), String($json.result?.message_id || '')] }}"
+        }
+      },
+      "id": "02541cfe-9ab2-4111-a69c-c7f0bf23b766",
+      "name": "Style Session - Append MsgId (Bot)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -896,
+        960
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.\"data_table_user_b26gmdnb6Vi6s2dS\"(chat_id, user_id, message_ids, expires_at, updated_at)\nVALUES ($1::text, $2::text, $3::text, now() + interval '10 minutes', now())\nON CONFLICT (chat_id, user_id)\nDO UPDATE SET\n  message_ids = CASE\n    WHEN public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids IS NULL OR public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids = '' THEN EXCLUDED.message_ids\n    ELSE public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids || ',' || EXCLUDED.message_ids\n  END,\n  expires_at = EXCLUDED.expires_at,\n  updated_at = now()\nRETURNING chat_id, user_id, message_ids, expires_at;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id), String($('Parse Input').first().json.message_id || '')] }}"
+        }
+      },
+      "id": "a6d2fc82-feca-437c-8568-5290eccc596d",
+      "name": "Style Session - Append MsgId (User)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1344,
+        2592
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE IF NOT EXISTS public.\"data_table_user_b26gmdnb6Vi6s2dS\" (\n  chat_id TEXT NOT NULL,\n  user_id TEXT NOT NULL,\n  message_ids TEXT NOT NULL DEFAULT '',\n  expires_at TIMESTAMPTZ NOT NULL DEFAULT (now() + interval '10 minutes'),\n  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),\n  PRIMARY KEY (chat_id, user_id)\n);\n",
+        "options": {}
+      },
+      "id": "93629c4c-1093-4b57-86a1-f77de4d1a0ec",
+      "name": "Style Session - Init Table (Done)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1568,
+        1152
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT message_ids\nFROM public.\"data_table_user_b26gmdnb6Vi6s2dS\"\nWHERE chat_id=$1::text AND user_id=$2::text\n  AND expires_at > now()\nLIMIT 1;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id)] }}"
+        }
+      },
+      "id": "f046e9a1-bcba-408e-a628-21e29fa5e262",
+      "name": "Style Session - Get (Done)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1344,
+        1152
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const chatId = $('Parse Input').first().json.chat_id;\nconst raw = String($json.message_ids || '').trim();\nconst extra = [\n  $('Parse Input').first().json.telegram_msg_id,\n  $('Parse Input').first().json.message_id,\n];\nconst ids = [];\nconst pushId = (v) => {\n  const s = String(v ?? '').trim();\n  if (!s) return;\n  // keep digits only\n  const m = s.match(/\\d+/);\n  if (m) ids.push(m[0]);\n};\nif (raw) raw.split(',').forEach(pushId);\nextra.forEach(pushId);\n// unique\nconst uniq = Array.from(new Set(ids));\nreturn uniq.map(message_id => ({ json: { chat_id: chatId, message_id } }));\n"
+      },
+      "id": "66f74784-1204-402b-93c2-1652c9816365",
+      "name": "Split Style Session Msg IDs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1120,
+        1152
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "deleteMessage",
+        "chatId": "={{ $json.chat_id }}",
+        "messageId": "={{ $json.message_id }}"
+      },
+      "id": "fede5882-f433-42ed-a567-05f135f473d8",
+      "name": "Delete Style Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -896,
+        1152
+      ],
+      "webhookId": "0e4a1700-d74b-4f18-8ae5-20fcce849d16",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM public.\"data_table_user_b26gmdnb6Vi6s2dS\"\nWHERE chat_id=$1::text AND user_id=$2::text;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id)] }}"
+        }
+      },
+      "id": "dbd168af-e9b7-4cad-9cbc-dd713ffa8e2c",
+      "name": "Style Session - Clear (Done)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -672,
+        960
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "APPROVE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "8a627fc3-5300-4e85-a7ba-ded92f5a6a0e"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "EDIT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0b0549a4-6c59-4b16-b0de-37340dad3921"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "HISTORY",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "81a38b93-e622-4041-a61c-32d0d396956e"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1792,
+        272
+      ],
+      "id": "dbe8d79a-7026-4a34-ba9b-67599f4d4a1c",
+      "name": "Button Action (Core)"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "STYLE_MENU",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "c2f054ee-79a6-4935-9b89-6c424bdd8b7b"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "STYLE_SHOW",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "b51c50c2-06c5-40a6-949d-857d48fd1426"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "STYLE_SET",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "420ba027-4efd-4ccd-8d5e-507855ef0002"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "STYLE_ADD",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "85089634-04f2-4d5f-af9b-daccb0930bd3"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.action }}",
+                    "rightValue": "STYLE_DONE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "6864225d-b1c0-4372-9855-46bcc4d4e55a"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1792,
+        1584
+      ],
+      "id": "f6e7ee8e-18ff-4d0c-a4df-dfc114a2191a",
+      "name": "Button Action (Style)"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.\"data_table_user_b26gmdnb6Vi6s2dS\"(chat_id, user_id, message_ids, expires_at, updated_at)\nVALUES ($1::text, $2::text, $3::text, now() + interval '10 minutes', now())\nON CONFLICT (chat_id, user_id)\nDO UPDATE SET\n  message_ids = CASE\n    WHEN public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids IS NULL OR public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids = '' THEN EXCLUDED.message_ids\n    ELSE public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids || ',' || EXCLUDED.message_ids\n  END,\n  expires_at = EXCLUDED.expires_at,\n  updated_at = now()\nRETURNING chat_id, user_id, message_ids, expires_at;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id), String($json.result?.message_id || '')] }}"
+        }
+      },
+      "id": "c2f07862-a860-4d82-b0bc-265e354f7112",
+      "name": "Style Session - Append MsgId (Bot) (Send Style Prompt (Set))",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1120,
+        1728
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.\"data_table_user_b26gmdnb6Vi6s2dS\"(chat_id, user_id, message_ids, expires_at, updated_at)\nVALUES ($1::text, $2::text, $3::text, now() + interval '10 minutes', now())\nON CONFLICT (chat_id, user_id)\nDO UPDATE SET\n  message_ids = CASE\n    WHEN public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids IS NULL OR public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids = '' THEN EXCLUDED.message_ids\n    ELSE public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids || ',' || EXCLUDED.message_ids\n  END,\n  expires_at = EXCLUDED.expires_at,\n  updated_at = now()\nRETURNING chat_id, user_id, message_ids, expires_at;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id), String($json.result?.message_id || '')] }}"
+        }
+      },
+      "id": "7aa6342e-982c-44e6-8a15-3425c5f1bd7a",
+      "name": "Style Session - Append MsgId (Bot) (Send Style Prompt (Add))",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1120,
+        2304
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.\"data_table_user_b26gmdnb6Vi6s2dS\"(chat_id, user_id, message_ids, expires_at, updated_at)\nVALUES ($1::text, $2::text, $3::text, now() + interval '10 minutes', now())\nON CONFLICT (chat_id, user_id)\nDO UPDATE SET\n  message_ids = CASE\n    WHEN public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids IS NULL OR public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids = '' THEN EXCLUDED.message_ids\n    ELSE public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids || ',' || EXCLUDED.message_ids\n  END,\n  expires_at = EXCLUDED.expires_at,\n  updated_at = now()\nRETURNING chat_id, user_id, message_ids, expires_at;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id), String($json.result?.message_id || '')] }}"
+        }
+      },
+      "id": "391457be-987d-4cd4-a6ea-23c899ddc6af",
+      "name": "Style Session - Append MsgId (Bot) (Send Style (Show))",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        2784
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.\"data_table_user_b26gmdnb6Vi6s2dS\"(chat_id, user_id, message_ids, expires_at, updated_at)\nVALUES ($1::text, $2::text, $3::text, now() + interval '10 minutes', now())\nON CONFLICT (chat_id, user_id)\nDO UPDATE SET\n  message_ids = CASE\n    WHEN public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids IS NULL OR public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids = '' THEN EXCLUDED.message_ids\n    ELSE public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids || ',' || EXCLUDED.message_ids\n  END,\n  expires_at = EXCLUDED.expires_at,\n  updated_at = now()\nRETURNING chat_id, user_id, message_ids, expires_at;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id), String($json.result?.message_id || '')] }}"
+        }
+      },
+      "id": "44e5d620-0bc5-4050-8da2-6116e438579f",
+      "name": "Style Session - Append MsgId (Bot) (Send Style (Saved))",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -224,
+        3360
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.\"data_table_user_b26gmdnb6Vi6s2dS\"(chat_id, user_id, message_ids, expires_at, updated_at)\nVALUES ($1::text, $2::text, $3::text, now() + interval '10 minutes', now())\nON CONFLICT (chat_id, user_id)\nDO UPDATE SET\n  message_ids = CASE\n    WHEN public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids IS NULL OR public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids = '' THEN EXCLUDED.message_ids\n    ELSE public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids || ',' || EXCLUDED.message_ids\n  END,\n  expires_at = EXCLUDED.expires_at,\n  updated_at = now()\nRETURNING chat_id, user_id, message_ids, expires_at;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id), String($json.result?.message_id || '')] }}"
+        }
+      },
+      "id": "bbd70a65-5e74-46c8-b2c6-250658eca724",
+      "name": "Style Session - Append MsgId (Bot) (Send Style (Added))",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -224,
+        3552
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.\"data_table_user_b26gmdnb6Vi6s2dS\"(chat_id, user_id, message_ids, expires_at, updated_at)\nVALUES ($1::text, $2::text, $3::text, now() + interval '10 minutes', now())\nON CONFLICT (chat_id, user_id)\nDO UPDATE SET\n  message_ids = CASE\n    WHEN public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids IS NULL OR public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids = '' THEN EXCLUDED.message_ids\n    ELSE public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids || ',' || EXCLUDED.message_ids\n  END,\n  expires_at = EXCLUDED.expires_at,\n  updated_at = now()\nRETURNING chat_id, user_id, message_ids, expires_at;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id), String($json.result?.message_id || '')] }}"
+        }
+      },
+      "id": "555c4fac-0ad5-4043-b5d5-20f280deda93",
+      "name": "Style Session - Append MsgId (Bot) (Send Style (Reset))",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -224,
+        3168
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.\"data_table_user_b26gmdnb6Vi6s2dS\"(chat_id, user_id, message_ids, expires_at, updated_at)\nVALUES ($1::text, $2::text, $3::text, now() + interval '10 minutes', now())\nON CONFLICT (chat_id, user_id)\nDO UPDATE SET\n  message_ids = CASE\n    WHEN public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids IS NULL OR public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids = '' THEN EXCLUDED.message_ids\n    ELSE public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids || ',' || EXCLUDED.message_ids\n  END,\n  expires_at = EXCLUDED.expires_at,\n  updated_at = now()\nRETURNING chat_id, user_id, message_ids, expires_at;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id), String($json.result?.message_id || '')] }}"
+        }
+      },
+      "id": "ad43fd76-bc05-4797-898e-917372a961a6",
+      "name": "Style Session - Append MsgId (Bot) (Send Style (Saved via pending))",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -448,
+        2592
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  $1::text AS chat_id,\n  $2::text AS user_id,\n  COALESCE(\n    (SELECT prefs_text\n     FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n     WHERE scope='mode' AND chat_id=$1::text AND user_id=$2::text\n     ORDER BY updated_at DESC\n     LIMIT 1),\n    'user'::text\n  ) AS mode,\n  COALESCE(\n    (SELECT prefs_text\n     FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n     WHERE scope='user' AND chat_id=$1::text AND user_id=$2::text\n     ORDER BY updated_at DESC\n     LIMIT 1),\n    ''::text\n  ) AS user_prefs,\n  COALESCE(\n    (SELECT prefs_text\n     FROM public.\"data_table_user_A04B1GFsDKFbxNMU\"\n     WHERE scope='chat' AND chat_id=$1::text AND user_id=''::text\n     ORDER BY updated_at DESC\n     LIMIT 1),\n    ''::text\n  ) AS chat_prefs;\n",
+        "options": {
+          "queryReplacement": "={{ [String($json.chat_id), String($json.from_id)] }}"
+        }
+      },
+      "id": "5d621342-7fd4-4477-ab90-16c3fba1a0b0",
+      "name": "Style - Show (SQL) (Button Action (Style))",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1568,
+        1920
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const mode = String($json.mode || 'user').toLowerCase();\nconst userPrefs = String($json.user_prefs || '').trim();\n\n\nconst modeLabel = (mode === 'chat') ? 'chat' : 'me';\n\nlet out = `User style:\\n${userPrefs ? userPrefs : '(empty)'}\\n\\n`;\n\n\nreturn [{ json: { ...$json, reply_text: out } }];"
+      },
+      "id": "58f7ab5b-002a-40bc-9daf-ea7576571061",
+      "name": "Format Style Show (Style - Show (SQL) (Button Action (Style)))",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1344,
+        1920
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $json.reply_text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "f615fde2-8c5c-492a-b2f5-0d1d6d0d9dbb",
+      "name": "Send Style (Show) (Format Style Show (Style - Show (SQL) (Button Action (Style))))",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1120,
+        1920
+      ],
+      "webhookId": "6b65a43c-30ae-4e9b-a5a1-afb197228ff6",
+      "credentials": {
+        "telegramApi": {
+          "id": "NOr4RTc2yK3WqTT7",
+          "name": "Action Needed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.\"data_table_user_b26gmdnb6Vi6s2dS\"(chat_id, user_id, message_ids, expires_at, updated_at)\nVALUES ($1::text, $2::text, $3::text, now() + interval '10 minutes', now())\nON CONFLICT (chat_id, user_id)\nDO UPDATE SET\n  message_ids = CASE\n    WHEN public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids IS NULL OR public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids = '' THEN EXCLUDED.message_ids\n    ELSE public.\"data_table_user_b26gmdnb6Vi6s2dS\".message_ids || ',' || EXCLUDED.message_ids\n  END,\n  expires_at = EXCLUDED.expires_at,\n  updated_at = now()\nRETURNING chat_id, user_id, message_ids, expires_at;\n",
+        "options": {
+          "queryReplacement": "={{ [String($('Parse Input').first().json.chat_id), String($('Parse Input').first().json.from_id), String($json.result?.message_id || '')] }}"
+        }
+      },
+      "id": "fb13dbe4-7795-4312-af2f-5bdeef25df63",
+      "name": "Style Session - Append MsgId (Bot) (Send Style (Show)) (Send Style (Show) (Format Style Show (Style - Show (SQL) (Button Action (Style)))))",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -896,
+        1920
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "ptHlPbbMoRdA1zSz",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        976,
+        4464
+      ],
+      "id": "38c23907-4a55-442e-b1af-11720cadd650",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "58tGVV5vxWrUgphA",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-haiku-4-5-20251001",
+          "mode": "list",
+          "cachedResultName": "Claude Haiku 4.5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        2000,
+        4064
+      ],
+      "id": "02a91c4a-f81b-4338-aaef-9a859224d843",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "1ZrMc80LZuNYTpxa",
+          "name": "Anthropic account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Has Voice? (file_id)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Voice? (file_id)": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Parse Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Execute a command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a command": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Deepgram Transcribe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deepgram Transcribe": {
+      "main": [
+        [
+          {
+            "node": "Cleanup voice files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cleanup voice files": {
+      "main": [
+        [
+          {
+            "node": "Parse Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Input": {
+      "main": [
+        [
+          {
+            "node": "Route by Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Type": {
+      "main": [
+        [
+          {
+            "node": "Button Action (Core)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Button Action (Style)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Style Pending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer Callback (Edit)": {
+      "main": [
+        [
+          {
+            "node": "Create Edit Session",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Edit Session": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Session Valid?": {
+      "main": [
+        [
+          {
+            "node": "Decide Next Step",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Edit Data": {
+      "main": [
+        [
+          {
+            "node": "Append User Edit MsgId (body)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply Edits (LLM)": {
+      "main": [
+        [
+          {
+            "node": "Has Stored Edit Msg IDs? (Edit)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Revised Draft": {
+      "main": [
+        [
+          {
+            "node": "Send Edit Mode Started Msg1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Draft in DB": {
+      "main": [
+        [
+          {
+            "node": "Append Bot Draft MsgId (body)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Session Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Apply Edits (LLM)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query1": {
+      "main": [
+        [
+          {
+            "node": "Consume Session (Reply)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append User Edit MsgId (body)": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Stored Edit Msg IDs?": {
+      "main": [
+        [
+          {
+            "node": "Split Stored Edit Msg IDs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Split Stored Edit Msg IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Stored Edit Msg IDs": {
+      "main": [
+        [
+          {
+            "node": "Delete Stored User Edit Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Stored User Edit Message": {
+      "main": [
+        [
+          {
+            "node": "Collapse After Deletes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collapse After Deletes": {
+      "main": [
+        [
+          {
+            "node": "Clear Stored Edit Msg IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Bot Draft MsgId (body)": {
+      "main": [
+        [
+          {
+            "node": "Extend Edit Session",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Has Stored Edit Msg IDs?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consume Session (Reply)": {
+      "main": [
+        [
+          {
+            "node": "Collapse After Consume (Reply)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collapse After Consume (Reply)": {
+      "main": [
+        [
+          {
+            "node": "Send Done (Approve)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reply Email": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Session Row (History)": {
+      "main": [
+        [
+          {
+            "node": "Get Thread (History)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Thread (History)": {
+      "main": [
+        [
+          {
+            "node": "Pick Last N Msg IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format History": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Last N Msg IDs": {
+      "main": [
+        [
+          {
+            "node": "Get Message (History)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Message (History)": {
+      "main": [
+        [
+          {
+            "node": "Format History",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decide Next Step": {
+      "main": [
+        [
+          {
+            "node": "Route Next Step",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Next Step": {
+      "main": [
+        [
+          {
+            "node": "Prepare Edit Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Stored Edit Msg IDs? (Edit)": {
+      "main": [
+        [
+          {
+            "node": "Split Stored Edit Msg IDs (Edit)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Has Gmail Draft ID? (Edit)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Stored Edit Msg IDs (Edit)": {
+      "main": [
+        [
+          {
+            "node": "Delete Stored Message (Edit)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Stored Message (Edit)": {
+      "main": [
+        [
+          {
+            "node": "Collapse After Deletes (Edit)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collapse After Deletes (Edit)": {
+      "main": [
+        [
+          {
+            "node": "Clear Stored Edit Msg IDs (Edit)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Stored Edit Msg IDs (Edit)": {
+      "main": [
+        [
+          {
+            "node": "Has Gmail Draft ID? (Edit)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Gmail Draft": {
+      "main": [
+        [
+          {
+            "node": "Store Gmail Draft IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Gmail Draft IDs": {
+      "main": [
+        [
+          {
+            "node": "Send Revised Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Old Gmail Draft": {
+      "main": [
+        [
+          {
+            "node": "Create Gmail Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Gmail Draft ID? (Edit)": {
+      "main": [
+        [
+          {
+            "node": "Delete Old Gmail Draft",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Gmail Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Old Gmail Draft1": {
+      "main": [
+        [
+          {
+            "node": "Reply Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Error Notice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Reply To? (Clarification)": {
+      "main": [
+        [
+          {
+            "node": "Find Waiting Clarification Row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Edit Session",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Waiting Clarification Row": {
+      "main": [
+        [
+          {
+            "node": "Unwrap Waiting Clarification Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unwrap Waiting Clarification Row": {
+      "main": [
+        [
+          {
+            "node": "Is Waiting Clarification Reply?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Waiting Clarification Reply?": {
+      "main": [
+        [
+          {
+            "node": "Prepare Clarification Payload",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Edit Session",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Clarification Payload": {
+      "main": [
+        [
+          {
+            "node": "Append User Clarification Reply MsgId",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append User Clarification Reply MsgId": {
+      "main": [
+        [
+          {
+            "node": "Get Gmail Message (Clarification)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Gmail Message (Clarification)": {
+      "main": [
+        [
+          {
+            "node": "Extract Email Text (Clarification)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Email Text (Clarification)": {
+      "main": [
+        [
+          {
+            "node": "Draft Reply (Clarification)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Draft Reply (Clarification)": {
+      "main": [
+        [
+          {
+            "node": "Create Gmail Draft (Clarification)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Gmail Draft (Clarification)": {
+      "main": [
+        [
+          {
+            "node": "Update Draft Body + Status (Clarification)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Draft Body + Status (Clarification)": {
+      "main": [
+        [
+          {
+            "node": "Store Gmail Draft IDs (Clarification)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Gmail Draft IDs (Clarification)": {
+      "main": [
+        [
+          {
+            "node": "Send Draft (Clarification)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Draft (Clarification)": {
+      "main": [
+        [
+          {
+            "node": "Append Bot Draft MsgId (Clarification)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consume Session": {
+      "main": [
+        [
+          {
+            "node": "Send Done (Edit Closed)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Done (Approve)": {
+      "main": [
+        [
+          {
+            "node": "Delete Old Gmail Draft1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Edit Session": {
+      "main": [
+        [
+          {
+            "node": "Pick Latest Edit Session",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Latest Edit Session": {
+      "main": [
+        [
+          {
+            "node": "Send Edit Mode Started Msg",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer Callback (Approve)": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Edit Mode Started Msg": {
+      "main": [
+        [
+          {
+            "node": "Store Edit Mode MsgId",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Edit Mode MsgId": {
+      "main": [
+        [
+          {
+            "node": "Append Bot MsgId (Edit Mode Started)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Edit Mode Started Msg1": {
+      "main": [
+        [
+          {
+            "node": "Update Draft in DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse /style Command": {
+      "main": [
+        [
+          {
+            "node": "Is /style command?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is /style command?": {
+      "main": [
+        [
+          {
+            "node": "Style Action",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Has Reply To? (Clarification)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style Action": {
+      "main": [
+        [
+          {
+            "node": "Style - Show (SQL)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Style - Set (SQL)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Style - Add (SQL)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Style - Reset (SQL)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Style - Mode (SQL)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Style (Help)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style - Show (SQL)": {
+      "main": [
+        [
+          {
+            "node": "Format Style Show",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Style Show": {
+      "main": [
+        [
+          {
+            "node": "Send Style (Show)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style - Set (SQL)": {
+      "main": [
+        [
+          {
+            "node": "Send Style (Saved)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style - Add (SQL)": {
+      "main": [
+        [
+          {
+            "node": "Send Style (Added)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style - Reset (SQL)": {
+      "main": [
+        [
+          {
+            "node": "Send Style (Reset)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style - Mode (SQL)": {
+      "main": [
+        [
+          {
+            "node": "Send Style (Mode)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style Pending - Upsert (SET)": {
+      "main": [
+        [
+          {
+            "node": "Send Style Prompt (Set)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style Pending - Upsert (ADD)": {
+      "main": [
+        [
+          {
+            "node": "Send Style Prompt (Add)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Style Pending": {
+      "main": [
+        [
+          {
+            "node": "Is Style Pending?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Style Pending?": {
+      "main": [
+        [
+          {
+            "node": "Style Session - Append MsgId (User)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Parse /style Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply Style Pending": {
+      "main": [
+        [
+          {
+            "node": "Style Pending - Clear (message)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style Pending - Clear (message)": {
+      "main": [
+        [
+          {
+            "node": "Send Style (Saved via pending)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style Session - Init Table (Menu)": {
+      "main": [
+        [
+          {
+            "node": "Style Session - Start (Menu)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style Session - Start (Menu)": {
+      "main": [
+        [
+          {
+            "node": "Send Style Menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Style Menu": {
+      "main": [
+        [
+          {
+            "node": "Style Session - Append MsgId (Bot)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style Session - Append MsgId (User)": {
+      "main": [
+        [
+          {
+            "node": "Apply Style Pending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style Session - Init Table (Done)": {
+      "main": [
+        [
+          {
+            "node": "Style Session - Get (Done)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style Session - Get (Done)": {
+      "main": [
+        [
+          {
+            "node": "Split Style Session Msg IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Style Session Msg IDs": {
+      "main": [
+        [
+          {
+            "node": "Delete Style Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Style Message": {
+      "main": [
+        [
+          {
+            "node": "Style Session - Clear (Done)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Style Pending - Clear (button)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Style Prompt (Set)": {
+      "main": [
+        [
+          {
+            "node": "Style Session - Append MsgId (Bot) (Send Style Prompt (Set))",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Style Prompt (Add)": {
+      "main": [
+        [
+          {
+            "node": "Style Session - Append MsgId (Bot) (Send Style Prompt (Add))",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Style (Show)": {
+      "main": [
+        [
+          {
+            "node": "Style Session - Append MsgId (Bot) (Send Style (Show))",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Style (Saved)": {
+      "main": [
+        [
+          {
+            "node": "Style Session - Append MsgId (Bot) (Send Style (Saved))",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Style (Added)": {
+      "main": [
+        [
+          {
+            "node": "Style Session - Append MsgId (Bot) (Send Style (Added))",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Style (Reset)": {
+      "main": [
+        [
+          {
+            "node": "Style Session - Append MsgId (Bot) (Send Style (Reset))",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Style (Saved via pending)": {
+      "main": [
+        [
+          {
+            "node": "Style Session - Append MsgId (Bot) (Send Style (Saved via pending))",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Button Action (Core)": {
+      "main": [
+        [
+          {
+            "node": "Answer Callback (Approve)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Answer Callback (Edit)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Answer Callback (History)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Load Session Row (History)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Button Action (Style)": {
+      "main": [
+        [
+          {
+            "node": "Answer Callback (Style Menu)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Style Session - Init Table (Menu)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Answer Callback (Style Show)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Style - Show (SQL) (Button Action (Style))",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Answer Callback (Style Set)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Style Pending - Upsert (SET)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Answer Callback (Style Add)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Style Pending - Upsert (ADD)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Answer Callback (Style Done)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Style Session - Init Table (Done)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Style - Show (SQL) (Button Action (Style))": {
+      "main": [
+        [
+          {
+            "node": "Format Style Show (Style - Show (SQL) (Button Action (Style)))",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Style Show (Style - Show (SQL) (Button Action (Style)))": {
+      "main": [
+        [
+          {
+            "node": "Send Style (Show) (Format Style Show (Style - Show (SQL) (Button Action (Style))))",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Style (Show) (Format Style Show (Style - Show (SQL) (Button Action (Style))))": {
+      "main": [
+        [
+          {
+            "node": "Style Session - Append MsgId (Bot) (Send Style (Show)) (Send Style (Show) (Format Style Show (Style - Show (SQL) (Button Action (Style)))))",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Draft Reply (Clarification)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Apply Edits (LLM)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "55b54744-78b1-4326-8415-d53f1000186e",
+  "meta": {
+    "instanceId": "c2319bcf64035e12fa4b23aa88003edd572c9ac2ee40ffdd07560e871f1375d3"
+  },
+  "id": "8ZyVKF0Bm545a8Qy",
+  "tags": []
+}
