@@ -2,6 +2,8 @@
 
 This repo contains four n8n workflows that connect Gmail, Telegram, LLMs, and Google Sheets to triage emails, draft replies, and manage edits.
 
+Deployment folder: [deployment](deployment/)
+
 **Workflows**
 
 1. **Edit Session V1** (`Edit Session V1.json`)
