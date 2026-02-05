@@ -6,7 +6,7 @@ This repo contains **4 n8n workflows** that connect **Gmail, Telegram, LLMs, and
 - manage edits
 
 📦 **Deployment folder:** [deployment](deployment/)  
-⬇️ **Download deployment files:** [deployment.zip](deployment.zip)
+⬇️ **Download deployment files:** [n8n_V1.zip](n8n_V1.zip)
 
 ---
 
