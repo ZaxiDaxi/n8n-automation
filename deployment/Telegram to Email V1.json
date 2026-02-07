@@ -12,10 +12,10 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.2,
       "position": [
-        -2720,
-        3408
+        -3808,
+        2496
       ],
-      "id": "eda83a53-d391-4caa-9d97-cb87c49cc4cd",
+      "id": "01fe3d99-366a-4af5-9be5-100906867ae9",
       "name": "Telegram Trigger",
       "webhookId": "a2f99f2c-391e-4f54-b8f7-13829748f9e0",
       "credentials": {
@@ -53,10 +53,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -2496,
-        3408
+        -3584,
+        2496
       ],
-      "id": "2525ca5b-feff-40d6-82ab-dba62b8b03ac",
+      "id": "cd0bff58-1e92-40c7-ad40-637885bf3bb2",
       "name": "Has Voice? (file_id)"
     },
     {
@@ -68,10 +68,10 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -2272,
-        3344
+        -3360,
+        2432
       ],
-      "id": "bdf90fb6-68ce-4169-91f4-c0cba55f3e09",
+      "id": "ddbd13b5-0a9c-4455-9448-dc0dd54ddf7d",
       "name": "Get a file",
       "webhookId": "0b34be1c-2808-435e-a435-01b594222fe3",
       "credentials": {
@@ -90,10 +90,10 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        -1824,
-        3344
+        -2912,
+        2432
       ],
-      "id": "81aa5d9c-0a3b-4f62-af0e-98697158ff73",
+      "id": "97139dbd-9870-46e3-9ad0-2ab239cdaf34",
       "name": "Read/Write Files from Disk"
     },
     {
@@ -103,10 +103,10 @@
       "type": "n8n-nodes-base.ssh",
       "typeVersion": 1,
       "position": [
-        -1600,
-        3344
+        -2688,
+        2432
       ],
-      "id": "8b918ea9-2ff0-43d6-8fc1-408e37fa9ea3",
+      "id": "36f2a012-2e88-4056-b603-de5d595b1392",
       "name": "Execute a command",
       "credentials": {
         "sshPassword": {
@@ -123,10 +123,10 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        -1376,
-        3344
+        -2464,
+        2432
       ],
-      "id": "9e7116b1-5c42-4bee-86d1-60dd71154159",
+      "id": "57c7c763-1634-4938-8815-31dde36f9034",
       "name": "Read/Write Files from Disk1"
     },
     {
@@ -154,10 +154,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -1152,
-        3344
+        -2240,
+        2432
       ],
-      "id": "547570f6-8e7d-4791-bfdf-bd5db7f83ff1",
+      "id": "bb72cf67-e23c-4544-868c-25f0d6db3b90",
       "name": "Deepgram Transcribe"
     },
     {
@@ -167,10 +167,10 @@
       "type": "n8n-nodes-base.ssh",
       "typeVersion": 1,
       "position": [
-        -928,
-        3344
+        -2016,
+        2432
       ],
-      "id": "4663a5d3-015e-4fa4-a16f-a74924dadcd2",
+      "id": "45949cef-9374-473e-8b5f-62f83ad0db88",
       "name": "Cleanup voice files",
       "credentials": {
         "sshPassword": {
@@ -186,10 +186,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -400,
-        3392
+        -1488,
+        2480
       ],
-      "id": "ce198dab-6067-47ae-91d5-805db71b00cf",
+      "id": "3f6aabf3-9b84-47b3-9217-3c29fb82edb4",
       "name": "Parse Input"
     },
     {
@@ -247,10 +247,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        -208,
-        3392
+        -1296,
+        2480
       ],
-      "id": "47093d6a-286b-4d63-9c81-e404a3ad6290",
+      "id": "6a070484-7725-4dd1-9490-97707121424b",
       "name": "Route by Type"
     },
     {
@@ -388,10 +388,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1376,
-        1584
+        288,
+        672
       ],
-      "id": "16e6e33c-528b-405d-8a69-32aba405547b",
+      "id": "ddec2835-80f2-468d-a554-c204473731ab",
       "name": "Create Edit Session",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -407,10 +407,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1600,
-        1584
+        512,
+        672
       ],
-      "id": "b91d07dc-5133-4ec9-ae02-f32c673a7de5",
+      "id": "e7d98e85-ca27-47dd-ad25-19859612f5d7",
       "name": "Pick Latest Edit Session"
     },
     {
@@ -424,10 +424,10 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1152,
-        1584
+        64,
+        672
       ],
-      "id": "be639a38-83ad-4c3d-a938-0d21e5fdc84a",
+      "id": "1ddef2a0-7f3e-4f77-a643-2fdd7b2938ae",
       "name": "Answer Callback (Edit)",
       "webhookId": "40eca8ee-8613-4575-9689-c6dd1d4b0125",
       "retryOnFail": false,
@@ -457,10 +457,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        592,
-        5504
+        -496,
+        4592
       ],
-      "id": "c1076728-1a79-4597-a2d3-2897cbcf4f64",
+      "id": "8b84058f-13df-4e36-8e60-9b3b9b3e28ef",
       "name": "Check Edit Session",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -506,10 +506,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        976,
-        5504
+        -112,
+        4592
       ],
-      "id": "45f8c6f1-1023-4f42-a468-a9a11bcd994f",
+      "id": "c129ce64-6ee3-4f2a-9f26-a43045c84d54",
       "name": "Session Valid?"
     },
     {
@@ -519,10 +519,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1584,
-        5488
+        496,
+        4576
       ],
-      "id": "fd88a785-f8d8-4e3a-ad26-c28a145ff3c7",
+      "id": "272a1cfb-649f-423d-b269-11ab7885a121",
       "name": "Prepare Edit Data"
     },
     {
@@ -536,10 +536,10 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        2976,
-        5488
+        1888,
+        4576
       ],
-      "id": "d2882e5e-701c-4c62-ab66-3fc7ec3449c2",
+      "id": "c49697a0-2b0f-4729-ab43-cccc9f44af99",
       "name": "Apply Edits (LLM)"
     },
     {
@@ -594,10 +594,10 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        5440,
-        5696
+        4352,
+        4784
       ],
-      "id": "efb24e02-eca4-4c18-98d9-fbf3efe68943",
+      "id": "70f3b20f-e9df-4341-8728-1bb3458c7942",
       "name": "Send Revised Draft",
       "webhookId": "cc84e9e6-8f3c-4291-8871-fcbb2f914345",
       "credentials": {
@@ -760,10 +760,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        5872,
-        5696
+        4784,
+        4784
       ],
-      "id": "de3473ac-1283-4fc6-88dc-f23d4ade2e8f",
+      "id": "1e102baf-21e4-4bd9-a159-7ab18a5018e1",
       "name": "Update Draft in DB",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -779,10 +779,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        784,
-        5504
+        -304,
+        4592
       ],
-      "id": "abc0a951-410c-4f06-8c6e-7e48c9a7da0f",
+      "id": "837cb872-65cd-4e35-acc2-34cacfc34213",
       "name": "Code in JavaScript"
     },
     {
@@ -792,10 +792,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2800,
-        5488
+        1712,
+        4576
       ],
-      "id": "25143bd5-85a6-422b-a4d1-cea36ffc8aa8",
+      "id": "0fc12be9-9e73-4512-8fd1-086003653b99",
       "name": "Execute a SQL query"
     },
     {
@@ -805,10 +805,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1584,
-        1136
+        496,
+        224
       ],
-      "id": "f17420e0-3ca2-4d74-b1ba-578e616eb714",
+      "id": "1a660ec6-9b5c-48fe-b7b5-636f378c6a56",
       "name": "Execute a SQL query1"
     },
     {
@@ -962,10 +962,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2224,
-        5488
+        1136,
+        4576
       ],
-      "id": "800101c9-0982-4408-9895-0c648cb26b74",
+      "id": "ee46dd0f-c08b-4512-a197-49555c9d0150",
       "name": "Append User Edit MsgId (body)",
       "alwaysOutputData": true,
       "credentials": {
@@ -1002,10 +1002,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        3152,
-        1136
+        2064,
+        224
       ],
-      "id": "abefb453-bdef-4a93-88b4-fbe170ca988a",
+      "id": "d46d6eb1-e11d-4a20-a9aa-2da3cec0093c",
       "name": "Has Stored Edit Msg IDs?"
     },
     {
@@ -1015,10 +1015,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3376,
-        1136
+        2288,
+        224
       ],
-      "id": "d626b3db-b0ad-405c-a587-d6638bdce27b",
+      "id": "73518daa-2013-4fed-948c-ec2a73f6caea",
       "name": "Split Stored Edit Msg IDs"
     },
     {
@@ -1030,10 +1030,10 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        3664,
-        1136
+        2576,
+        224
       ],
-      "id": "c541526e-7a8a-4be3-b417-7cec2e088e06",
+      "id": "5cee8124-d974-4b40-b80b-6f0c531233a5",
       "name": "Delete Stored User Edit Message",
       "webhookId": "2c6bd583-8502-41c0-aab0-dbe9f6dfee27",
       "credentials": {
@@ -1195,10 +1195,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        4176,
-        1136
+        3088,
+        224
       ],
-      "id": "91cd221e-70ea-4cc1-8cff-8cff051fe208",
+      "id": "5d1980d4-2f71-4372-965d-cb6c249cbae9",
       "name": "Clear Stored Edit Msg IDs",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -1214,10 +1214,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3952,
-        1136
+        2864,
+        224
       ],
-      "id": "034b800a-1350-4ec5-86eb-3f8b2c31aa90",
+      "id": "ab22bda1-b8cb-4b14-85e6-4bb2c3924caa",
       "name": "Collapse After Deletes"
     },
     {
@@ -1371,10 +1371,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        6544,
-        5696
+        5456,
+        4784
       ],
-      "id": "6d033bf3-2ab5-4441-acc5-5962bd7fc20e",
+      "id": "5f31fa23-2ff1-4fba-9663-3b19617c88da",
       "name": "Append Bot Draft MsgId (body)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -1519,10 +1519,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1808,
-        1136
+        720,
+        224
       ],
-      "id": "adcb9e85-dcae-4bf0-8dc5-caba2117711e",
+      "id": "3622335d-f300-46fc-b2fb-fe5123ba7f3e",
       "name": "Consume Session (Reply)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -1538,10 +1538,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2032,
-        1136
+        944,
+        224
       ],
-      "id": "47ac84c3-810a-4d99-9e5a-bf15da8682e4",
+      "id": "098154df-01cc-48c4-b392-d8966640cdf6",
       "name": "Collapse After Consume (Reply)"
     },
     {
@@ -1558,10 +1558,10 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        2704,
-        1136
+        1616,
+        224
       ],
-      "id": "2992e58a-967e-473f-9c3e-a21a28250c39",
+      "id": "4f7732ea-a3b9-4e8d-ba2a-3c35b7a12300",
       "name": "Reply Email",
       "webhookId": "61094943-b676-495d-8a3d-5d07d9f79126",
       "credentials": {
@@ -1582,10 +1582,10 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1120,
-        2064
+        32,
+        1152
       ],
-      "id": "9cbf0929-4c85-470b-93e0-9e8f485d7a46",
+      "id": "9e35855f-dc6a-4961-bf2a-305e2bfec158",
       "name": "Answer Callback (History)",
       "webhookId": "ea798b3e-c01a-4444-87be-2cda75ef2cdf",
       "credentials": {
@@ -1602,10 +1602,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1552,
-        2064
+        464,
+        1152
       ],
-      "id": "6fa12104-177a-4954-b6a3-47176e803fad",
+      "id": "1adb3c14-9460-4cef-8ae5-bfe182b5822d",
       "name": "Load Session Row (History)"
     },
     {
@@ -1619,10 +1619,10 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        1776,
-        2064
+        688,
+        1152
       ],
-      "id": "79290f94-c1a4-4e7b-970e-83fd2aac2605",
+      "id": "73ce7b83-a4a0-4730-b960-80fed8b5c924",
       "name": "Get Thread (History)",
       "webhookId": "163e796d-3c62-41a6-a662-b6c95eb875bb",
       "credentials": {
@@ -1639,10 +1639,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2016,
-        2064
+        928,
+        1152
       ],
-      "id": "b63562b8-0c6d-4b1e-bb83-e8fb39daa66c",
+      "id": "d3e1555c-7c17-4da5-a857-495a33d9dd0b",
       "name": "Pick Last N Msg IDs"
     },
     {
@@ -1655,10 +1655,10 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        2208,
-        2064
+        1120,
+        1152
       ],
-      "id": "6c720aea-39d2-4003-b98c-804d7d405100",
+      "id": "7e82f16e-0dd8-4018-b578-ddf0c2907fca",
       "name": "Get Message (History)",
       "webhookId": "5b1d6763-4360-4dbf-bbb1-28c7f420d6b5",
       "credentials": {
@@ -1675,10 +1675,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2448,
-        2064
+        1360,
+        1152
       ],
-      "id": "47528d5e-e9d4-4f4a-9c9b-5a2d68ced205",
+      "id": "491b3c8e-b202-49dc-af5f-441509f3f367",
       "name": "Format History"
     },
     {
@@ -1688,10 +1688,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1216,
-        5488
+        128,
+        4576
       ],
-      "id": "8f58a875-82cf-4551-bb1b-605b4f6ad9d8",
+      "id": "18ab711d-532b-4fe9-9a39-adf7c3ceb8f1",
       "name": "Decide Next Step"
     },
     {
@@ -1727,10 +1727,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        1408,
-        5488
+        320,
+        4576
       ],
-      "id": "47e9b8ff-343a-4822-a806-e2b1165374fa",
+      "id": "b0510b00-ff2a-499c-8d74-e72aa4b82b98",
       "name": "Route Next Step"
     },
     {
@@ -1760,10 +1760,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        3312,
-        5488
+        2224,
+        4576
       ],
-      "id": "3d5f5f12-1c8b-4d73-b681-e51081ee8347",
+      "id": "4cc470bd-b802-468a-9213-c572549a9a6f",
       "name": "Has Stored Edit Msg IDs? (Edit)"
     },
     {
@@ -1773,10 +1773,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3536,
-        5472
+        2448,
+        4560
       ],
-      "id": "1e2175e3-afae-4202-911d-219bf22c8582",
+      "id": "0a361792-8c08-4985-b69a-9eb832742e7c",
       "name": "Split Stored Edit Msg IDs (Edit)"
     },
     {
@@ -1788,10 +1788,10 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        3712,
-        5472
+        2624,
+        4560
       ],
-      "id": "2319ec64-af8b-48c0-aec3-5370a969d4f1",
+      "id": "5fd36a12-fd13-460e-9e7c-f0a83c630bab",
       "name": "Delete Stored Message (Edit)",
       "webhookId": "d7a9bb6c-e553-4b28-8e05-554e7775a6c5",
       "credentials": {
@@ -1809,10 +1809,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3904,
-        5472
+        2816,
+        4560
       ],
-      "id": "24c1f785-bc80-41e9-84d9-679b5f8f2fa4",
+      "id": "d7638693-dec2-4cb7-ab1e-6319e563654c",
       "name": "Collapse After Deletes (Edit)"
     },
     {
@@ -1965,10 +1965,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        4128,
-        5472
+        3040,
+        4560
       ],
-      "id": "837e2982-c292-4546-bcfa-76312c6415b6",
+      "id": "1d113166-aa2a-4669-a2de-077827e85af1",
       "name": "Clear Stored Edit Msg IDs (Edit)",
       "alwaysOutputData": true,
       "credentials": {
@@ -1987,10 +1987,10 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        4720,
-        5488
+        3632,
+        4576
       ],
-      "id": "0f10be10-4a56-4b90-addb-eaa9442247ac",
+      "id": "b7a1c64e-b677-450c-bb4b-9f728acb5c06",
       "name": "Delete Old Gmail Draft",
       "webhookId": "b2c5d83f-f61c-4b3e-a2bc-351cc220c2b9",
       "credentials": {
@@ -2014,10 +2014,10 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        5008,
-        5696
+        3920,
+        4784
       ],
-      "id": "3223c6e7-2486-4dd9-9457-edb23087de4b",
+      "id": "4c1a7307-d263-4748-a28d-cfec1e312efe",
       "name": "Create Gmail Draft",
       "webhookId": "b1c2fe48-1048-4e3f-8466-ffafed814144",
       "credentials": {
@@ -2179,10 +2179,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        5232,
-        5696
+        4144,
+        4784
       ],
-      "id": "1bef28bd-abce-4a5c-8919-ec8c4ee8f10b",
+      "id": "e4474165-3d2e-4307-85bc-9b141b894d56",
       "name": "Store Gmail Draft IDs",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -2219,10 +2219,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        4448,
-        5680
+        3360,
+        4768
       ],
-      "id": "73851c25-2642-46ca-80da-949e04a192ba",
+      "id": "88f835c4-cef1-4649-b98b-ad3c182b032d",
       "name": "Has Gmail Draft ID? (Edit)"
     },
     {
@@ -2234,10 +2234,10 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.2,
       "position": [
-        2480,
-        1136
+        1392,
+        224
       ],
-      "id": "a92e275f-9121-4cbc-b80d-e570d5f8fd60",
+      "id": "e11cd7fc-5b44-48c3-b129-660d23f2d4e1",
       "name": "Delete Old Gmail Draft1",
       "webhookId": "4f2e02ea-b00f-4c3d-a795-cb1ba669614a",
       "credentials": {
@@ -2250,12 +2250,12 @@
     },
     {
       "parameters": {},
-      "id": "e10e89d5-e1a0-4418-8a84-3fda6fc6eae2",
+      "id": "dc44cb04-beb7-4f72-939f-d01556dc077b",
       "name": "Error Trigger",
       "type": "n8n-nodes-base.errorTrigger",
       "position": [
-        -48,
-        6640
+        -1136,
+        5728
       ],
       "typeVersion": 1
     },
@@ -2270,10 +2270,10 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        2256,
-        1136
+        1168,
+        224
       ],
-      "id": "f26a0880-1f8a-48a3-8783-25d8d0107903",
+      "id": "3cdde04c-081d-4953-aeb5-804c69006677",
       "name": "Send Done (Approve)",
       "webhookId": "018babe0-01a9-4333-9472-754a2c524de4",
       "credentials": {
@@ -2291,13 +2291,13 @@
           "appendAttribution": false
         }
       },
-      "id": "43ecf48f-011d-44cd-9448-f88da92173dc",
+      "id": "e4ada6b3-0e80-4b9a-ad5e-8b9483d8898e",
       "name": "Send Edit Mode Started Msg",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        1824,
-        1584
+        736,
+        672
       ],
       "webhookId": "4aa4d904-0677-4aee-aa36-46f2d42142d8",
       "credentials": {
@@ -2445,10 +2445,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        6768,
-        5696
+        5680,
+        4784
       ],
-      "id": "721a6410-ddc5-43a1-8116-f90ff3b37de3",
+      "id": "301c1713-d589-4649-bf38-fa56f90746e7",
       "name": "Extend Edit Session",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -2468,10 +2468,10 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1136,
-        1136
+        48,
+        224
       ],
-      "id": "449cbdee-f20f-4869-8d87-5a4f27e3940b",
+      "id": "7d4fc5e3-79a8-4da3-bb7d-a09a4cc13789",
       "name": "Answer Callback (Approve)",
       "webhookId": "0c35bb8a-8030-4f01-a09a-d5ba3da7f4e4",
       "retryOnFail": false,
@@ -2617,10 +2617,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2048,
-        1584
+        960,
+        672
       ],
-      "id": "90056cc0-eedc-41d2-ad51-0f33a134f877",
+      "id": "bbaa97fe-f713-4e28-be25-736c8f5ef6f6",
       "name": "Store Edit Mode MsgId",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -2780,10 +2780,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2720,
-        1584
+        1632,
+        672
       ],
-      "id": "2d380b4e-28c6-4922-890a-5b4674546087",
+      "id": "be2e4ebc-b3c3-4d63-9df0-68041108b8c8",
       "name": "Append Bot MsgId (Edit Mode Started)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -2800,13 +2800,13 @@
           "appendAttribution": false
         }
       },
-      "id": "1265ed4e-e6f6-460e-9943-37577462a56f",
+      "id": "d6da1c91-a835-4450-9202-d4b0189e6ee9",
       "name": "Send Edit Mode Started Msg1",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        5648,
-        5696
+        4560,
+        4784
       ],
       "webhookId": "1124aff4-cc0b-4480-b792-20624021cf7b",
       "credentials": {
@@ -2827,10 +2827,10 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1520,
-        2800
+        432,
+        1888
       ],
-      "id": "19945f49-beab-47d2-8293-40932c312dc9",
+      "id": "1dd271c2-ea0b-49d1-a639-9082eaaab0d3",
       "name": "Answer Callback (Style Menu)",
       "webhookId": "2709f0f2-127a-4826-88e1-e6c29e9b2a20",
       "retryOnFail": false,
@@ -2896,13 +2896,13 @@
           "appendAttribution": false
         }
       },
-      "id": "52373378-ee62-4559-8374-e4b5c3c6b495",
+      "id": "e7e29ffd-90dd-4e05-af13-452e687a46eb",
       "name": "Send Style Menu",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        2176,
-        2800
+        1088,
+        1888
       ],
       "webhookId": "a1dd9d1e-e532-4caf-8409-5a518361c76c",
       "credentials": {
@@ -2923,10 +2923,10 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1520,
-        3232
+        432,
+        2320
       ],
-      "id": "6eb7d8e7-76e1-407e-8304-2cfdf06a80bf",
+      "id": "51631f0b-47ea-40a3-9d12-4bd0c2128395",
       "name": "Answer Callback (Style Show)",
       "webhookId": "5ddd36e4-731c-4b21-8ef1-b5070b45434e",
       "retryOnFail": false,
@@ -2948,10 +2948,10 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1552,
-        3680
+        464,
+        2768
       ],
-      "id": "ca2b3d2c-46a6-4d0b-8968-6f426fe0fda7",
+      "id": "ed302a97-48f0-43bb-a3b3-745b9e0c546a",
       "name": "Answer Callback (Style Set)",
       "webhookId": "f5b532dc-bb52-4fa7-a60b-a29fe5eb0528",
       "retryOnFail": false,
@@ -2973,10 +2973,10 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1520,
-        4112
+        432,
+        3200
       ],
-      "id": "7ce6c534-a37c-4052-9375-4bede0fd6052",
+      "id": "896ee8d9-cfe3-4d9b-8ee6-0098c5cb8a68",
       "name": "Answer Callback (Style Add)",
       "webhookId": "256c6925-fbf9-4821-9301-422743e4b7f9",
       "retryOnFail": false,
@@ -2998,10 +2998,10 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1536,
-        4576
+        448,
+        3664
       ],
-      "id": "7ff7e941-53c4-47ee-b212-3f6661dcc111",
+      "id": "c9db147c-2abd-4f8d-bf54-1468176880ad",
       "name": "Answer Callback (Style Done)",
       "webhookId": "962f83d3-3b4d-4e40-804e-5932b635068f",
       "retryOnFail": false,
@@ -3102,10 +3102,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1744,
-        3680
+        656,
+        2768
       ],
-      "id": "07df8ff9-3bd2-4575-a4d9-5e818637fdeb",
+      "id": "4fd05254-5311-47f1-acae-77f5338273ac",
       "name": "Style Pending - Upsert (SET)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -3204,10 +3204,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1744,
-        4112
+        656,
+        3200
       ],
-      "id": "19e4f1df-c4d5-4c1b-8a84-0b367620278d",
+      "id": "bcc685c1-2000-4ae0-98a5-d88e8343d63d",
       "name": "Style Pending - Upsert (ADD)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -3224,13 +3224,13 @@
           "appendAttribution": false
         }
       },
-      "id": "3ff6439d-a47f-425b-939e-fd64e712616f",
+      "id": "efb43b33-f2ff-4fff-a6ca-8ace27916b3c",
       "name": "Send Style Prompt (Set)",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1952,
-        3680
+        864,
+        2768
       ],
       "webhookId": "791d0445-bcd7-432f-a761-455a627d9f4b",
       "credentials": {
@@ -3248,13 +3248,13 @@
           "appendAttribution": false
         }
       },
-      "id": "4ee61f32-0d74-44c6-9e99-5376c553f8ab",
+      "id": "484d899c-1d17-42f3-9edd-9d57c5d89939",
       "name": "Send Style Prompt (Add)",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1952,
-        4112
+        864,
+        3200
       ],
       "webhookId": "22b4a6c3-39e2-42cb-88f1-b88973fa51db",
       "credentials": {
@@ -3285,7 +3285,8 @@
             "chat_id": "={{ String($('Parse Input').first().json.chat_id || '') }}",
             "user_id": "={{ String($('Parse Input').first().json.from_id || '') }}",
             "expires_at": "={{ new Date(Date.now() - 1000).toISOString() }}",
-            "updated_at": "={{ new Date().toISOString() }}"
+            "updated_at": "={{ new Date().toISOString() }}",
+            "row_number": 0
           },
           "matchingColumns": [
             "chat_id",
@@ -3345,6 +3346,17 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -3355,10 +3367,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2816,
-        4768
+        1728,
+        3856
       ],
-      "id": "59e7d67f-e50f-45b1-8ed4-e3f6c1dc0c96",
+      "id": "b3e10245-3cf4-4246-ba26-ccaf93c02eaf",
       "name": "Style Pending - Clear (button)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -3374,10 +3386,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1488,
-        6192
+        400,
+        5280
       ],
-      "id": "991ace0a-93ca-4487-9db2-8b396b678609",
+      "id": "8f37da04-c420-44ea-81a8-0703618f69f0",
       "name": "Check Style Pending"
     },
     {
@@ -3460,10 +3472,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2832,
-        6192
+        1744,
+        5280
       ],
-      "id": "4b589abc-608d-4720-aa9e-81bd84556f4f",
+      "id": "3e47d827-9e42-4c4f-b77b-88c3ba21ced4",
       "name": "Apply Style Pending",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -3563,10 +3575,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        3056,
-        6192
+        1968,
+        5280
       ],
-      "id": "87e8f6f7-8fc2-471f-a87f-1685b21c09fd",
+      "id": "74e524cc-001b-4150-8078-2e3f7b747848",
       "name": "Style Pending - Clear (message)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -3583,13 +3595,13 @@
           "appendAttribution": false
         }
       },
-      "id": "e0d61077-1f5d-4ed1-b554-75da6ac319b8",
+      "id": "d259a5cc-ec5f-445c-b3b3-498890542608",
       "name": "Send Style (Saved via pending)",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        3280,
-        6192
+        2192,
+        5280
       ],
       "webhookId": "17e73511-e9a4-47e3-8620-7f93146243a0",
       "credentials": {
@@ -3606,10 +3618,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1728,
-        2800
+        640,
+        1888
       ],
-      "id": "48a50148-a0d8-4fe0-930e-bb5781bd09f6",
+      "id": "03a49b90-ebe4-41e8-89af-4968f121e363",
       "name": "Style Session - Init Table (Menu)"
     },
     {
@@ -3632,7 +3644,7 @@
           "value": {
             "chat_id": "={{ String($('Parse Input').first().json.chat_id || '') }}",
             "user_id": "={{ String($('Parse Input').first().json.from_id || '') }}",
-            "message_ids": "",
+            "message_ids": "[]",
             "expires_at": "={{ new Date(Date.now() + 10*60*1000).toISOString() }}",
             "updated_at": "={{ new Date().toISOString() }}"
           },
@@ -3692,10 +3704,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1952,
-        2800
+        864,
+        1888
       ],
-      "id": "72501eb7-9f46-4b74-a95c-52830b172f2d",
+      "id": "cfb24599-90b7-49de-8d5c-e647a92f6cff",
       "name": "Style Session - Start (Menu)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -3706,7 +3718,7 @@
     },
     {
       "parameters": {
-        "operation": "update",
+        "operation": "append",
         "documentId": {
           "__rl": true,
           "value": "1EB-MUC7mL69LVyrxYFvoBwZz83wqUqr29sn9_isOsd0",
@@ -3726,7 +3738,8 @@
             "user_id": "={{ $json.user_id }}",
             "message_ids": "={{ $json.message_ids }}",
             "expires_at": "={{ $json.expires_at }}",
-            "updated_at": "={{ $json.updated_at }}"
+            "updated_at": "={{ $json.updated_at }}",
+            "row_number": 0
           },
           "matchingColumns": [
             "chat_id",
@@ -3777,6 +3790,17 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -3787,10 +3811,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2848,
-        2800
+        1760,
+        1888
       ],
-      "id": "2ae378be-2f6e-47b3-bd60-c34df9c434d8",
+      "id": "3d2f59f0-b989-4c94-9f10-258d4a63f73d",
       "name": "Style Session - Append MsgId (Bot)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -3882,10 +3906,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2144,
-        6192
+        1056,
+        5280
       ],
-      "id": "aa65b26d-2f4a-4f39-9b85-3cfe71a0bec0",
+      "id": "c13f6125-d4b4-447e-99f0-7e7c54af1a4b",
       "name": "Style Session - Append MsgId (User)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -3901,36 +3925,36 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1744,
-        4576
+        656,
+        3664
       ],
-      "id": "526ae952-569d-40eb-8353-17f904d4ffd8",
+      "id": "4b70bbd2-fde2-4d12-9ab3-824d26014017",
       "name": "Style Session - Init Table (Done)"
     },
     {
       "parameters": {
-        "jsCode": "function pickLatest(rows) {\n  if (!rows || !rows.length) return null;\n  const withTime = rows.map(r => ({\n    r,\n    t: Date.parse(r.updated_at || r.updatedAt || r.expires_at || r.created_at || r.createdAt || '')\n  }));\n  withTime.sort((a,b) => {\n    if (isFinite(a.t) && isFinite(b.t)) return a.t - b.t;\n    if (isFinite(a.t)) return 1;\n    if (isFinite(b.t)) return -1;\n    return 0;\n  });\n  return withTime[withTime.length - 1].r;\n}\nconst chatId = String($('Parse Input').first().json.chat_id || '');\nconst userId = String($('Parse Input').first().json.from_id || '');\nconst rows = $('Get message_ids (done)').all().map(i => i.json || {});\nconst active = rows.filter(r => String(r.chat_id||'') === chatId && String(r.user_id||'') === userId && Date.parse(r.expires_at||'') > Date.now());\nconst latest = pickLatest(active) || {};\nreturn [{ json: { message_ids: latest.message_ids || '' } }];\n"
+        "jsCode": "const chatId = String($('Parse Input').first().json.chat_id || '');\nconst userId = String($('Parse Input').first().json.from_id || '');\nconst rows = $('Get message_ids (done)').all().map(i => i.json || {});\nconst active = rows.filter(r => String(r.chat_id||'') === chatId && String(r.user_id||'') === userId && Date.parse(r.expires_at||'') > Date.now());\n\nconst parseList = (val) => {\n  if (!val) return [];\n  if (Array.isArray(val)) return val;\n  const s = String(val).trim();\n  if (!s) return [];\n  if (s.startsWith('[')) {\n    try {\n      const arr = JSON.parse(s);\n      if (Array.isArray(arr)) return arr;\n    } catch (e) {}\n  }\n  return s.split(',').map(x => x.trim()).filter(Boolean);\n};\nconst toInt = (v) => {\n  const s = String(v ?? '').replace(/[^0-9]/g, '');\n  if (!s) return null;\n  const n = Number(s);\n  return Number.isInteger(n) ? n : null;\n};\n\nconst merged = [];\nfor (const r of active) {\n  const list = parseList(r.message_ids);\n  for (const v of list) merged.push(v);\n}\nconst ids = merged.map(toInt).filter(n => n !== null);\nconst uniq = Array.from(new Set(ids));\nreturn [{ json: { message_ids: JSON.stringify(uniq) } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2128,
-        4576
+        1040,
+        3664
       ],
-      "id": "ab2c7086-4ec1-42c3-8eeb-9fee020359cd",
+      "id": "32bf5358-3649-422e-aba7-59f4a25fd5b1",
       "name": "Style Session - Get (Done)"
     },
     {
       "parameters": {
-        "jsCode": "const chatId = $('Parse Input').first().json.chat_id;\nconst raw = String($json.message_ids || '').trim();\nconst extra = [\n  $('Parse Input').first().json.telegram_msg_id,\n  $('Parse Input').first().json.message_id,\n];\nconst ids = [];\nconst pushId = (v) => {\n  const s = String(v ?? '').trim();\n  if (!s) return;\n  // keep digits only\n  const m = s.match(/\\d+/);\n  if (m) ids.push(m[0]);\n};\nif (raw) raw.split(',').forEach(pushId);\nextra.forEach(pushId);\n// unique\nconst uniq = Array.from(new Set(ids));\nreturn uniq.map(message_id => ({ json: { chat_id: chatId, message_id } }));\n"
+        "jsCode": "const chatId = $('Parse Input').first().json.chat_id;\nconst raw = $json.message_ids;\nconst extra = [\n  $('Parse Input').first().json.telegram_msg_id,\n  $('Parse Input').first().json.message_id,\n];\nconst parseList = (val) => {\n  if (!val) return [];\n  if (Array.isArray(val)) return val;\n  const s = String(val).trim();\n  if (!s) return [];\n  if (s.startsWith('[')) {\n    try {\n      const arr = JSON.parse(s);\n      if (Array.isArray(arr)) return arr;\n    } catch (e) {}\n  }\n  return s.split(',').map(x => x.trim()).filter(Boolean);\n};\nconst toInt = (v) => {\n  const s = String(v ?? '').replace(/[^0-9]/g, '');\n  if (!s) return null;\n  const n = Number(s);\n  return Number.isInteger(n) ? n : null;\n};\nconst list = [...parseList(raw), ...extra];\nconst ids = list.map(toInt).filter(n => n !== null);\nconst uniq = Array.from(new Set(ids));\nreturn uniq.map(message_id => ({ json: { chat_id: chatId, message_id } }));\n"
       },
-      "id": "2a54c455-f1f0-4ce5-a8e7-c34c13d0f030",
+      "id": "e755c83d-b166-49bd-bea4-3a5f323874cf",
       "name": "Split Style Session Msg IDs",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2320,
-        4576
+        1232,
+        3664
       ]
     },
     {
@@ -3939,13 +3963,13 @@
         "chatId": "={{ $json.chat_id }}",
         "messageId": "={{ $json.message_id }}"
       },
-      "id": "a8c93e86-26d2-42bf-96e3-b9c41a018e70",
+      "id": "4a3788c2-5eb5-42f2-825c-63abc5690cb6",
       "name": "Delete Style Message",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        2528,
-        4576
+        1440,
+        3664
       ],
       "webhookId": "b6b4c49c-66ba-4740-9afe-8557be00c927",
       "credentials": {
@@ -3976,9 +4000,10 @@
           "value": {
             "chat_id": "={{ String($('Parse Input').first().json.chat_id || '') }}",
             "user_id": "={{ String($('Parse Input').first().json.from_id || '') }}",
-            "message_ids": "",
+            "message_ids": "[]",
             "expires_at": "={{ new Date(Date.now() - 1000).toISOString() }}",
-            "updated_at": "={{ new Date().toISOString() }}"
+            "updated_at": "={{ new Date().toISOString() }}",
+            "row_number": 0
           },
           "matchingColumns": [
             "chat_id",
@@ -4029,6 +4054,17 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -4039,10 +4075,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2816,
-        4576
+        1728,
+        3664
       ],
-      "id": "ad7fd4fe-8f44-45b8-9c58-c2162c1c3982",
+      "id": "f597f1cd-b7bb-4787-b77a-496a0cdaa2b7",
       "name": "Style Session - Clear (Done)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -4134,10 +4170,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        416,
-        1536
+        -672,
+        624
       ],
-      "id": "c35c68d3-9d30-4aee-bd3d-1df15ef316e9",
+      "id": "6ba4cb27-b164-4280-b2fd-7de4fb06b990",
       "name": "Button Action (Core)"
     },
     {
@@ -4271,15 +4307,15 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        912,
-        3104
+        -176,
+        2192
       ],
-      "id": "0c0cc3e0-d925-4ef4-b524-f78553ed0fc2",
+      "id": "6d903999-406d-4084-b4ac-79f941860b13",
       "name": "Button Action (Style)"
     },
     {
       "parameters": {
-        "operation": "update",
+        "operation": "append",
         "documentId": {
           "__rl": true,
           "value": "1EB-MUC7mL69LVyrxYFvoBwZz83wqUqr29sn9_isOsd0",
@@ -4360,10 +4396,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2608,
-        4112
+        1520,
+        3200
       ],
-      "id": "da561605-c549-489e-a222-2a391f11a846",
+      "id": "db84f7e1-8fae-4c9c-b0d8-1d15ea8f2896",
       "name": "Style Session - Append MsgId (Bot) (Send Style Prompt (Add))",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -4374,7 +4410,7 @@
     },
     {
       "parameters": {
-        "operation": "update",
+        "operation": "append",
         "documentId": {
           "__rl": true,
           "value": "1EB-MUC7mL69LVyrxYFvoBwZz83wqUqr29sn9_isOsd0",
@@ -4455,10 +4491,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        3968,
-        6192
+        2880,
+        5280
       ],
-      "id": "e41587a6-4f36-461e-8825-d4c8eb48cd01",
+      "id": "9b3a0e71-0ebf-42ba-99ea-32a9695f6fbb",
       "name": "Style Session - Append MsgId (Bot) (Send Style (Saved via pending))",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -4474,23 +4510,23 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2080,
-        3232
+        992,
+        2320
       ],
-      "id": "1d081e45-e581-4f12-96e1-197488679a0f",
+      "id": "d24b731f-8832-48e1-bc9b-462c8f492657",
       "name": "Style - Show (SQL) (Button Action (Style))"
     },
     {
       "parameters": {
         "jsCode": "const mode = String($json.mode || 'user').toLowerCase();\nconst userPrefs = String($json.user_prefs || '').trim();\n\n\nconst modeLabel = (mode === 'chat') ? 'chat' : 'me';\n\nlet out = `User style:\\n${userPrefs ? userPrefs : '(empty)'}\\n\\n`;\n\n\nreturn [{ json: { ...$json, reply_text: out } }];"
       },
-      "id": "e623f212-483c-48f8-92bc-1b3e1aff7bc6",
+      "id": "20b6326e-1c11-44a3-b0d4-57c25afc269d",
       "name": "Format Style Show (Style - Show (SQL) (Button Action (Style)))",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2384,
-        3232
+        1296,
+        2320
       ]
     },
     {
@@ -4501,13 +4537,13 @@
           "appendAttribution": false
         }
       },
-      "id": "9ba57333-8651-4e67-a636-9b2e0a364819",
+      "id": "ab1750c4-e8d6-4255-a0c8-81abfdc53b95",
       "name": "Send Style (Show) (Format Style Show (Style - Show (SQL) (Button Action (Style))))",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        2608,
-        3232
+        1520,
+        2320
       ],
       "webhookId": "f38d5914-c980-45af-a9cb-0bb221c823f9",
       "credentials": {
@@ -4519,7 +4555,7 @@
     },
     {
       "parameters": {
-        "operation": "update",
+        "operation": "append",
         "documentId": {
           "__rl": true,
           "value": "1EB-MUC7mL69LVyrxYFvoBwZz83wqUqr29sn9_isOsd0",
@@ -4539,7 +4575,8 @@
             "user_id": "={{ $json.user_id }}",
             "message_ids": "={{ $json.message_ids }}",
             "expires_at": "={{ $json.expires_at }}",
-            "updated_at": "={{ $json.updated_at }}"
+            "updated_at": "={{ $json.updated_at }}",
+            "row_number": 0
           },
           "matchingColumns": [
             "chat_id",
@@ -4590,6 +4627,17 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -4600,10 +4648,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        3280,
-        3232
+        2192,
+        2320
       ],
-      "id": "bd36c5ac-94de-4ace-a979-150385f903ef",
+      "id": "01f7c117-6d7c-4667-bd9a-39b1b1160576",
       "name": "Style Session - Append MsgId (Bot) (Send Style (Show)) (Send Style (Show) (Format Style Show (Style - Show (SQL) (Button Action (Style)))))",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -4625,10 +4673,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
       "typeVersion": 1.3,
       "position": [
-        2976,
-        5632
+        1888,
+        4720
       ],
-      "id": "54a144f7-57b8-4740-ac6c-3472d6d6e893",
+      "id": "be8e4917-1278-4d99-ae10-71ec41cbf3da",
       "name": "Anthropic Chat Model",
       "credentials": {
         "anthropicApi": {
@@ -4645,10 +4693,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -2048,
-        3344
+        -3136,
+        2432
       ],
-      "id": "c44158c4-f018-4abd-aad0-6a4b3b9e18cb",
+      "id": "03a3503f-354d-4e7c-90d3-2a4838e3702a",
       "name": "Download Voice Telegram"
     },
     {
@@ -4677,10 +4725,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        2672,
-        2064
+        1584,
+        1152
       ],
-      "id": "e91342dc-3450-42ce-bd0b-f81d5e20d7e9",
+      "id": "0fdb4a8b-161e-4f23-999d-e65906496acb",
       "name": "History Topic Telegram"
     },
     {
@@ -4709,10 +4757,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        2928,
-        1136
+        1840,
+        224
       ],
-      "id": "0564825d-d742-4c59-b466-43e8ffdd3099",
+      "id": "28409ac4-c5ab-43e7-bcaa-99d3db3ffea4",
       "name": "Sent Email Telegram"
     },
     {
@@ -4741,10 +4789,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        176,
-        6640
+        -912,
+        5728
       ],
-      "id": "e6a72c1d-f781-4ed5-8d9e-8ca40ed98cbb",
+      "id": "4830eae9-9acb-4e53-9388-29aa6657cd34",
       "name": "HTTP Request - Error Notice"
     },
     {
@@ -4766,10 +4814,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2432,
-        5488
+        1344,
+        4576
       ],
-      "id": "62c42df4-5839-4f98-a611-fb1a97f3870d",
+      "id": "e2be0c13-30bd-4ac5-bd27-82a6404b3211",
       "name": "Get email_drafts (edit)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -4797,10 +4845,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2624,
-        5488
+        1536,
+        4576
       ],
-      "id": "9d65d3a1-31b1-42d9-a60a-dcc441e211fb",
+      "id": "45c120cc-209c-4c3e-bd53-1aed5f9762d6",
       "name": "Get prefs (edit)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -4828,10 +4876,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1360,
-        1136
+        272,
+        224
       ],
-      "id": "e1b8b555-f33d-4973-bcfc-7c6a02dcf53f",
+      "id": "fff6bc21-7568-4c60-9cf5-a04faa570ebc",
       "name": "Get email_drafts (approve)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -4859,10 +4907,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1328,
-        2064
+        240,
+        1152
       ],
-      "id": "d538203b-af4e-44f6-a698-55a8590d1b3b",
+      "id": "9186df8e-f368-44f0-bc4e-efe7930039a7",
       "name": "Get email_drafts (history)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -4890,10 +4938,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1776,
-        3232
+        688,
+        2320
       ],
-      "id": "91db556a-b2d0-487a-b7c3-f1f7cbe3e344",
+      "id": "2e5e33c8-3e2c-45c4-bcaa-5f142a4beb19",
       "name": "Get prefs (style show button)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -4921,10 +4969,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1296,
-        6192
+        208,
+        5280
       ],
-      "id": "0c883625-2a2d-457e-b072-65419c0f6907",
+      "id": "96ff5876-a343-4930-a1dc-db1b0aea2d75",
       "name": "Get pending_actions (check)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -4952,10 +5000,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1936,
-        4576
+        848,
+        3664
       ],
-      "id": "f33f9590-6dd8-4c65-b247-40aa8ef7e968",
+      "id": "ee8723b3-8803-47f6-8c09-cae930d929ce",
       "name": "Get message_ids (done)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -4983,10 +5031,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1776,
-        5488
+        688,
+        4576
       ],
-      "id": "be265bc1-1612-4a10-bd9a-dbb215bdb3ed",
+      "id": "79dbe511-6db8-4ad2-9716-00b22f2a9a39",
       "name": "Append User Edit MsgId (body) (Get email_drafts)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -5002,10 +5050,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2000,
-        5488
+        912,
+        4576
       ],
-      "id": "0a453735-f1c8-4a10-b21f-698c37685dfb",
+      "id": "a79dd515-1a29-4c8f-bde8-d262f46bb6fd",
       "name": "Append User Edit MsgId (body) (Prepare)"
     },
     {
@@ -5027,10 +5075,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        6096,
-        5696
+        5008,
+        4784
       ],
-      "id": "4c7a64b4-bec0-43e5-b5e0-cd334f0b9208",
+      "id": "18cfee6f-fb01-46aa-a995-93135259c3cf",
       "name": "Append Bot Draft MsgId (body) (Get email_drafts)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -5046,10 +5094,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6320,
-        5696
+        5232,
+        4784
       ],
-      "id": "74433e81-cd42-4401-bb82-17882572fa01",
+      "id": "38a4d8d0-32b7-4f94-852e-27719b298c19",
       "name": "Append Bot Draft MsgId (body) (Prepare)"
     },
     {
@@ -5071,10 +5119,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2272,
-        1584
+        1184,
+        672
       ],
-      "id": "0df8b8a5-45c9-4423-88ca-dcd14bfbca1c",
+      "id": "1222d699-ff6c-4ab2-b979-03b99e7a05ce",
       "name": "Append Bot MsgId (Edit Mode Started) (Get email_drafts)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -5090,10 +5138,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2496,
-        1584
+        1408,
+        672
       ],
-      "id": "b398fa39-96ea-4a00-8756-979eeff124bc",
+      "id": "2561e52c-401b-487e-8c88-98836a38a0c7",
       "name": "Append Bot MsgId (Edit Mode Started) (Prepare)"
     },
     {
@@ -5115,10 +5163,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2384,
-        6192
+        1296,
+        5280
       ],
-      "id": "a677d8b5-824c-4987-9a81-4c5f2986ec3d",
+      "id": "05d868cf-03e7-423d-9bd1-ab0b3aed2264",
       "name": "Get prefs (style pending)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -5134,10 +5182,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2624,
-        6192
+        1536,
+        5280
       ],
-      "id": "aa8d2734-91d5-42f9-9b0a-c8d7d692d41b",
+      "id": "4a346546-4d89-4114-a9eb-e5ca66b6e1bb",
       "name": "Apply Style Pending (Prepare)"
     },
     {
@@ -5159,10 +5207,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2400,
-        2800
+        1312,
+        1888
       ],
-      "id": "a08dd045-0837-41bf-b150-9a64aa9576c9",
+      "id": "ef00bad6-8847-45a8-8f8d-35a031cb3e38",
       "name": "Style Session - Append MsgId (Bot) (Get message_ids)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -5173,15 +5221,15 @@
     },
     {
       "parameters": {
-        "jsCode": "const chatId = String($('Parse Input').first().json.chat_id || '');\nconst userId = String($('Parse Input').first().json.from_id || '');\nconst rows = $('Style Session - Append MsgId (Bot) (Get message_ids)').all().map(i => i.json || {});\nconst current = rows.filter(r => String(r.chat_id||'') === chatId && String(r.user_id||'') === userId);\nconst latest = current[current.length - 1] || {};\nconst cur = String(latest.message_ids || '').trim();\nconst add = String($('Send Style Menu').first().json.result?.message_id || '');\nconst next = cur ? (cur + ',' + add) : add;\nreturn [{ json: { chat_id: chatId, user_id: userId, message_ids: next, expires_at: new Date(Date.now() + 10*60*1000).toISOString(), updated_at: new Date().toISOString() } }];\n"
+        "jsCode": "const chatId = String($('Parse Input').first().json.chat_id || '');\nconst userId = String($('Parse Input').first().json.from_id || '');\nconst rows = $('Style Session - Append MsgId (Bot) (Get message_ids)').all().map(i => i.json || {});\nconst current = rows.filter(r => String(r.chat_id||'') === chatId && String(r.user_id||'') === userId);\nconst latest = current[current.length - 1] || {};\nconst parseList = (val) => {\n  if (!val) return [];\n  if (Array.isArray(val)) return val;\n  const s = String(val).trim();\n  if (!s) return [];\n  if (s.startsWith('[')) {\n    try {\n      const arr = JSON.parse(s);\n      if (Array.isArray(arr)) return arr;\n    } catch (e) {}\n  }\n  return s.split(',').map(x => x.trim()).filter(Boolean);\n};\nconst toInt = (v) => {\n  const s = String(v ?? '').replace(/[^0-9]/g, '');\n  if (!s) return null;\n  const n = Number(s);\n  return Number.isInteger(n) ? n : null;\n};\nconst list = parseList(latest.message_ids).map(toInt).filter(n => n !== null);\nconst add = String($('Send Style Menu').first().json.result?.message_id || '');\nconst addId = toInt(add);\nif (addId !== null) list.push(addId);\nconst uniq = Array.from(new Set(list));\nreturn [{ json: { chat_id: chatId, user_id: userId, message_ids: JSON.stringify(uniq), expires_at: new Date(Date.now() + 10*60*1000).toISOString(), updated_at: new Date().toISOString() } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2624,
-        2800
+        1536,
+        1888
       ],
-      "id": "e1686036-c962-4294-9392-32215db2999b",
+      "id": "2a9e53d1-3cac-4358-b405-5237c9f7d74c",
       "name": "Style Session - Append MsgId (Bot) (Prepare)"
     },
     {
@@ -5203,10 +5251,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1712,
-        6192
+        624,
+        5280
       ],
-      "id": "f1a91de7-6b59-4b4a-af1f-754628a7ce16",
+      "id": "2f134693-bff7-43ed-b1d9-7c02bfc697b5",
       "name": "Style Session - Append MsgId (User) (Get message_ids)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -5217,15 +5265,15 @@
     },
     {
       "parameters": {
-        "jsCode": "const chatId = String($('Parse Input').first().json.chat_id || '');\nconst userId = String($('Parse Input').first().json.from_id || '');\nconst rows = $('Style Session - Append MsgId (User) (Get message_ids)').all().map(i => i.json || {});\nconst current = rows.filter(r => String(r.chat_id||'') === chatId && String(r.user_id||'') === userId);\nconst latest = current[current.length - 1] || {};\nconst cur = String(latest.message_ids || '').trim();\nconst add = String($('Parse Input').first().json.message_id || '');\nconst next = cur ? (cur + ',' + add) : add;\nreturn [{ json: { chat_id: chatId, user_id: userId, message_ids: next, expires_at: new Date(Date.now() + 10*60*1000).toISOString(), updated_at: new Date().toISOString() } }];\n"
+        "jsCode": "const chatId = String($('Parse Input').first().json.chat_id || '');\nconst userId = String($('Parse Input').first().json.from_id || '');\nconst rows = $('Style Session - Append MsgId (User) (Get message_ids)').all().map(i => i.json || {});\nconst current = rows.filter(r => String(r.chat_id||'') === chatId && String(r.user_id||'') === userId);\nconst latest = current[current.length - 1] || {};\nconst parseList = (val) => {\n  if (!val) return [];\n  if (Array.isArray(val)) return val;\n  const s = String(val).trim();\n  if (!s) return [];\n  if (s.startsWith('[')) {\n    try {\n      const arr = JSON.parse(s);\n      if (Array.isArray(arr)) return arr;\n    } catch (e) {}\n  }\n  return s.split(',').map(x => x.trim()).filter(Boolean);\n};\nconst toInt = (v) => {\n  const s = String(v ?? '').replace(/[^0-9]/g, '');\n  if (!s) return null;\n  const n = Number(s);\n  return Number.isInteger(n) ? n : null;\n};\nconst list = parseList(latest.message_ids).map(toInt).filter(n => n !== null);\nconst add = String($('Parse Input').first().json.message_id || '');\nconst addId = toInt(add);\nif (addId !== null) list.push(addId);\nconst uniq = Array.from(new Set(list));\nreturn [{ json: { chat_id: chatId, user_id: userId, message_ids: JSON.stringify(uniq), expires_at: new Date(Date.now() + 10*60*1000).toISOString(), updated_at: new Date().toISOString() } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1920,
-        6192
+        832,
+        5280
       ],
-      "id": "5cf4956f-59df-47f5-bce5-5282a694091f",
+      "id": "b4e988d5-44e5-40e7-aebd-6b3cc9ce58c5",
       "name": "Style Session - Append MsgId (User) (Prepare)"
     },
     {
@@ -5247,10 +5295,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2176,
-        3680
+        1088,
+        2768
       ],
-      "id": "fd5532cd-c34e-4bc6-be23-3ec915b08193",
+      "id": "529aeaaf-bd47-43f6-b10f-ec08952b85a9",
       "name": "Style Session - Append MsgId (Bot) (Send Style Prompt (Set)) (Get message_ids)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -5261,15 +5309,15 @@
     },
     {
       "parameters": {
-        "jsCode": "const chatId = String($('Parse Input').first().json.chat_id || '');\nconst userId = String($('Parse Input').first().json.from_id || '');\nconst rows = $('Style Session - Append MsgId (Bot) (Send Style Prompt (Set)) (Get message_ids)').all().map(i => i.json || {});\nconst current = rows.filter(r => String(r.chat_id||'') === chatId && String(r.user_id||'') === userId);\nconst latest = current[current.length - 1] || {};\nconst cur = String(latest.message_ids || '').trim();\nconst add = String($('Send Style Prompt (Set)').first().json.result?.message_id || '');\nconst next = cur ? (cur + ',' + add) : add;\nreturn [{ json: { chat_id: chatId, user_id: userId, message_ids: next, expires_at: new Date(Date.now() + 10*60*1000).toISOString(), updated_at: new Date().toISOString() } }];\n"
+        "jsCode": "const chatId = String($('Parse Input').first().json.chat_id || '');\nconst userId = String($('Parse Input').first().json.from_id || '');\nconst rows = $('Style Session - Append MsgId (Bot) (Send Style Prompt (Set)) (Get message_ids)').all().map(i => i.json || {});\nconst current = rows.filter(r => String(r.chat_id||'') === chatId && String(r.user_id||'') === userId);\nconst latest = current[current.length - 1] || {};\nconst parseList = (val) => {\n  if (!val) return [];\n  if (Array.isArray(val)) return val;\n  const s = String(val).trim();\n  if (!s) return [];\n  if (s.startsWith('[')) {\n    try {\n      const arr = JSON.parse(s);\n      if (Array.isArray(arr)) return arr;\n    } catch (e) {}\n  }\n  return s.split(',').map(x => x.trim()).filter(Boolean);\n};\nconst toInt = (v) => {\n  const s = String(v ?? '').replace(/[^0-9]/g, '');\n  if (!s) return null;\n  const n = Number(s);\n  return Number.isInteger(n) ? n : null;\n};\nconst list = parseList(latest.message_ids).map(toInt).filter(n => n !== null);\nconst add = String($('Send Style Prompt (Set)').first().json.result?.message_id || '');\nconst addId = toInt(add);\nif (addId !== null) list.push(addId);\nconst uniq = Array.from(new Set(list));\nreturn [{ json: { chat_id: chatId, user_id: userId, message_ids: JSON.stringify(uniq), expires_at: new Date(Date.now() + 10*60*1000).toISOString(), updated_at: new Date().toISOString() } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2400,
-        3680
+        1312,
+        2768
       ],
-      "id": "28238275-45eb-4922-81ed-a2580b88bd59",
+      "id": "79b3c94e-ddb3-4c20-a7df-86479f9e41d5",
       "name": "Style Session - Append MsgId (Bot) (Send Style Prompt (Set)) (Prepare)"
     },
     {
@@ -5291,10 +5339,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2176,
-        4112
+        1088,
+        3200
       ],
-      "id": "cd9cc97c-b127-44ee-b4a7-2ab5d39d9bc6",
+      "id": "8fc99c2a-104c-44b2-bb38-c7f64fd95c77",
       "name": "Style Session - Append MsgId (Bot) (Send Style Prompt (Add)) (Get message_ids)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -5305,15 +5353,15 @@
     },
     {
       "parameters": {
-        "jsCode": "const chatId = String($('Parse Input').first().json.chat_id || '');\nconst userId = String($('Parse Input').first().json.from_id || '');\nconst rows = $('Style Session - Append MsgId (Bot) (Send Style Prompt (Add)) (Get message_ids)').all().map(i => i.json || {});\nconst current = rows.filter(r => String(r.chat_id||'') === chatId && String(r.user_id||'') === userId);\nconst latest = current[current.length - 1] || {};\nconst cur = String(latest.message_ids || '').trim();\nconst add = String($('Send Style Prompt (Add)').first().json.result?.message_id || '');\nconst next = cur ? (cur + ',' + add) : add;\nreturn [{ json: { chat_id: chatId, user_id: userId, message_ids: next, expires_at: new Date(Date.now() + 10*60*1000).toISOString(), updated_at: new Date().toISOString() } }];\n"
+        "jsCode": "const chatId = String($('Parse Input').first().json.chat_id || '');\nconst userId = String($('Parse Input').first().json.from_id || '');\nconst rows = $('Style Session - Append MsgId (Bot) (Send Style Prompt (Add)) (Get message_ids)').all().map(i => i.json || {});\nconst current = rows.filter(r => String(r.chat_id||'') === chatId && String(r.user_id||'') === userId);\nconst latest = current[current.length - 1] || {};\nconst parseList = (val) => {\n  if (!val) return [];\n  if (Array.isArray(val)) return val;\n  const s = String(val).trim();\n  if (!s) return [];\n  if (s.startsWith('[')) {\n    try {\n      const arr = JSON.parse(s);\n      if (Array.isArray(arr)) return arr;\n    } catch (e) {}\n  }\n  return s.split(',').map(x => x.trim()).filter(Boolean);\n};\nconst toInt = (v) => {\n  const s = String(v ?? '').replace(/[^0-9]/g, '');\n  if (!s) return null;\n  const n = Number(s);\n  return Number.isInteger(n) ? n : null;\n};\nconst list = parseList(latest.message_ids).map(toInt).filter(n => n !== null);\nconst add = String($('Send Style Prompt (Add)').first().json.result?.message_id || '');\nconst addId = toInt(add);\nif (addId !== null) list.push(addId);\nconst uniq = Array.from(new Set(list));\nreturn [{ json: { chat_id: chatId, user_id: userId, message_ids: JSON.stringify(uniq), expires_at: new Date(Date.now() + 10*60*1000).toISOString(), updated_at: new Date().toISOString() } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2400,
-        4112
+        1312,
+        3200
       ],
-      "id": "b2a900c2-0e62-491b-8018-a39315a21a86",
+      "id": "5c7b123c-1bda-4334-889d-c578bef57a5a",
       "name": "Style Session - Append MsgId (Bot) (Send Style Prompt (Add)) (Prepare)"
     },
     {
@@ -5335,10 +5383,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        3504,
-        6192
+        2416,
+        5280
       ],
-      "id": "04481697-64f6-45e4-ac99-28a2393e1097",
+      "id": "e69ae7d5-499b-465c-8676-a83bfb2a6963",
       "name": "Style Session - Append MsgId (Bot) (Send Style (Saved via pending)) (Get message_ids)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -5349,15 +5397,15 @@
     },
     {
       "parameters": {
-        "jsCode": "const chatId = String($('Parse Input').first().json.chat_id || '');\nconst userId = String($('Parse Input').first().json.from_id || '');\nconst rows = $('Style Session - Append MsgId (Bot) (Send Style (Saved via pending)) (Get message_ids)').all().map(i => i.json || {});\nconst current = rows.filter(r => String(r.chat_id||'') === chatId && String(r.user_id||'') === userId);\nconst latest = current[current.length - 1] || {};\nconst cur = String(latest.message_ids || '').trim();\nconst add = String($('Send Style (Saved via pending)').first().json.result?.message_id || '');\nconst next = cur ? (cur + ',' + add) : add;\nreturn [{ json: { chat_id: chatId, user_id: userId, message_ids: next, expires_at: new Date(Date.now() + 10*60*1000).toISOString(), updated_at: new Date().toISOString() } }];\n"
+        "jsCode": "const chatId = String($('Parse Input').first().json.chat_id || '');\nconst userId = String($('Parse Input').first().json.from_id || '');\nconst rows = $('Style Session - Append MsgId (Bot) (Send Style (Saved via pending)) (Get message_ids)').all().map(i => i.json || {});\nconst current = rows.filter(r => String(r.chat_id||'') === chatId && String(r.user_id||'') === userId);\nconst latest = current[current.length - 1] || {};\nconst parseList = (val) => {\n  if (!val) return [];\n  if (Array.isArray(val)) return val;\n  const s = String(val).trim();\n  if (!s) return [];\n  if (s.startsWith('[')) {\n    try {\n      const arr = JSON.parse(s);\n      if (Array.isArray(arr)) return arr;\n    } catch (e) {}\n  }\n  return s.split(',').map(x => x.trim()).filter(Boolean);\n};\nconst toInt = (v) => {\n  const s = String(v ?? '').replace(/[^0-9]/g, '');\n  if (!s) return null;\n  const n = Number(s);\n  return Number.isInteger(n) ? n : null;\n};\nconst list = parseList(latest.message_ids).map(toInt).filter(n => n !== null);\nconst add = String($('Send Style (Saved via pending)').first().json.result?.message_id || '');\nconst addId = toInt(add);\nif (addId !== null) list.push(addId);\nconst uniq = Array.from(new Set(list));\nreturn [{ json: { chat_id: chatId, user_id: userId, message_ids: JSON.stringify(uniq), expires_at: new Date(Date.now() + 10*60*1000).toISOString(), updated_at: new Date().toISOString() } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3728,
-        6192
+        2640,
+        5280
       ],
-      "id": "6c258490-4570-4bdd-b40d-9e8366727eff",
+      "id": "5becf79f-a516-4a46-b426-94990e7e7d6e",
       "name": "Style Session - Append MsgId (Bot) (Send Style (Saved via pending)) (Prepare)"
     },
     {
@@ -5379,10 +5427,10 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2832,
-        3232
+        1744,
+        2320
       ],
-      "id": "59a4227e-128d-412e-9ec0-34abdf4e5748",
+      "id": "127c6702-113b-4b76-bab3-1b1ec2ab0b12",
       "name": "Style Session - Append MsgId (Bot) (Send Style (Show)) (Send Style (Show) (Format Style Show (Style - Show (SQL) (Button Action (Style))))) (Get message_ids)",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -5393,15 +5441,15 @@
     },
     {
       "parameters": {
-        "jsCode": "const chatId = String($('Parse Input').first().json.chat_id || '');\nconst userId = String($('Parse Input').first().json.from_id || '');\nconst rows = $('Style Session - Append MsgId (Bot) (Send Style (Show)) (Send Style (Show) (Format Style Show (Style - Show (SQL) (Button Action (Style))))) (Get message_ids)').all().map(i => i.json || {});\nconst current = rows.filter(r => String(r.chat_id||'') === chatId && String(r.user_id||'') === userId);\nconst latest = current[current.length - 1] || {};\nconst cur = String(latest.message_ids || '').trim();\nconst add = String($('Send Style (Show) (Format Style Show (Style - Show (SQL) (Button Action (Style))))').first().json.result?.message_id || '');\nconst next = cur ? (cur + ',' + add) : add;\nreturn [{ json: { chat_id: chatId, user_id: userId, message_ids: next, expires_at: new Date(Date.now() + 10*60*1000).toISOString(), updated_at: new Date().toISOString() } }];\n"
+        "jsCode": "const chatId = String($('Parse Input').first().json.chat_id || '');\nconst userId = String($('Parse Input').first().json.from_id || '');\nconst rows = $('Style Session - Append MsgId (Bot) (Send Style (Show)) (Send Style (Show) (Format Style Show (Style - Show (SQL) (Button Action (Style))))) (Get message_ids)').all().map(i => i.json || {});\nconst current = rows.filter(r => String(r.chat_id||'') === chatId && String(r.user_id||'') === userId);\nconst latest = current[current.length - 1] || {};\nconst parseList = (val) => {\n  if (!val) return [];\n  if (Array.isArray(val)) return val;\n  const s = String(val).trim();\n  if (!s) return [];\n  if (s.startsWith('[')) {\n    try {\n      const arr = JSON.parse(s);\n      if (Array.isArray(arr)) return arr;\n    } catch (e) {}\n  }\n  return s.split(',').map(x => x.trim()).filter(Boolean);\n};\nconst toInt = (v) => {\n  const s = String(v ?? '').replace(/[^0-9]/g, '');\n  if (!s) return null;\n  const n = Number(s);\n  return Number.isInteger(n) ? n : null;\n};\nconst list = parseList(latest.message_ids).map(toInt).filter(n => n !== null);\nconst add = String($('Send Style (Show) (Format Style Show (Style - Show (SQL) (Button Action (Style))))').first().json.result?.message_id || '');\nconst addId = toInt(add);\nif (addId !== null) list.push(addId);\nconst uniq = Array.from(new Set(list));\nreturn [{ json: { chat_id: chatId, user_id: userId, message_ids: JSON.stringify(uniq), expires_at: new Date(Date.now() + 10*60*1000).toISOString(), updated_at: new Date().toISOString() } }];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3056,
-        3232
+        1968,
+        2320
       ],
-      "id": "ccc9402b-1cf8-48c3-a196-27fc26e37a23",
+      "id": "86f01161-3781-45a9-99b0-a54c163067fe",
       "name": "Style Session - Append MsgId (Bot) (Send Style (Show)) (Send Style (Show) (Format Style Show (Style - Show (SQL) (Button Action (Style))))) (Prepare)"
     },
     {
@@ -5413,11 +5461,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -2768,
-        3200
+        -3856,
+        2288
       ],
       "typeVersion": 1,
-      "id": "2ab1ffbc-5cc6-4bc9-9706-c850d7238fa5",
+      "id": "ad38eec3-047d-4840-9576-ef6750fa7015",
       "name": "Sticky Note"
     },
     {
@@ -5429,11 +5477,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -1856,
-        3072
+        -2944,
+        2160
       ],
       "typeVersion": 1,
-      "id": "ee78323e-6829-4dda-b8a0-c8fc764847a0",
+      "id": "9ad246ad-af9d-48a8-a2bf-2f41de43f7c3",
       "name": "Sticky Note1"
     },
     {
@@ -5444,11 +5492,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -448,
-        3232
+        -1536,
+        2320
       ],
       "typeVersion": 1,
-      "id": "7110cfd3-2a8c-4b35-8f33-440b4cc281c6",
+      "id": "91b0a616-ccba-4921-a47e-f10cb0287adf",
       "name": "Sticky Note2"
     },
     {
@@ -5459,11 +5507,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        352,
-        1312
+        -736,
+        400
       ],
       "typeVersion": 1,
-      "id": "db69a7dd-0adc-4224-b189-d12b89ac72de",
+      "id": "dab23234-d122-41c8-95ce-442d12c01243",
       "name": "Sticky Note3"
     },
     {
@@ -5475,11 +5523,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1088,
-        912
+        0,
+        0
       ],
       "typeVersion": 1,
-      "id": "47311875-2d83-49ae-96f7-96bd6afe4d72",
+      "id": "6956fcc3-a3ff-47e9-b865-d97fa475f119",
       "name": "Sticky Note4"
     },
     {
@@ -5491,11 +5539,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1088,
-        1408
+        0,
+        496
       ],
       "typeVersion": 1,
-      "id": "31358a79-4a69-4876-866a-0d73d55db1ad",
+      "id": "e9da3236-7dd5-43f3-ab97-f83454e46da9",
       "name": "Sticky Note5"
     },
     {
@@ -5507,11 +5555,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1088,
-        1888
+        0,
+        976
       ],
       "typeVersion": 1,
-      "id": "42c2c147-5292-4b01-930b-0ce13bed5014",
+      "id": "16efdb91-4d69-45e4-bb19-763f2a6ed442",
       "name": "Sticky Note6"
     },
     {
@@ -5522,11 +5570,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        832,
-        2784
+        -256,
+        1872
       ],
       "typeVersion": 1,
-      "id": "c354ce4d-dcae-4a9e-90db-81657e2a1ce2",
+      "id": "e62c94d7-bd72-482a-bcd1-988d5053ba87",
       "name": "Sticky Note7"
     },
     {
@@ -5538,11 +5586,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1472,
-        2624
+        384,
+        1712
       ],
       "typeVersion": 1,
-      "id": "7afa6380-7bf4-408f-91b3-12fb050d8341",
+      "id": "e025df1b-4efe-4fb1-883a-d2cb5c70ed86",
       "name": "Sticky Note8"
     },
     {
@@ -5554,27 +5602,27 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1472,
-        3056
+        384,
+        2144
       ],
       "typeVersion": 1,
-      "id": "ecf77455-ae78-47c4-b466-892dffa5fa3f",
+      "id": "95962d41-96a5-4bc1-9154-4bd561efda71",
       "name": "Sticky Note9"
     },
     {
       "parameters": {
         "content": "## STYLE_SET (REPLACE STYLE)\n- Answer Telegram callback.\n- Mark “style pending = SET” (we are waiting for new style text).\n- Ask user to send their new writing/style preferences.\n- When user replies, we overwrite/replace the saved style rules.\n- Save bot message IDs for cleanup.\n",
         "height": 384,
-        "width": 1088,
+        "width": 1280,
         "color": 6
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1488,
-        3488
+        400,
+        2576
       ],
       "typeVersion": 1,
-      "id": "3e558c13-34a6-4c14-b183-900a4bb0c8db",
+      "id": "cf0b96ae-c782-4a10-b4d1-5be3487127c3",
       "name": "Sticky Note10"
     },
     {
@@ -5586,11 +5634,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1472,
-        3936
+        384,
+        3024
       ],
       "typeVersion": 1,
-      "id": "fe9facf5-8b98-46c3-b4bb-bef01398de23",
+      "id": "c7b87f4d-ef8e-4b3c-affe-c76cc4d19542",
       "name": "Sticky Note11"
     },
     {
@@ -5602,11 +5650,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1488,
-        4432
+        400,
+        3520
       ],
       "typeVersion": 1,
-      "id": "211d9c53-0127-4bd2-99e0-f16c038298d9",
+      "id": "56582003-0244-4523-8e52-7e7b73cfd4de",
       "name": "Sticky Note12"
     },
     {
@@ -5617,11 +5665,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        560,
-        4960
+        -528,
+        4048
       ],
       "typeVersion": 1,
-      "id": "50c95932-e130-4a77-9493-a3593cb13e2d",
+      "id": "35f541e1-49ad-42af-b9f7-52d6dd8df201",
       "name": "Sticky Note13"
     },
     {
@@ -5633,11 +5681,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1200,
-        5344
+        112,
+        4432
       ],
       "typeVersion": 1,
-      "id": "9a92b6ab-9640-4ee8-bd6b-0ac920f2ef10",
+      "id": "cf59bdae-6d8d-4e4c-bfa3-8aee4820bc8c",
       "name": "Sticky Note14"
     },
     {
@@ -5649,11 +5697,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1728,
-        5312
+        640,
+        4400
       ],
       "typeVersion": 1,
-      "id": "09f1e8d6-b0ac-4e0c-845d-c40f61762504",
+      "id": "87f0086d-8276-4a08-a746-a48bf72ae9f2",
       "name": "Sticky Note15"
     },
     {
@@ -5665,11 +5713,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        2768,
-        5328
+        1680,
+        4416
       ],
       "typeVersion": 1,
-      "id": "4a82cef3-aa0c-4713-abce-5fbf503a1adf",
+      "id": "a7b4e967-cce1-4dc4-9d35-f323d19ed51a",
       "name": "Sticky Note16"
     },
     {
@@ -5681,11 +5729,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        3248,
-        5312
+        2160,
+        4400
       ],
       "typeVersion": 1,
-      "id": "9a46daed-beab-4e1f-8327-d3aad01db0d9",
+      "id": "7ef678e8-7c77-4576-a086-f2074539b260",
       "name": "Sticky Note17"
     },
     {
@@ -5697,11 +5745,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        4384,
-        5312
+        3296,
+        4400
       ],
       "typeVersion": 1,
-      "id": "42ed5dd6-e980-4fc8-8a91-1f0ec5c78b5b",
+      "id": "aaf05449-e483-4a2d-bc97-de73141e0f49",
       "name": "Sticky Note18"
     },
     {
@@ -5713,11 +5761,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1248,
-        5840
+        160,
+        4928
       ],
       "typeVersion": 1,
-      "id": "f93a6bea-25e3-49f0-994d-ea53cbcf061a",
+      "id": "0311aad7-20a3-4e58-b18b-e859a7b22753",
       "name": "Sticky Note19"
     },
     {
@@ -5729,12 +5777,107 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -80,
-        6512
+        -1168,
+        5600
       ],
       "typeVersion": 1,
-      "id": "e16881a2-f4b7-4293-a84f-db0ba7dfaa4d",
+      "id": "d8774a8c-079b-48c8-a6ca-5e550c540c2d",
       "name": "Sticky Note20"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1EB-MUC7mL69LVyrxYFvoBwZz83wqUqr29sn9_isOsd0",
+          "mode": "list",
+          "cachedResultName": 1998009706
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1998009706,
+          "mode": "list",
+          "cachedResultName": "message_ids"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chat_id": "={{ $json.chat_id }}",
+            "user_id": "={{ $json.user_id }}",
+            "message_ids": "={{ $json.message_ids }}",
+            "expires_at": "={{ $json.expires_at }}",
+            "updated_at": "={{ $json.updated_at }}"
+          },
+          "matchingColumns": [
+            "chat_id",
+            "user_id"
+          ],
+          "schema": [
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message_ids",
+              "displayName": "message_ids",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "expires_at",
+              "displayName": "expires_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "updated_at",
+              "displayName": "updated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1520,
+        2768
+      ],
+      "id": "d7d2ae9c-aca2-4f28-ba55-8ef66d814cc3",
+      "name": "Style Session - Append MsgId (Bot) (Send Style Prompt (Set))",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XoJf393CafMdwwSm",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -6913,7 +7056,13 @@
     },
     "Style Session - Append MsgId (Bot) (Send Style Prompt (Set)) (Prepare)": {
       "main": [
-        []
+        [
+          {
+            "node": "Style Session - Append MsgId (Bot) (Send Style Prompt (Set))",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Style Session - Append MsgId (Bot) (Send Style Prompt (Add)) (Get message_ids)": {
@@ -7049,14 +7198,14 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "30a07ec5-2dea-47ec-8738-4c3a08ceaef2",
+  "versionId": "7d707cae-cc1b-4fe3-80af-9d404e5bc6bb",
   "meta": {
     "instanceId": "c2319bcf64035e12fa4b23aa88003edd572c9ac2ee40ffdd07560e871f1375d3"
   },
-  "id": "8Twr3BSEy7HdAKbQ",
+  "id": "i3YwRJEcRxdxlzBu",
   "tags": []
 }
