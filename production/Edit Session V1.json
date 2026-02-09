@@ -11,13 +11,13 @@
           ]
         }
       },
-      "id": "4aa5479f-b868-42b5-b4ed-f0a74bc43039",
+      "id": "3292d0b0-8283-4d3b-81d9-e6e0c1a46064",
       "name": "Cron (every 1 min)",
       "type": "n8n-nodes-base.cron",
       "typeVersion": 1,
       "position": [
-        -176,
-        0
+        -544,
+        208
       ]
     },
     {
@@ -25,7 +25,9 @@
         "documentId": {
           "__rl": true,
           "value": "1EB-MUC7mL69LVyrxYFvoBwZz83wqUqr29sn9_isOsd0",
-          "mode": "list"
+          "mode": "list",
+          "cachedResultName": "n8n automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EB-MUC7mL69LVyrxYFvoBwZz83wqUqr29sn9_isOsd0/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
@@ -35,18 +37,18 @@
         },
         "options": {}
       },
-      "id": "53266185-637e-4700-ae35-6dbb4727002a",
+      "id": "9b1c4df3-ae24-41ff-8c10-50429cfb6038",
       "name": "Get Waiting Edit Sessions",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        48,
-        0
+        -320,
+        208
       ],
       "alwaysOutputData": true,
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "mH2aVquJ4ty4Ez8y",
+          "id": "fY1Ze3nK84njdSmp",
           "name": "Google Sheets account"
         }
       }
@@ -55,13 +57,13 @@
       "parameters": {
         "jsCode": "// Keep only waiting_edit sessions where expires_at is in the past\nconst now = Date.now();\nif (($json.mode || '') !== 'waiting_edit') return [];\nconst exp = Date.parse($json.expires_at || '');\nif (!exp || now < exp) return []; // not expired or missing\nreturn [{ json: { ...$json, now_iso: new Date().toISOString() } }];"
       },
-      "id": "ad5914e1-21ec-48a2-9853-d67c7f908a10",
+      "id": "7159d17c-b2df-466c-a778-a81b8d3ab075",
       "name": "Filter Expired",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        448,
-        0
+        80,
+        208
       ]
     },
     {
@@ -72,13 +74,13 @@
           "appendAttribution": false
         }
       },
-      "id": "f1705fc6-0071-445d-a856-7cacc1962919",
+      "id": "6f475153-f2f8-473d-b66c-bba330503662",
       "name": "Send Done (Timeout)",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
-        1152,
-        0
+        784,
+        208
       ],
       "webhookId": "a941da07-93c8-43af-82df-a99c9ffcb0b8",
       "credentials": {
@@ -95,7 +97,8 @@
           "__rl": true,
           "value": "1EB-MUC7mL69LVyrxYFvoBwZz83wqUqr29sn9_isOsd0",
           "mode": "list",
-          "cachedResultName": 473762709
+          "cachedResultName": "n8n automation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EB-MUC7mL69LVyrxYFvoBwZz83wqUqr29sn9_isOsd0/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
@@ -221,17 +224,17 @@
         },
         "options": {}
       },
-      "id": "50aace33-7c6b-494f-83b5-0a563d17f229",
+      "id": "e4de12ea-bc68-4136-b0ee-46a335f47149",
       "name": "Consume Session (Timeout)",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        928,
-        0
+        560,
+        208
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "mH2aVquJ4ty4Ez8y",
+          "id": "fY1Ze3nK84njdSmp",
           "name": "Google Sheets account"
         }
       }
@@ -244,11 +247,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -208,
-        -192
+        -576,
+        16
       ],
       "typeVersion": 1,
-      "id": "c3d91a51-a538-47fe-838f-37f4cc4f6dca",
+      "id": "7e554b85-2b9a-46d6-8916-8d9eb16516aa",
       "name": "Sticky Note"
     },
     {
@@ -259,11 +262,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        368,
-        -208
+        0,
+        0
       ],
       "typeVersion": 1,
-      "id": "d7b60503-553c-4e16-94b9-019841ca4c2a",
+      "id": "223d35e5-d3ea-4c4f-9e2d-689e211876f0",
       "name": "Sticky Note1"
     },
     {
@@ -274,11 +277,11 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        896,
-        -208
+        528,
+        0
       ],
       "typeVersion": 1,
-      "id": "d37ba626-9c9d-419e-bb6d-c90bfd465314",
+      "id": "1e361881-2213-4f4d-b88a-113c6dc18a92",
       "name": "Sticky Note2"
     }
   ],
@@ -333,10 +336,11 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "76a71ca2-511d-4f55-8763-5e3a2f58f7c7",
+  "versionId": "10cb6dbb-fd2f-46a7-99e5-9bacd647f0a0",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "c2319bcf64035e12fa4b23aa88003edd572c9ac2ee40ffdd07560e871f1375d3"
   },
-  "id": "CRdaRdc328qww4T6",
+  "id": "U9860K2dL0boPuqZ",
   "tags": []
 }
